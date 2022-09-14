@@ -1,0 +1,29 @@
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.borderRadius {
+  border-radius: var(--radius-m);
+}
+
+.padding {
+  padding: var(--spacing-m);
+}
+
+.boxShadow {
+  box-shadow: var(--shadow);
+}
+
+.upper {
+  position: relative;
+  min-height: 200px;
+}
+
+.lower {
+  padding: var(--spacing-l);
+}
+
+.title {
+  margin-bottom: var(--spacing-xs);
+}
