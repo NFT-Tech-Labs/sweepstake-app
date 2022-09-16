@@ -1,0 +1,24 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.timelineWrapper {
+  display: flex;
+  flex-basis: 20%;
+  margin-top: var(--spacing-m);
+}
+
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 75%;
+  width: 100%;
+  height: 100%;
+  margin-left: 40px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

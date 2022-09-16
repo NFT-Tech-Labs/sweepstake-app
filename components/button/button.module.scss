@@ -1,0 +1,22 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-dark);
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.link {
+  background: none;
+  border: none;
+  color: rgba(var(--color-positive), 1);
+  
+  &:hover {
+    > p {
+      color: rgba(var(--color-positive), 1);
+    }
+  }
+}

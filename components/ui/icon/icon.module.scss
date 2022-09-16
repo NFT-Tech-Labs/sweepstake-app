@@ -1,0 +1,61 @@
+.icon {
+  position: relative;
+
+  svg {
+    display: flex;
+    width: 40px;
+    height: auto;
+  }
+}
+
+.icon-xl {
+  svg {
+    width: 150px;
+  }
+}
+
+.icon-l {
+  svg {
+    width: 100px;
+  }
+}
+
+.icon-m {
+  svg {
+    width: 75px;
+  }
+}
+
+.icon-s {
+  svg {
+    width: 50px;
+  }
+}
+
+.icon-xs {
+  svg {
+    width: 30px;
+  }
+}
+
+.icon-xxs {
+  svg {
+    width: 20px;
+  }
+}
+
+.icon-xxxs {
+  svg {
+    width: 15px;
+  }
+}
+
+.icon-energized {
+  path {
+    fill: #ffc84e;
+  }
+}
+
+.borderRadius {
+  border-radius: var(--radius-s);
+}

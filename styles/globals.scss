@@ -9,6 +9,7 @@
   --color-assertive: 166, 29, 35;
   --color-stable: 231, 235, 240;
   --color-stable-500: 148, 148, 154;
+  --color-stable-700: 112, 112, 118;
   --font-xxs: 12px;
   --font-xs: 14px;
   --font-s: 16px;
@@ -30,7 +31,7 @@
   --shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   --shadow-m: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-  --global-width: 880px;
+  --global-width: 1200px;
 }
 
 * {
@@ -38,7 +39,7 @@
 }
 
 html, body {
-  background-color: rgba(var(--color-light), 1);
+  // background-color: #f6f6f6;
 }
 
 body {
@@ -162,6 +163,10 @@ h6 {
   color: rgba(var(--color-stable-500), 1);
 }
 
+.color-stable-700 {
+  color: rgba(var(--color-stable-700), 1);
+}
+
 .background-transparent {
   background-color: transparent;
 }
@@ -197,6 +202,11 @@ h6 {
 .background-stable-500 {
   background-color: rgba(var(--color-stable-500), 1);
 }
+
+.background-stable-700 {
+  background-color: rgba(var(--color-stable-700), 1);
+}
+
 
 .font-xxs {
   font-size: var(--font-xxs);

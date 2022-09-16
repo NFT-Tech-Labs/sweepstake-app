@@ -1,0 +1,15 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  thead {
+    th {
+      font-weight: normal;
+      padding-bottom: var(--spacing-m);
+    }
+  }
+  
+  tbody {
+    box-shadow: 0 0 0 1px rgba(var(--color-stable), 1);
+    border-radius: var(--radius-m);
+  }
+}
