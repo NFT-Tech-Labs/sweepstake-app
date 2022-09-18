@@ -8,6 +8,7 @@ import { Divider } from "./ui";
 import Heading from "./heading/heading";
 import Timeline from "./timeline/timeline";
 import Button from "./button/button";
+import Cta from "./cta/cta";
 
 export {
   Layout,
@@ -21,4 +22,5 @@ export {
   Heading,
   Timeline,
   Button,
+  Cta,
 };

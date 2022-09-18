@@ -1,0 +1,21 @@
+.cta {
+  position: relative;
+  padding: var(--spacing-xxl);
+  background: rgb(5,15,59);
+  background: -moz-linear-gradient(90deg, rgba(5,15,59,0.9178046218487395) 0%, rgba(3,3,36,0.7105435924369747) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(5,15,59,0.9178046218487395) 0%, rgba(3,3,36,0.7105435924369747) 100%);
+  background: linear-gradient(90deg, rgba(5,15,59,0.9178046218487395) 0%, rgba(3,3,36,0.7105435924369747) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#050f3b",endColorstr="#030324",GradientType=1);
+}
+
+.content {
+  height: 100%;
+}
+
+.image {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  height: 330px;
+}

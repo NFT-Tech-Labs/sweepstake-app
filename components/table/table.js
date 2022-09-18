@@ -63,17 +63,15 @@ const Table = ({ className, matches, count }) => {
       <tbody>
         {data?.map((item, index) => {
           return (
-            <>
+            <React.Fragment key={index}>
               {item?.type === count && (
                 <Row
-                  key={item.id}
-                  index={index}
                   onChangeA={onInputChangeA}
                   onChangeB={onInputChangeB}
                   {...item}
                 />
               )}
-            </>
+            </React.Fragment>
           );
         })}
       </tbody>

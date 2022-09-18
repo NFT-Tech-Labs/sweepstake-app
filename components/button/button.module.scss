@@ -2,21 +2,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-dark);
-}
+  padding: calc(var(--spacing-s) + 2px) calc(var(--spacing-xxl) + 10px);
+  border-radius: var(--spacing-xs);
+  border: none;   
+  background: rgba(var(--color-light), 1);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1em;
 
-.button:hover {
-  cursor: pointer;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.75;
+  }
 }
 
 .link {
   background: none;
   border: none;
+  padding: 0;
   color: rgba(var(--color-positive), 1);
-  
-  &:hover {
-    > p {
-      color: rgba(var(--color-positive), 1);
-    }
-  }
+  text-transform: none;
+  padding-right: var(--spacing-s);
+  font-weight: 500;
+  letter-spacing: normal;
 }

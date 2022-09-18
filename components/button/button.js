@@ -34,7 +34,7 @@ Button.propTypes = {
 Button.defaultProps = {
   className: "",
   text: "",
-  size: "m",
+  size: "s",
   color: "positive",
   onClick: () => null,
   link: false,

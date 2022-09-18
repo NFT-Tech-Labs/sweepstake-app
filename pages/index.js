@@ -1,6 +1,14 @@
 import React, { useState, useCallback } from "react";
 import styles from "../styles/home.module.scss";
-import { Title, Table, Heading, Divider, Timeline, Button } from "@components";
+import {
+  Title,
+  Table,
+  Heading,
+  Divider,
+  Timeline,
+  Button,
+  Cta,
+} from "@components";
 
 export default function Home() {
   const tableData = [
@@ -60,6 +68,19 @@ export default function Home() {
     },
   };
 
+  const ctaData = {
+    title: {
+      text: "Be the next DaGoats champion",
+    },
+    content: {
+      text: "Predict all matches and win $GOAT tokens!",
+    },
+    button: {
+      text: "Read more",
+    },
+    image: "https://dagoats.io/wp-content/uploads/2022/06/maradona.png",
+  };
+
   const timelineData = {
     rounds: [
       {
@@ -99,6 +120,8 @@ export default function Home() {
   return (
     <div className={styles.home}>
       <Divider height={80} />
+      <Cta {...ctaData} />
+      <Divider height={80} />
       <Heading {...headingData} />
       <Divider height={40} />
       <div className={styles.grid}>
@@ -116,6 +139,7 @@ export default function Home() {
                   text={"Prev"}
                   link
                   onClick={() => handleTable(count - 1)}
+                  size={"m"}
                 />
               )}
               <Button
@@ -123,6 +147,7 @@ export default function Home() {
                 text={"Next"}
                 link
                 onClick={() => handleTable(count + 1)}
+                size={"m"}
               />
             </div>
             <Button
@@ -130,6 +155,7 @@ export default function Home() {
               text={"Save"}
               link
               color={"balanced"}
+              size={"m"}
             />
           </div>
         </div>
