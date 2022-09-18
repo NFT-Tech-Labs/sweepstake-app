@@ -6,7 +6,7 @@ import { Content, Row, Button } from "@components";
 
 const cx = classNames.bind(styles);
 
-const Table = ({ className, matches, count }) => {
+const Table = ({ className, matches, count, onChange }) => {
   const [data, setData] = useState(matches);
 
   let classes = cx(
@@ -22,7 +22,7 @@ const Table = ({ className, matches, count }) => {
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueA: newVal } : item
+          item.id === Number(id) ? { ...item, valueA: Number(newVal) } : item
         )
       );
     },
@@ -35,12 +35,16 @@ const Table = ({ className, matches, count }) => {
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueB: newVal } : item
+          item.id === Number(id) ? { ...item, valueB: Number(newVal) } : item
         )
       );
     },
     [setData]
   );
+
+  if (onChange) {
+    onChange(data);
+  }
 
   return (
     <table className={classes}>

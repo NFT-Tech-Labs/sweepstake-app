@@ -29,13 +29,35 @@ export default function Home() {
       date: "12 nov",
       time: "12:00",
       match: "HR-CA",
-      group: "A",
+      group: "B",
       points: "0",
       valueA: 0,
       valueB: 3,
     },
     {
       id: 2,
+      type: 0,
+      date: "10 nov",
+      time: "10:00",
+      match: "GB-AR",
+      group: "C",
+      points: "0",
+      valueA: 5,
+      valueB: 1,
+    },
+    {
+      id: 3,
+      type: 0,
+      date: "12 nov",
+      time: "12:00",
+      match: "ES-BE",
+      group: "D",
+      points: "0",
+      valueA: 5,
+      valueB: 3,
+    },
+    {
+      id: 4,
       type: 1,
       date: "20 nov",
       time: "10:00",
@@ -46,12 +68,34 @@ export default function Home() {
       valueB: 1,
     },
     {
-      id: 3,
+      id: 5,
+      type: 1,
+      date: "22 nov",
+      time: "12:00",
+      match: "MX-AU",
+      group: "B",
+      points: "0",
+      valueA: 3,
+      valueB: 1,
+    },
+    {
+      id: 6,
+      type: 1,
+      date: "22 nov",
+      time: "12:00",
+      match: "FI-SN",
+      group: "C",
+      points: "0",
+      valueA: 3,
+      valueB: 1,
+    },
+    {
+      id: 7,
       type: 1,
       date: "22 nov",
       time: "12:00",
       match: "DK-SE",
-      group: "A",
+      group: "D",
       points: "0",
       valueA: 3,
       valueB: 1,
@@ -112,10 +156,13 @@ export default function Home() {
 
   const [count, setCount] = useState(0);
   const [data, setData] = useState(tableData);
+  const [output, setOutput] = useState([]);
 
   const handleTable = (count) => {
     setCount(count);
   };
+
+  console.log(output);
 
   return (
     <div className={styles.home}>
@@ -129,7 +176,7 @@ export default function Home() {
           <Timeline active={count} {...timelineData} />
         </div>
         <div className={styles.tableWrapper}>
-          <Table matches={data} count={count} />
+          <Table matches={data} count={count} onChange={(e) => setOutput(e)} />
           <Divider height={20} />
           <div className={styles.actions}>
             <div className={styles.pagination}>
@@ -150,13 +197,7 @@ export default function Home() {
                 size={"m"}
               />
             </div>
-            <Button
-              classname={styles.next}
-              text={"Save"}
-              link
-              color={"balanced"}
-              size={"m"}
-            />
+            <Button text={"Save"} link color={"balanced"} size={"m"} />
           </div>
         </div>
       </div>
