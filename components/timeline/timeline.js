@@ -17,7 +17,7 @@ const Timeline = ({ className, rounds, active }) => {
             <Button
               link
               size={"s"}
-              color={active - 1 === index ? "positive" : "stable-500"}
+              color={active === index ? "positive" : "stable-500"}
               text={item}
               {...item}
             />

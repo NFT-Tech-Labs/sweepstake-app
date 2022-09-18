@@ -1,9 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styles from "../styles/home.module.scss";
 import { Title, Table, Heading, Divider, Timeline, Button } from "@components";
 
 export default function Home() {
-  const [count, setCount] = useState(1);
+  const tableData = [
+    {
+      id: 0,
+      type: 0,
+      date: "10 nov",
+      time: "10:00",
+      match: "NL-US",
+      group: "A",
+      points: "0",
+      valueA: 0,
+      valueB: 1,
+    },
+    {
+      id: 1,
+      type: 0,
+      date: "12 nov",
+      time: "12:00",
+      match: "HR-CA",
+      group: "A",
+      points: "0",
+      valueA: 0,
+      valueB: 3,
+    },
+    {
+      id: 2,
+      type: 1,
+      date: "20 nov",
+      time: "10:00",
+      match: "BE-FR",
+      group: "A",
+      points: "0",
+      valueA: 2,
+      valueB: 1,
+    },
+    {
+      id: 3,
+      type: 1,
+      date: "22 nov",
+      time: "12:00",
+      match: "DK-SE",
+      group: "A",
+      points: "0",
+      valueA: 3,
+      valueB: 1,
+    },
+  ];
+
   const headingData = {
     title: {
       text: "Sweepstakes",
@@ -43,58 +89,12 @@ export default function Home() {
     ],
   };
 
-  const tableData = [
-    {
-      type: 1,
-      date: "10 nov",
-      time: "10:00",
-      match: "NL-US",
-      group: "A",
-      points: "0",
-    },
-    {
-      type: 1,
-      date: "12 nov",
-      time: "12:00",
-      match: "HR-CA",
-      group: "A",
-      points: "0",
-    },
-    {
-      type: 1,
-      date: "14 nov",
-      time: "14:00",
-      match: "IT-DE",
-      group: "A",
-      points: "0",
-    },
-    {
-      type: 2,
-      date: "20 nov",
-      time: "10:00",
-      match: "BE-FR",
-      group: "A",
-      points: "0",
-    },
-    {
-      type: 2,
-      date: "22 nov",
-      time: "12:00",
-      match: "DK-SE",
-      group: "A",
-      points: "0",
-    },
-    {
-      type: 2,
-      date: "24 nov",
-      time: "14:00",
-      match: "MX-ES",
-      group: "A",
-      points: "0",
-    },
-  ];
+  const [count, setCount] = useState(0);
+  const [data, setData] = useState(tableData);
 
-  const filteredTable = tableData.filter((item) => item.type === count);
+  const handleTable = (count) => {
+    setCount(count);
+  };
 
   return (
     <div className={styles.home}>
@@ -106,22 +106,30 @@ export default function Home() {
           <Timeline active={count} {...timelineData} />
         </div>
         <div className={styles.tableWrapper}>
-          <Table matches={filteredTable} />
+          <Table matches={data} count={count} />
           <Divider height={20} />
           <div className={styles.actions}>
-            {count !== 1 && (
+            <div className={styles.pagination}>
+              {count !== 0 && (
+                <Button
+                  classname={styles.next}
+                  text={"Prev"}
+                  link
+                  onClick={() => handleTable(count - 1)}
+                />
+              )}
               <Button
                 classname={styles.next}
-                text={"Prev"}
+                text={"Next"}
                 link
-                onClick={() => setCount(count - 1)}
+                onClick={() => handleTable(count + 1)}
               />
-            )}
+            </div>
             <Button
               classname={styles.next}
-              text={"Next"}
+              text={"Save"}
               link
-              onClick={() => setCount(count + 1)}
+              color={"balanced"}
             />
           </div>
         </div>

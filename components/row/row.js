@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import classNames from "classnames/bind";
 import styles from "./row.module.scss";
 import PropTypes from "prop-types";
@@ -7,9 +7,19 @@ import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
 
-const Row = ({ className, date, time, group, match, points }) => {
-  const [team1, setTeam1] = useState("");
-  const [team2, setTeam2] = useState("");
+const Row = ({
+  className,
+  date,
+  time,
+  group,
+  match,
+  points,
+  valueA,
+  valueB,
+  onChangeA,
+  onChangeB,
+  id,
+}) => {
   let classes = cx(
     {
       row: true,
@@ -18,14 +28,6 @@ const Row = ({ className, date, time, group, match, points }) => {
   );
 
   const teams = match?.split("-");
-
-  const handleTeam1 = (e) => {
-    setTeam1(e?.target?.value);
-  };
-
-  const handleTeam2 = (e) => {
-    setTeam2(e?.target?.value);
-  };
 
   return (
     <tr className={classes}>
@@ -45,9 +47,9 @@ const Row = ({ className, date, time, group, match, points }) => {
                 size={"xs"}
                 className={[
                   styles.country,
-                  team1 === team2 || team1 === "" || team2 === ""
+                  valueA === valueB || valueA === "" || valueB === ""
                     ? ""
-                    : team1 > team2
+                    : valueA > valueB
                     ? styles.win
                     : styles.lose,
                 ].join(" ")}
@@ -63,17 +65,19 @@ const Row = ({ className, date, time, group, match, points }) => {
                 title={teams[0]}
               />
               <input
-                onChange={(e) => handleTeam1(e)}
+                id={id}
                 type={"text"}
-                value={team1}
+                value={valueA}
                 maxLength={"2"}
+                onChange={onChangeA}
               />
               {/* team 2 */}
               <input
-                onChange={(e) => handleTeam2(e)}
+                id={id}
                 type={"text"}
-                value={team2}
+                value={valueB}
                 maxLength={"2"}
+                onChange={onChangeB}
               />
               <ReactCountryFlag
                 countryCode={teams[1]}
@@ -89,9 +93,9 @@ const Row = ({ className, date, time, group, match, points }) => {
                 size={"xs"}
                 className={[
                   styles.country,
-                  team1 === team2 || team1 === "" || team2 === ""
+                  valueA === valueB || valueA === "" || valueB === ""
                     ? ""
-                    : team1 < team2
+                    : valueA < valueB
                     ? styles.win
                     : styles.lose,
                 ].join(" ")}
@@ -126,10 +130,24 @@ Row.propTypes = {
   group: PropTypes.string,
   match: PropTypes.string,
   points: PropTypes.string,
+  valueA: PropTypes.number,
+  valueB: PropTypes.number,
+  onChangeA: PropTypes.func,
+  onChangeB: PropTypes.func,
+  id: PropTypes.string,
 };
 
 Row.defaultProps = {
   className: "",
+  date: "",
+  time: "",
+  group: "",
+  points: "",
+  valueA: null,
+  valueB: null,
+  onChangeA: () => null,
+  onChangeB: () => null,
+  id: "",
 };
 
-export default Row;
+export default memo(Row);
