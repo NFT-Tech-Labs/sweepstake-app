@@ -39,7 +39,7 @@ Cta.propTypes = {
   className: PropTypes.string,
   title: PropTypes.shape(Title.propTypes),
   content: PropTypes.shape(Content.propTypes),
-  button: PropTypes.shape(Button.propTypes),
+  // button: PropTypes.shape(Button.propTypes),
   image: PropTypes.string,
 };
 
@@ -47,7 +47,7 @@ Cta.defaultProps = {
   className: "",
   title: null,
   content: null,
-  button: null,
+  // button: null,
   image: "",
 };
 

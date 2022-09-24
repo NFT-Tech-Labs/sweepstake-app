@@ -1,4 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { Metaplex } from "@metaplex-foundation/js";
+// import { Connection, clusterApiUrl } from "@solana/web3.js";
+
 import styles from "../styles/home.module.scss";
 import {
   Title,
@@ -8,9 +11,23 @@ import {
   Timeline,
   Button,
   Cta,
+  Collection,
 } from "@components";
+import CreateTransaction from "utils/sendTransaction";
+import CreateSign from "utils/signMessage";
+import { fetchData, test } from "utils/api";
+import {
+  ConnectionProvider,
+  WalletProvider,
+  useWallet,
+  useConnection,
+} from "@solana/wallet-adapter-react";
+import { SystemProgram, Transaction, PublicKey } from "@solana/web3.js";
+import axios from "axios";
 
-export default function Home() {
+export default function Home({ accountData, nfts }) {
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
+
   const tableData = [
     {
       id: 0,
@@ -154,6 +171,9 @@ export default function Home() {
     ],
   };
 
+  const { handleSign } = CreateSign();
+  const { handleTransaction } = CreateTransaction();
+
   const [count, setCount] = useState(0);
   const [data, setData] = useState(tableData);
   const [output, setOutput] = useState([]);
@@ -162,11 +182,22 @@ export default function Home() {
     setCount(count);
   };
 
-  console.log(output);
+  const to = new PublicKey("4c86aFZQzdZKihfVPcqoPmuCzuH6ESeDD2myfTFacYGS");
 
   return (
     <div className={styles.home}>
       <Divider height={80} />
+      {/* <button onClick={() => handleTransaction(publicKey, to, 1)}>
+        create transaction
+      </button>
+      <button onClick={() => handleSign("hello world")}>sign</button> */}
+      {/* <button
+        onClick={() => handleFetch().then((res) => console.log(res[0].uri))}
+      >
+        fetch
+      </button> */}
+      <Collection nfts={nfts} />
+      <Divider height={150} />
       <Cta {...ctaData} />
       <Divider height={80} />
       <Heading {...headingData} />
@@ -203,4 +234,36 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const accountData = await fetchData(
+    "account",
+    "Hk6pt29VWbTfFn9kfS58jhPhQA8qUesEBcq9pzJjeXW4",
+    "nft"
+  );
+
+  const accountMetadata = await Promise.all(
+    accountData?.map(
+      async (item) => await fetchData("nft", item?.mint, "metadata")
+    )
+  );
+
+  const accountMetadataUri = accountMetadata.map(
+    (item) => item.metaplex.metadataUri
+  );
+
+  // array of all nfts with traits, collection, name and image
+  const nfts = await Promise.all(
+    accountMetadataUri.map(
+      async (item) => await fetch(item).then((res) => res.json())
+    )
+  );
+
+  return {
+    props: {
+      accountData: accountData || null,
+      nfts: nfts || null,
+    },
+  };
 }

@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   images: {
-    domains: ["dagoats.io"],
+    domains: ["dagoats.io", "metadata.degods.com", "nftstorage.link"],
   },
 };
 
