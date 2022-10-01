@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Metaplex } from "@metaplex-foundation/js";
-// import { Connection, clusterApiUrl } from "@solana/web3.js";
-
+import React, { useState, useCallback, useEffect, useTransition } from "react";
+import { useRouter } from "next/router";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import styles from "../styles/home.module.scss";
 import {
   Title,
@@ -13,20 +12,32 @@ import {
   Cta,
   Collection,
 } from "@components";
-import CreateTransaction from "utils/sendTransaction";
-import CreateSign from "utils/signMessage";
-import { fetchData, test } from "utils/api";
+import { fetchData } from "utils/api";
 import {
   ConnectionProvider,
   WalletProvider,
   useWallet,
   useConnection,
 } from "@solana/wallet-adapter-react";
-import { SystemProgram, Transaction, PublicKey } from "@solana/web3.js";
-import axios from "axios";
+import Login from "../components/login/login";
+import { PublicKey } from "@solana/web3.js";
+import { getSession, useSession, signOut } from "next-auth/react";
+import base58 from "bs58";
+import { apiPost } from "../utils/apiPost";
+import { signIn } from "next-auth/react";
 
 export default function Home({ accountData, nfts }) {
-  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const router = useRouter();
+  const { publicKey, signMessage } = useWallet();
+  const { data: session, status } = useSession();
+  const [isPending, startTransition] = useTransition();
+  const to = new PublicKey("4c86aFZQzdZKihfVPcqoPmuCzuH6ESeDD2myfTFacYGS");
+
+  useEffect(() => {
+    startTransition(() => {
+      session && status === "authenticated" && router.push("/");
+    });
+  }, [session, status]);
 
   const tableData = [
     {
@@ -34,9 +45,10 @@ export default function Home({ accountData, nfts }) {
       type: 0,
       date: "10 nov",
       time: "10:00",
-      match: "NL-US",
       group: "A",
       points: "0",
+      teamA: "NL",
+      teamB: "US",
       valueA: 0,
       valueB: 1,
     },
@@ -45,9 +57,10 @@ export default function Home({ accountData, nfts }) {
       type: 0,
       date: "12 nov",
       time: "12:00",
-      match: "HR-CA",
       group: "B",
       points: "0",
+      teamA: "HR",
+      teamB: "CA",
       valueA: 0,
       valueB: 3,
     },
@@ -56,9 +69,10 @@ export default function Home({ accountData, nfts }) {
       type: 0,
       date: "10 nov",
       time: "10:00",
-      match: "GB-AR",
       group: "C",
       points: "0",
+      teamA: "GB",
+      teamB: "AR",
       valueA: 5,
       valueB: 1,
     },
@@ -67,9 +81,10 @@ export default function Home({ accountData, nfts }) {
       type: 0,
       date: "12 nov",
       time: "12:00",
-      match: "ES-BE",
       group: "D",
       points: "0",
+      teamA: "ES",
+      teamB: "BE",
       valueA: 5,
       valueB: 3,
     },
@@ -78,9 +93,10 @@ export default function Home({ accountData, nfts }) {
       type: 1,
       date: "20 nov",
       time: "10:00",
-      match: "BE-FR",
       group: "A",
       points: "0",
+      teamA: "BE",
+      teamB: "FR",
       valueA: 2,
       valueB: 1,
     },
@@ -89,9 +105,10 @@ export default function Home({ accountData, nfts }) {
       type: 1,
       date: "22 nov",
       time: "12:00",
-      match: "MX-AU",
       group: "B",
       points: "0",
+      teamA: "MX",
+      teamB: "AU",
       valueA: 3,
       valueB: 1,
     },
@@ -100,9 +117,10 @@ export default function Home({ accountData, nfts }) {
       type: 1,
       date: "22 nov",
       time: "12:00",
-      match: "FI-SN",
       group: "C",
       points: "0",
+      teamA: "FI",
+      teamB: "SN",
       valueA: 3,
       valueB: 1,
     },
@@ -111,9 +129,10 @@ export default function Home({ accountData, nfts }) {
       type: 1,
       date: "22 nov",
       time: "12:00",
-      match: "DK-SE",
       group: "D",
       points: "0",
+      teamA: "DK",
+      teamB: "SE",
       valueA: 3,
       valueB: 1,
     },
@@ -171,9 +190,6 @@ export default function Home({ accountData, nfts }) {
     ],
   };
 
-  const { handleSign } = CreateSign();
-  const { handleTransaction } = CreateTransaction();
-
   const [count, setCount] = useState(0);
   const [data, setData] = useState(tableData);
   const [output, setOutput] = useState([]);
@@ -182,24 +198,47 @@ export default function Home({ accountData, nfts }) {
     setCount(count);
   };
 
-  const to = new PublicKey("4c86aFZQzdZKihfVPcqoPmuCzuH6ESeDD2myfTFacYGS");
+  const signCustomMessage = async () => {
+    const address = publicKey.toBase58();
+    const chain = "mainnet";
+    const account = {
+      address: address,
+      chain: chain,
+      network: "solana",
+    };
+    // const message = "Sign to provide access to app";
+    const { message } = await apiPost("api/auth/request-message", account);
+    const encodedMessage = new TextEncoder().encode(message);
+    const signedMessage = await signMessage(encodedMessage, "utf8");
+    const signature = base58.encode(signedMessage);
+    try {
+      await signIn("credentials", {
+        message,
+        signature,
+        redirect: false,
+      });
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+  };
+
+  console.log(output);
 
   return (
     <div className={styles.home}>
-      <Divider height={80} />
-      {/* <button onClick={() => handleTransaction(publicKey, to, 1)}>
-        create transaction
-      </button>
-      <button onClick={() => handleSign("hello world")}>sign</button> */}
-      {/* <button
-        onClick={() => handleFetch().then((res) => console.log(res[0].uri))}
-      >
-        fetch
-      </button> */}
+      {/* <WalletMultiButton /> */}
+      {publicKey && status !== "authenticated" && (
+        <button onClick={() => signCustomMessage()}>Authenticate</button>
+      )}
+      {publicKey && status === "authenticated" && (
+        <button onClick={() => signOut()}>SignOut</button>
+      )}
+      <Divider height={40} />
       <Collection nfts={nfts} />
-      <Divider height={150} />
-      <Cta {...ctaData} />
-      <Divider height={80} />
+      <Divider height={60} />
+      {/* <Cta {...ctaData} />
+      <Divider height={80} /> */}
       <Heading {...headingData} />
       <Divider height={40} />
       <div className={styles.grid}>
@@ -236,34 +275,42 @@ export default function Home({ accountData, nfts }) {
   );
 }
 
-export async function getServerSideProps() {
-  const accountData = await fetchData(
-    "account",
-    "Hk6pt29VWbTfFn9kfS58jhPhQA8qUesEBcq9pzJjeXW4",
-    "nft"
-  );
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  // Hk6pt29VWbTfFn9kfS58jhPhQA8qUesEBcq9pzJjeXW4
 
-  const accountMetadata = await Promise.all(
-    accountData?.map(
-      async (item) => await fetchData("nft", item?.mint, "metadata")
-    )
-  );
+  let accountData;
+  let accountMetadata;
+  let accountMetadataUri;
+  let nfts;
 
-  const accountMetadataUri = accountMetadata.map(
-    (item) => item.metaplex.metadataUri
-  );
+  if (session?.user?.address) {
+    accountData = await fetchData("account", session?.user?.address, "nft");
 
-  // array of all nfts with traits, collection, name and image
-  const nfts = await Promise.all(
-    accountMetadataUri.map(
-      async (item) => await fetch(item).then((res) => res.json())
-    )
-  );
+    accountMetadata = await Promise.all(
+      accountData?.map(
+        async (item) => await fetchData("nft", item?.mint, "metadata")
+      )
+    );
+
+    accountMetadataUri = accountMetadata.map(
+      (item) => item?.metaplex.metadataUri
+    );
+
+    // array of all nfts with traits, collection, name and image
+    nfts = await Promise.all(
+      accountMetadataUri.map(
+        async (item) => await fetch(item).then((res) => res.json())
+      )
+    );
+  }
+
+  const filteredNfts = nfts?.filter((item) => item.symbol === "DIP");
 
   return {
     props: {
       accountData: accountData || null,
-      nfts: nfts || null,
+      nfts: filteredNfts || null,
     },
   };
 }

@@ -3,7 +3,7 @@ import Image from "next/image";
 import classNames from "classnames/bind";
 import styles from "./collection.module.scss";
 import PropTypes from "prop-types";
-import { Card, Title, Content } from "@components";
+import { Title, Content, Divider, Button, Icon, CardNft } from "@components";
 
 const cx = classNames.bind(styles);
 
@@ -12,28 +12,15 @@ const Collection = ({ className, nfts }) => {
 
   return (
     <div className={classes}>
-      {nfts?.slice(0, 4).map((item, index) => (
-        <Card key={index} boxShadow className={styles.card}>
-          <div className={styles.content}>
-            {item?.name && (
-              <Title tag={"h6"} color={"light"} text={item.name} />
-            )}
-            {item?.symbol && (
-              <Content size={"xs"} color={"light"} text={item.symbol} />
-            )}
-          </div>
-          {item?.image && (
-            <div className={styles.image}>
-              <Image
-                objectFit={"cover"}
-                layout={"fill"}
-                src={item.image}
-                alt={item.name}
-              />
-            </div>
-          )}
-        </Card>
-      ))}
+      <div className={styles.wrapper}>
+        <Title text={"Your collection"} tag={"h3"} color={"dark"} />
+        <div className={styles.cards}>
+          {nfts?.slice(0, 4).map((item, index) => (
+            <CardNft key={index} {...item} />
+          ))}
+          {(nfts === null || nfts?.length === 0) && <CardNft empty />}
+        </div>
+      </div>
     </div>
   );
 };

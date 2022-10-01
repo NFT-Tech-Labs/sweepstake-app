@@ -12,8 +12,9 @@ const Row = ({
   date,
   time,
   group,
-  match,
   points,
+  teamA,
+  teamB,
   valueA,
   valueB,
   onChangeA,
@@ -27,8 +28,6 @@ const Row = ({
     className
   );
 
-  const teams = match?.split("-");
-
   return (
     <tr className={classes}>
       {date && (
@@ -37,13 +36,13 @@ const Row = ({
           <Content text={date} color={"stable-500"} size={"xs"} />
         </td>
       )}
-      {match && (
+      {teamA && teamB && (
         <>
           <td className={styles.match}>
             <div className={styles.matchWrapper}>
               {/* team 1 */}
               <Content
-                text={teams[0]}
+                text={teamA}
                 size={"xs"}
                 className={[
                   styles.country,
@@ -56,13 +55,13 @@ const Row = ({
                 emphasize
               />
               <ReactCountryFlag
-                countryCode={teams[0]}
+                countryCode={teamA}
                 svg
                 style={{
                   width: "1.5em",
                   height: "1.5em",
                 }}
-                title={teams[0]}
+                title={teamA}
               />
               <input
                 id={id}
@@ -80,16 +79,16 @@ const Row = ({
                 onChange={onChangeB}
               />
               <ReactCountryFlag
-                countryCode={teams[1]}
+                countryCode={teamB}
                 svg
                 style={{
                   width: "1.5em",
                   height: "1.5em",
                 }}
-                title={teams[1]}
+                title={teamB}
               />
               <Content
-                text={teams[1]}
+                text={teamB}
                 size={"xs"}
                 className={[
                   styles.country,
@@ -128,8 +127,9 @@ Row.propTypes = {
   date: PropTypes.string,
   time: PropTypes.string,
   group: PropTypes.string,
-  match: PropTypes.string,
   points: PropTypes.string,
+  teamA: PropTypes.string,
+  teamB: PropTypes.string,
   valueA: PropTypes.number,
   valueB: PropTypes.number,
   onChangeA: PropTypes.func,
@@ -143,6 +143,8 @@ Row.defaultProps = {
   time: "",
   group: "",
   points: "",
+  teamA: "",
+  teamB: "",
   valueA: null,
   valueB: null,
   onChangeA: () => null,

@@ -1,6 +1,10 @@
 .grid {
   display: flex;
   flex-wrap: wrap;
+  background-color: rgba(var(--color-light), 1);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius-m);
+  padding: var(--spacing-xxl);
 }
 
 .timelineWrapper {

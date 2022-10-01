@@ -1,0 +1,51 @@
+.cardNft {
+  position: relative;
+  max-width: 250px;
+  padding: var(--spacing-m) var(--spacing-s);
+  // border: solid 5px rgba(var(--color-light), 1); 
+/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image {
+  position: relative;
+  min-height: 200px;
+  margin: var(--spacing-s) 0 var(--spacing-xl);
+  width: 100%;
+  border: solid 2px rgba(var(--color-stable), 1); 
+}
+
+.country {
+  border-radius: 100%;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--spacing-s);
+  overflow: hidden;
+  border: solid 1px;
+}
+
+.type, .name, .symbol {
+  padding: 0 var(--spacing-s);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 328px;
+  max-width: 100%;
+  border: dashed 2px rgba(var(--color-stable), 1);
+  box-shadow: none; 
+}

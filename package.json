@@ -19,10 +19,13 @@
     "bs58": "^5.0.0",
     "classnames": "^2.3.2",
     "moralis": "^2.5.5",
+    "moralis-v1": "^1.11.0",
     "next": "12.3.0",
+    "next-auth": "^4.10.3",
     "react": "^18.2.0",
     "react-country-flag": "^3.0.2",
     "react-dom": "18.2.0",
+    "react-moralis": "^1.4.2",
     "react-svg": "^15.1.8",
     "sass": "^1.54.9",
     "tweetnacl": "^1.0.3"

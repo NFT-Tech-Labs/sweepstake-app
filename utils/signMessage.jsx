@@ -25,6 +25,7 @@ const CreateSign = () => {
         const message = new TextEncoder().encode(text);
         // Sign the bytes using the wallet
         const signature = await signMessage(message);
+
         // Verify that the bytes were signed using the private key that matches the known public key
         if (!sign.detached.verify(message, signature, publicKey.toBytes()))
           throw new Error("Invalid signature!");

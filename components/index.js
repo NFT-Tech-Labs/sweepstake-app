@@ -4,13 +4,14 @@ import Card from "./card/card";
 import Table from "./table/table";
 import Row from "./row/row";
 import { Title, Content } from "./text";
-import { Divider } from "./ui";
+import { Divider, Icon } from "./ui";
 import Heading from "./heading/heading";
 import Timeline from "./timeline/timeline";
 import Button from "./button/button";
 import Cta from "./cta/cta";
 import Wallet from "./wallet/wallet";
 import Collection from "./collection/colletion";
+import CardNft from "./cardNft/cardNft";
 
 export {
   Layout,
@@ -27,4 +28,6 @@ export {
   Cta,
   Wallet,
   Collection,
+  Icon,
+  CardNft,
 };

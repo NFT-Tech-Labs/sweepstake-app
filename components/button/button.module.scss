@@ -2,10 +2,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--spacing-s) + 2px) calc(var(--spacing-xxl) + 10px);
+  padding: calc(var(--spacing-s) + 2px) var(--spacing-xl);
+  // padding: calc(var(--spacing-s) + 2px) calc(var(--spacing-xxl) + 10px);
   border-radius: var(--spacing-xs);
-  border: none;   
-  background: rgba(var(--color-light), 1);
+  border: none;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.1em;
