@@ -11,9 +11,9 @@
   }
 }
 
-.date {
+.dateWrapper {
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 
 .time {
@@ -69,6 +69,43 @@
   justify-content: center; 
 }
 
+.matchResult {
+  input {
+    border: none;
+    padding: var(--spacing-s);
+    max-width: 40px;
+    border-radius: var(--radius-s);
+    text-align: center;
+    font-weight: bold;
+    background-color: #f6f6f6;
+    font-size: var(--font-s);
+
+    &:first-of-type {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-left: var(--spacing-l);
+    }
+
+    &:last-of-type {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-right: var(--spacing-l);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &:focus {
+    outline: auto;
+  }
+
+  input {
+    background-color: transparent;
+  }
+}
+
 .country {
   display: flex;
   align-items: center;
@@ -80,7 +117,6 @@
   width: 38px;
   height: 38px;
 
-
   &:first-of-type {
     margin-right: var(--spacing-m);
   }
@@ -88,25 +124,15 @@
   &:last-of-type {
     margin-left: var(--spacing-m);
   }
-
-  &.win {
-    background: rgba(var(--color-balanced), 0.1);
-    color: rgba(var(--color-balanced), 1);
-  }
-
-  &.lose {
-    background: rgba(var(--color-assertive), 0.1);
-    color: rgba(var(--color-assertive), 1);
-  }
 }
 
 .groupWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 20px;
 
   > p {
-    background-color: rgba(var(--color-positive), 0.1);
     width: 32px;
     height: 32px;
     display: flex;
@@ -114,5 +140,59 @@
     justify-content: center;
     border-radius: var(--radius-m);
     padding: var(--spacing-l);
+  }
+}
+
+.statusWrapper {
+  display: flex;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background-color: rgba(var(--color-balanced), 0.1);
+  width: 40px;
+  height: 40px;
+}
+
+.points {
+  > p {
+    font-weight: bold;
+  }
+}
+
+.win {
+  background: rgba(var(--color-balanced), 0.1);
+  color: rgba(var(--color-balanced), 1);
+}
+
+.lose {
+  background: rgba(var(--color-assertive), 0.1);
+  color: rgba(var(--color-assertive), 1);
+}
+
+.results {
+  // background: rgba(var(--color-assertive), 0.1);
+
+  .icon {
+    background-color: rgba(var(--color-assertive), 0.1);
+  }
+}
+
+.correct {
+  // background-color: rgba(var(--color-light), 0.1);
+
+  .icon {
+    background-color: rgba(var(--color-balanced), 0.1);
+  }
+}
+
+.perfect {
+  // background-color: rgba(var(--color-balanced), 0.1);
+
+  .icon {
+    background-color: rgba(var(--color-balanced), 0.1);
   }
 }

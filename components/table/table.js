@@ -46,20 +46,26 @@ const Table = ({ className, matches, count, onChange }) => {
     onChange(data);
   }
 
+  const resultsCheck = data?.filter(
+    (item) => item.resultA && item?.type === count
+  );
+
   return (
     <table className={classes}>
       <thead className={styles.head}>
         <tr>
-          <th>
+          <th width={"10%"}>
             <Content text={"Date"} color={"stable-500"} size={"s"} />
           </th>
           <th>
             <Content text={"Match"} color={"stable-500"} size={"s"} />
           </th>
-          <th>
-            <Content text={"Group"} color={"stable-500"} size={"s"} />
-          </th>
-          <th>
+          {resultsCheck.length > 0 && (
+            <th>
+              <Content text={"Result"} color={"stable-500"} size={"s"} />
+            </th>
+          )}
+          <th width={"10%"}>
             <Content text={"Points"} color={"stable-500"} size={"s"} />
           </th>
         </tr>

@@ -51,6 +51,8 @@ export default function Home({ accountData, nfts }) {
       teamB: "US",
       valueA: 0,
       valueB: 1,
+      resultA: 0,
+      resultB: 1,
     },
     {
       id: 1,
@@ -63,6 +65,8 @@ export default function Home({ accountData, nfts }) {
       teamB: "CA",
       valueA: 0,
       valueB: 3,
+      resultA: 0,
+      resultB: 1,
     },
     {
       id: 2,
@@ -75,6 +79,8 @@ export default function Home({ accountData, nfts }) {
       teamB: "AR",
       valueA: 5,
       valueB: 1,
+      resultA: 0,
+      resultB: 1,
     },
     {
       id: 3,
@@ -87,6 +93,8 @@ export default function Home({ accountData, nfts }) {
       teamB: "BE",
       valueA: 5,
       valueB: 3,
+      resultA: 5,
+      resultB: 3,
     },
     {
       id: 4,
@@ -243,6 +251,7 @@ export default function Home({ accountData, nfts }) {
       <Divider height={40} />
       <div className={styles.grid}>
         <div className={styles.timelineWrapper}>
+          {console.log(count)}
           <Timeline active={count} {...timelineData} />
         </div>
         <div className={styles.tableWrapper}>
@@ -267,7 +276,13 @@ export default function Home({ accountData, nfts }) {
                 size={"m"}
               />
             </div>
-            <Button text={"Save"} link color={"balanced"} size={"m"} />
+            <Button
+              text={"Submit"}
+              color={"positive"}
+              textColor={"light"}
+              size={"xxs"}
+              disabled
+            />
           </div>
         </div>
       </div>
