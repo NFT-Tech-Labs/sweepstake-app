@@ -34,7 +34,7 @@ const Wallet: FC<Props> = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <WalletMultiButton />
+          {/* <WalletMultiButton /> */}
           {/* <WalletDisconnectButton /> */}
           {children}
         </WalletModalProvider>

@@ -1,0 +1,56 @@
+.cardRules {
+  display: inline-flex;
+  flex-direction: column;
+  padding: var(--spacing-l);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background-color: rgba(var(--color-energized), 0.2);
+  width: 40px;
+  height: 40px;
+
+  svg {
+    path {
+      fill: rgba(var(--color-energized), 1);
+      stroke: transparent;
+    } 
+  }
+}
+
+.rule {
+  margin-bottom: var(--spacing-m);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+.info {
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-left: var(--spacing-s);
+  }
+}
+
+.subtext {
+  position: relative;
+  margin-left: 70px;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: -25px;
+    border: dashed 2px;
+    height: 15px;
+    width: 15px;
+    border-top: none;
+    border-right: none;
+  }
+}

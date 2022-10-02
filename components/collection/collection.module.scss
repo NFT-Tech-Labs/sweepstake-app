@@ -1,11 +1,11 @@
 .collection {
   // background-color: rgba(var(--color-dark));
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  // width: 100vw;
+  // position: relative;
+  // left: 50%;
+  // right: 50%;
+  // margin-left: -50vw;
+  // margin-right: -50vw;
 }
 
 .wrapper {
@@ -15,9 +15,4 @@
   width: 100%;
   max-width: var(--global-width);
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-m);
-}
-
-.cards {
-  margin-top: var(--spacing-m);
 }

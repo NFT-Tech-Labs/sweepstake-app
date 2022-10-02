@@ -7,6 +7,7 @@
   --color-balanced: 82, 196, 26;
   --color-royal: 165, 177, 247;
   --color-assertive: 166, 29, 35;
+  --color-energized: 253, 180, 0;
   --color-stable: 231, 235, 240;
   --color-stable-500: 148, 148, 154;
   --color-stable-700: 112, 112, 118;
@@ -155,6 +156,10 @@ h6 {
   color: rgba(var(--color-assertive), 1);
 }
 
+.color-energized {
+  color: rgba(var(--color-energized), 1);
+}
+
 .color-stable {
   color: rgba(var(--color-stable), 1);
 }
@@ -195,6 +200,10 @@ h6 {
   background-color: rgba(var(--color-assertive), 1);
 }
 
+.background-energized {
+  background-color: rgba(var(--color-energized), 1);
+}
+
 .background-stable {
   background-color: rgba(var(--color-stable), 1);
 }
@@ -206,7 +215,6 @@ h6 {
 .background-stable-700 {
   background-color: rgba(var(--color-stable-700), 1);
 }
-
 
 .font-xxs {
   font-size: var(--font-xxs);

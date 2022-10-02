@@ -26,3 +26,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+.examples {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-l);
+}
+
+.profileWrapper {
+  display: flex;
+}

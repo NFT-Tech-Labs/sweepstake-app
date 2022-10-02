@@ -21,14 +21,16 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
     <Card className={classes}>
       <Icon name={"ball"} color={"dark"} />
       <Divider height={20} />
-      <Title tag={"h6"} text={"Don't have DaGoats NFT?"} />
+      <Title tag={"h6"} text={"Don't have DaGoats NFTs?"} />
       <Divider height={5} />
       <Content
-        text={"Make sure to get them, they can increase your sweepstake points"}
+        text={
+          "Make sure to get them, since they can increase your sweepstake points"
+        }
         size={"xs"}
       />
       <Divider height={20} />
-      {/* <Button text={"Buy"} textColor={'light'} link /> */}
+      <Button text={"Buy"} textColor={"light"} size={"xxs"} />
     </Card>
   );
 

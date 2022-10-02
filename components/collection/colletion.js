@@ -13,7 +13,7 @@ const Collection = ({ className, nfts }) => {
   return (
     <div className={classes}>
       <div className={styles.wrapper}>
-        <Title text={"Your collection"} tag={"h3"} color={"dark"} />
+        {/* <Title text={"Your collection"} tag={"h3"} color={"dark"} /> */}
         <div className={styles.cards}>
           {nfts?.slice(0, 4).map((item, index) => (
             <CardNft key={index} {...item} />
