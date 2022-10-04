@@ -1,13 +1,16 @@
 import React from "react";
 import styles from "./profile.module.scss";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import {
+  WalletMultiButton,
+  WalletDisconnectButton,
+} from "@solana/wallet-adapter-react-ui";
 import classNames from "classnames/bind";
 import PropTypes from "prop-types";
 import { Card, Title, Icon, Divider, Content, Collection } from "@components";
 
 const cx = classNames.bind(styles);
 
-const Profile = ({ className, publicKey, tokens, nfts }) => {
+const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
   const classes = cx(
     {
       profile: true,
@@ -17,7 +20,7 @@ const Profile = ({ className, publicKey, tokens, nfts }) => {
   );
 
   const NotConnected = () => (
-    <Card padding className={styles.notConnected}>
+    <Card overflow padding className={styles.notConnected}>
       <Icon name={"ball"} color={"dark"} />
       <Divider height={20} />
       <Title tag={"h6"} text={"Want to participate?"} />
@@ -36,12 +39,13 @@ const Profile = ({ className, publicKey, tokens, nfts }) => {
 
   return publicKey ? (
     <div className={classes}>
-      {/* <WalletMultiButton /> */}
+      <WalletDisconnectButton onClick={disconnect} />
+      <Divider height={20} />
       <div className={styles.intro}>
         <div className={styles.welcome}>
-          <Title tag={"h5"} text={"Welcome  "} />
+          <Title tag={"h3"} text={"Welcome  "} />
           <Title
-            tag={"h5"}
+            tag={"h3"}
             color={"energized"}
             text={publicKey}
             className={styles.publicKey}
@@ -50,7 +54,7 @@ const Profile = ({ className, publicKey, tokens, nfts }) => {
         <Divider height={20} />
         <Content
           size={"s"}
-          text={"In order to participate you will need tokens"}
+          text={"Below you will find your available tokens and NFT collection"}
           color={"stable-500"}
         />
       </div>
@@ -60,29 +64,56 @@ const Profile = ({ className, publicKey, tokens, nfts }) => {
           <Title tag={"h5"} text={"Tokens"} />
           <Divider height={30} />
           {tokens?.map((item, index) => (
-            <Card
-              key={index}
-              boxShadow
-              padding
-              borderRadius
-              className={styles.token}
-            >
-              <div className={styles.details}>
-                {item?.content && (
-                  <Content size={"xs"} color={"stable-500"} {...item.content} />
-                )}
-                {item?.title && <Title tag={"h6"} {...item.title} />}
-              </div>
-              <div className={styles.amount}>
-                <Content size={"xs"} color={"stable-500"} text={"70/100"} />
-                <div className={styles.progress}>
-                  <div
-                    className={styles.bar}
-                    style={{ width: `${item.percentage}%` }}
-                  ></div>
+            <>
+              <Card
+                key={index}
+                boxShadow
+                padding
+                borderRadius
+                className={styles.token}
+              >
+                <div className={styles.details}>
+                  {item?.content && (
+                    <Content
+                      size={"xs"}
+                      color={"stable-500"}
+                      {...item.content}
+                    />
+                  )}
+                  {item?.title && <Title tag={"h6"} {...item.title} />}
                 </div>
-              </div>
-            </Card>
+                <div className={styles.amount}>
+                  <Content
+                    size={"xs"}
+                    color={"stable-500"}
+                    text={`${item?.percentage}/100`}
+                  />
+                  <div className={styles.progress}>
+                    <div
+                      className={styles.bar}
+                      style={{
+                        width: `${item?.percentage}%`,
+                        backgroundColor:
+                          item?.percentage === 100
+                            ? "rgba(var(--color-balanced), 1)"
+                            : "rgba(var(--color-energized), 1)",
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </Card>
+              {tokens?.length - 1 === index && (
+                <Content
+                  size={"s"}
+                  text={
+                    item?.percentage === 100
+                      ? "You have enough tokens to participate!"
+                      : "You need to have enough tokens of atleast one shown above"
+                  }
+                  color={"stable-500"}
+                />
+              )}
+            </>
           ))}
         </div>
         <div className={styles.collection}>

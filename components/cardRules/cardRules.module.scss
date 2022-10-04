@@ -29,7 +29,6 @@
   }
 }
 
-
 .info {
   display: flex;
   align-items: center;
@@ -46,6 +45,7 @@
   &:after {
     content: '';
     position: absolute;
+    top: 0;
     left: -25px;
     border: dashed 2px;
     height: 15px;

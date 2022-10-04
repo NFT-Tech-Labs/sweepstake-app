@@ -255,7 +255,7 @@ const profileData = {
       content: {
         text: "token",
       },
-      percentage: 75,
+      percentage: 70,
     },
     {
       title: {

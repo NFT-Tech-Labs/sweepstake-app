@@ -14,6 +14,7 @@ const Content = ({
   italic,
   emphasize,
   className,
+  children,
 }) => {
   const classes = cx(
     {
@@ -28,7 +29,12 @@ const Content = ({
 
   const CustomComponent = inline ? "span" : "p";
 
-  return <CustomComponent className={classes}>{text}</CustomComponent>;
+  return (
+    <CustomComponent className={classes}>
+      {text}
+      {children}
+    </CustomComponent>
+  );
 };
 
 Content.propTypes = {
@@ -39,6 +45,7 @@ Content.propTypes = {
   italic: PropTypes.bool,
   emphasize: PropTypes.bool,
   className: PropTypes.string,
+  children: PropTypes.node,
 };
 
 Content.defaultProps = {
@@ -49,6 +56,7 @@ Content.defaultProps = {
   italic: false,
   emphasize: false,
   className: "",
+  children: null,
 };
 
 export default Content;

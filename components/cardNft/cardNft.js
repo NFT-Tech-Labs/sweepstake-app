@@ -18,7 +18,7 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
   );
 
   const EmptyCard = () => (
-    <Card className={classes}>
+    <Card overflow className={classes}>
       <Icon name={"ball"} color={"dark"} />
       <Divider height={20} />
       <Title tag={"h6"} text={"Don't have DaGoats NFTs?"} />

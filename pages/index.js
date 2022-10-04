@@ -85,20 +85,18 @@ export default function Home({ accountData, nfts }) {
 
   return (
     <div className={styles.home}>
-      {publicKey && status !== "authenticated" && (
-        <button onClick={() => signCustomMessage()}>Authenticate</button>
-      )}
-      {publicKey && status === "authenticated" && (
-        <button onClick={() => signOut()}>SignOut</button>
-      )}
-      {/* <Cta {...ctaData} /> */}
-      {/* <WalletMultiButton /> */}
       <Divider height={40} />
-      <Profile publicKey={publicKey?.toBase58()} nfts={nfts} {...profileData} />
-      {/* <Collection nfts={nfts} /> */}
+      <Profile
+        publicKey={publicKey?.toBase58()}
+        nfts={nfts}
+        disconnect={() => signOut()}
+        {...profileData}
+      />
       <Divider height={100} />
       <Heading {...headingData} />
       <Divider height={20} />
+      <Cta {...ctaData} />
+      <Divider height={40} />
       <CardRules {...cardRulesData} />
       <Divider height={20} />
       <div className={styles.examples}>
@@ -182,7 +180,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       accountData: accountData || null,
-      nfts: [] || null,
+      nfts: filteredNfts || null,
     },
   };
 }
