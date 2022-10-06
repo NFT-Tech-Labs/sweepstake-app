@@ -27,6 +27,7 @@
     "react-dom": "18.2.0",
     "react-moralis": "^1.4.2",
     "react-svg": "^15.1.8",
+    "react-tabs": "^5.1.0",
     "sass": "^1.54.9",
     "tweetnacl": "^1.0.3"
   },

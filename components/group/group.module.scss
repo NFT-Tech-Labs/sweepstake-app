@@ -1,0 +1,18 @@
+.group {
+  max-width: 200px;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-s);
+}
+
+.flag {
+  margin-right: var(--spacing-m);
+}
+
+.name {
+  display: flex;
+}

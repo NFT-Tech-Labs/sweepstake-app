@@ -15,6 +15,8 @@ import CardNft from "./cardNft/cardNft";
 import CardRules from "./cardRules/cardRules";
 import Example from "./example/example";
 import Profile from "./profile/profile";
+import Group from "./group/group";
+import Groups from "./groups/groups";
 
 export {
   Layout,
@@ -36,4 +38,6 @@ export {
   CardRules,
   Example,
   Profile,
+  Group,
+  Groups,
 };
