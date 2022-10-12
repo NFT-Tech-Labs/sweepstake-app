@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useCallback } from "react";
 import classNames from "classnames/bind";
 import styles from "./table.module.scss";

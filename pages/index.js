@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";

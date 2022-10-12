@@ -7,6 +7,7 @@ import { Title, Content, Divider, Card, Button } from "@components";
 
 const cx = classNames.bind(styles);
 
+// eslint-disable-next-line react/prop-types
 const Cta = ({ className, title, content, button, image }) => {
   let classes = cx({ cta: true }, className);
 
