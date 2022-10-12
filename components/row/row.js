@@ -190,7 +190,7 @@ Row.propTypes = {
   resultB: PropTypes.number,
   onChangeA: PropTypes.func,
   onChangeB: PropTypes.func,
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 Row.defaultProps = {

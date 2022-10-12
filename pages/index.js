@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/router";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import styles from "../styles/home.module.scss";
 import {
   Title,
@@ -10,11 +9,9 @@ import {
   Timeline,
   Button,
   Cta,
-  Collection,
   CardRules,
   Example,
   Profile,
-  Group,
   Groups,
 } from "@components";
 import { fetchData } from "utils/api";
@@ -54,12 +51,6 @@ export default function Home({ accountData, nfts }) {
   }, [publicKey]);
 
   const [count, setCount] = useState(0);
-  const [data, _] = useState(tableData);
-  const [output, setOutput] = useState([]);
-
-  const handleTable = (count) => {
-    setCount(count);
-  };
 
   const signCustomMessage = async () => {
     const address = publicKey.toBase58();
@@ -84,75 +75,18 @@ export default function Home({ accountData, nfts }) {
       return null;
     }
   };
-  // console.log(output.filter((item) => item.group === "A"));
 
-  const getTeamPoints = (data, team) => {
-    let total = 0;
-    // let groups = [];
-    data.map((item) => {
-      const chosenTeamValue =
-        (item.teamA === team && item.valueA) ||
-        (item.teamB === team && item.valueB);
+  const [groupsFilled, setGroupsFilled] = useState(false);
+  const [groupStage, setGroupStage] = useState([]);
+  const [output, setOutput] = useState(tableData);
 
-      const againstTeamValue =
-        (item.teamA === team) === true ? item.valueB : item.valueA;
+  useEffect(() => {
+    output?.every((item) => item.valueA !== null && item.valueB !== null)
+      ? setGroupsFilled(true)
+      : setGroupsFilled(false);
+  }, [output]);
 
-      chosenTeamValue > againstTeamValue
-        ? (total += 3)
-        : chosenTeamValue === againstTeamValue
-        ? (total += 1)
-        : (total += 0);
-    });
-
-    return total;
-  };
-
-  const groups = [
-    {
-      group: "A",
-      teams: ["NL", "EC", "QA", "SN"],
-    },
-    {
-      group: "B",
-      teams: ["US", "WS", "IR", "GB"],
-    },
-  ];
-
-  const groupStage = groups.map((item) => {
-    return {
-      group: item.group,
-      teams: item.teams.map((item) => ({
-        name: item,
-        points: getTeamPoints(output, item),
-      })),
-    };
-  });
-  // sort group by points
-  groupStage.map((item) => item.teams.sort((a, b) => b.points - a.points));
-  console.log(groupStage);
-
-  const groupWinners = (group) => {
-    return groupStage.filter((item) => item.group === group);
-  };
-
-  const roundOf16 = () => {
-    return [
-      {
-        id: 0,
-        type: 1,
-        date: "10 nov",
-        time: "10:00",
-        teamA: groupWinners("A")[0].teams[0].name,
-        teamB: groupWinners("B")[0].teams[0].name,
-        valueA: 0,
-        valueB: 1,
-        resultA: 0,
-        resultB: 1,
-      },
-    ];
-  };
-
-  console.log(roundOf16());
+  // console.log(output, "output");
 
   return (
     <div className={styles.home}>
@@ -178,12 +112,50 @@ export default function Home({ accountData, nfts }) {
       <Divider height={40} />
       <div className={styles.grid}>
         <div className={styles.timelineWrapper}>
-          <Timeline active={count} {...timelineData} />
+          <Timeline
+            count={count}
+            onChange={(e) => setCount(e)}
+            {...timelineData}
+          />
         </div>
         <div className={styles.tableWrapper}>
-          <Groups data={groupStage} />
-          <Divider height={20} />
-          <Table matches={data} count={count} onChange={(e) => setOutput(e)} />
+          <>
+            <Title
+              tag={"h4"}
+              text={
+                count === 8
+                  ? "Round of 16"
+                  : count === 9
+                  ? "Quarter finals"
+                  : count === 10
+                  ? "Semi finals"
+                  : count === 11
+                  ? "Third place"
+                  : count === 12
+                  ? "Final"
+                  : "Groupstage"
+              }
+            />
+            <Divider height={20} />
+          </>
+          {count < 8 && (
+            <>
+              <Groups
+                data={output}
+                count={count}
+                onChange={(e) => setGroupStage(e)}
+                onSelect={(e) => setCount(e)}
+              />
+              <Divider height={20} />
+            </>
+          )}
+
+          <Table
+            groupStage={groupStage}
+            matches={output}
+            count={count}
+            onChange={(e) => setOutput(e)}
+          />
           <Divider height={20} />
           <div className={styles.actions}>
             <div className={styles.pagination}>
@@ -192,17 +164,28 @@ export default function Home({ accountData, nfts }) {
                   classname={styles.next}
                   text={"Prev"}
                   link
-                  onClick={() => handleTable(count - 1)}
+                  onClick={() => setCount(count - 1)}
                   size={"m"}
                 />
               )}
-              <Button
-                classname={styles.next}
-                text={"Next"}
-                link
-                onClick={() => handleTable(count + 1)}
-                size={"m"}
-              />
+              {groupsFilled && count > 6 && (
+                <Button
+                  classname={styles.next}
+                  text={"Next"}
+                  link
+                  onClick={() => setCount(count + 1)}
+                  size={"m"}
+                />
+              )}
+              {count >= 0 && count < 7 && (
+                <Button
+                  classname={styles.next}
+                  text={"Next"}
+                  link
+                  onClick={() => setCount(count + 1)}
+                  size={"m"}
+                />
+              )}
             </div>
             <Button
               text={"Submit"}
@@ -230,25 +213,25 @@ export async function getServerSideProps(context) {
   if (session?.user?.address) {
     accountData = await fetchData("account", session?.user?.address, "nft");
 
-    accountMetadata = await Promise.all(
-      accountData?.map(
-        async (item) => await fetchData("nft", item?.mint, "metadata")
-      )
-    );
+    // accountMetadata = await Promise.all(
+    //   accountData?.map(
+    //     async (item) => await fetchData("nft", item?.mint, "metadata")
+    //   )
+    // );
 
-    accountMetadataUri = accountMetadata.map(
-      (item) => item?.metaplex.metadataUri
-    );
+    // accountMetadataUri = accountMetadata?.map(
+    //   (item) => item?.metaplex?.metadataUri
+    // );
 
-    // array of all nfts with traits, collection, name and image
-    nfts = await Promise.all(
-      accountMetadataUri.map(
-        async (item) => await fetch(item).then((res) => res.json())
-      )
-    );
+    // // array of all nfts with traits, collection, name and image
+    // nfts = await Promise.all(
+    //   accountMetadataUri?.map(
+    //     async (item) => await fetch(item).then((res) => res.json())
+    //   )
+    // );
   }
 
-  const filteredNfts = nfts?.filter((item) => item.symbol === "DIP");
+  const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
 
   return {
     props: {

@@ -28,6 +28,7 @@ const Cta = ({ className, title, content, button, image }) => {
             layout={"fill"}
             src={image}
             alt={"maradona"}
+            priority
           />
         </div>
       )}

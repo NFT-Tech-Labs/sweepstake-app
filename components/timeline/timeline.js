@@ -6,7 +6,7 @@ import Button from "../button/button";
 
 const cx = classNames.bind(styles);
 
-const Timeline = ({ className, rounds, active }) => {
+const Timeline = ({ className, rounds, count }) => {
   let classes = cx({ timeline: true }, className);
 
   return (
@@ -17,10 +17,27 @@ const Timeline = ({ className, rounds, active }) => {
             <Button
               link
               size={"s"}
-              textColor={active === index ? "positive" : "stable-500"}
+              textColor={
+                count < 8
+                  ? index === 0
+                    ? "positive"
+                    : "stable-500"
+                  : count >= 8 && index === count - 7
+                  ? "positive"
+                  : "stable-500"
+              }
               text={item}
               {...item}
             />
+            {/* <Button
+              link
+              size={"s"}
+              textColor={
+                active >= 8 && index === active - 7 ? "positive" : "stable-500"
+              }
+              text={item}
+              {...item}
+            /> */}
           </li>
         ))}
       </ul>
@@ -31,13 +48,13 @@ const Timeline = ({ className, rounds, active }) => {
 Timeline.propTypes = {
   className: PropTypes.string,
   rounds: PropTypes.array,
-  active: PropTypes.number,
+  count: PropTypes.number,
 };
 
 Timeline.defaultProps = {
   className: "",
   rounds: null,
-  active: 1,
+  count: 1,
 };
 
 export default Timeline;

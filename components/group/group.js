@@ -8,14 +8,31 @@ import ReactCountryFlag from "react-country-flag";
 const cx = classNames.bind(styles);
 
 const Group = ({ className, teams }) => {
-  let classes = cx({ group: true }, className);
+  let classes = cx(
+    {
+      group: true,
+    },
+    className
+  );
 
   return (
     <div className={classes}>
       {teams?.map((item, index) => (
-        <div key={index} className={styles.team}>
+        <div
+          key={index}
+          className={
+            index === 0 || index === 1
+              ? [styles.team, styles.qualified].join(" ")
+              : styles.team
+          }
+        >
           {item.name && (
             <div className={styles.name}>
+              <Title
+                tag={"h6"}
+                color={index === 0 || index === 1 ? "balanced" : "dark"}
+                text={index + 1}
+              />
               <ReactCountryFlag
                 countryCode={item.name}
                 svg
@@ -30,7 +47,7 @@ const Group = ({ className, teams }) => {
             </div>
           )}
           {item.points !== null && (
-            <Title tag={"h5"} color={"positive"} text={item.points} />
+            <Title tag={"h6"} color={"positive"} text={item.points} />
           )}
         </div>
       ))}

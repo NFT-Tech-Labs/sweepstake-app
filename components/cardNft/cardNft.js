@@ -8,7 +8,15 @@ import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
 
-const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
+const CardNft = ({
+  className,
+  attributes,
+  image,
+  name,
+  symbol,
+  country,
+  empty,
+}) => {
   const classes = cx(
     {
       cardNft: true,
@@ -52,7 +60,7 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
         )}
         <div className={styles.country}>
           <ReactCountryFlag
-            countryCode={"ES"}
+            countryCode={country}
             svg
             style={{
               width: "auto",
