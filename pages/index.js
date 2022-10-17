@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/router";
@@ -30,7 +31,7 @@ import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
-import SendSolanaSplTokens from 'utils/splTransaction';
+import SendSolanaSplTokens from "utils/splTransaction";
 
 export default function Home({ accountData, nfts }) {
   const router = useRouter();
@@ -88,13 +89,15 @@ export default function Home({ accountData, nfts }) {
       : setGroupsFilled(false);
   }, [output]);
 
+  console.log(process.env.NEXT_PUBLIC_TOKEN_MINT);
+
   return (
     <div className={styles.home}>
       <Divider height={40} />
       <Profile
         publicKey={publicKey?.toBase58()}
         nfts={nfts}
-        disconnect={() => signOut({redirect: false})}
+        disconnect={() => signOut({ redirect: false })}
         {...profileData}
       />
       <Divider height={100} />
@@ -191,8 +194,13 @@ export default function Home({ accountData, nfts }) {
               color={"positive"}
               textColor={"light"}
               size={"xxs"}
-              disabled={!groupsFilled}   
-              onClick={() => handlePayment('ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC', 'ARLQYuL9HEoUtBXpDG26YyvGUAnHJfYbLSstvrm1vS24')}    
+              disabled={!groupsFilled}
+              onClick={() =>
+                handlePayment(
+                  process.env.NEXT_PUBLIC_TOKEN_MINT,
+                  process.env.NEXT_PUBLIC_TREASURE_ADDRESS
+                )
+              }
             />
           </div>
         </div>

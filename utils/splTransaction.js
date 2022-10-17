@@ -1,44 +1,22 @@
-import { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from "react";
 import {
   WalletNotConnectedError,
-  SignerWalletAdapterProps
-} from '@solana/wallet-adapter-base';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+  SignerWalletAdapterProps,
+} from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   createTransferInstruction,
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddress,
-  getAccount
-} from '@solana/spl-token';
+  getAccount,
+} from "@solana/spl-token";
 import {
   PublicKey,
   Transaction,
   Connection,
-  TransactionInstruction
-} from '@solana/web3.js';
-
-export const configureAndSendCurrentTransaction = async (
-  transaction,
-  connection,
-  feePayer,
-  signTransaction
-) => {
-
-  const blockHash = await connection.getLatestBlockhash();
-  transaction.feePayer = feePayer;
-  transaction.recentBlockhash = blockHash.blockhash;
-
-  const signature = await sendTransaction(transaction, connection, {
-    minContextSlot,
-  });
-
-  await connection.confirmTransaction({
-    blockhash: blockHash.blockhash,
-    lastValidBlockHeight: blockHash.lastValidBlockHeight,
-    signature
-  });
-  return signature;
-};
+  TransactionInstruction,
+} from "@solana/web3.js";
 
 const SendSolanaSplTokens = () => {
   const { connection } = useConnection();
@@ -115,7 +93,7 @@ const SendSolanaSplTokens = () => {
     setProcessing(false);
   };
 
-  return { processing, confirmation, error, handlePayment }
+  return { processing, confirmation, error, handlePayment };
 };
 
 export default SendSolanaSplTokens;
