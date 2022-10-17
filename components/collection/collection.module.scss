@@ -4,6 +4,7 @@
 
 .wrapper {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-xl);
   width: 100%;
   max-width: var(--global-width);

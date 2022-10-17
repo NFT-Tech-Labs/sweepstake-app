@@ -1,11 +1,16 @@
+@import '../../styles/mixins.scss';
+
 .cardNft {
   position: relative;
-  max-width: 250px;
   padding: var(--spacing-m) var(--spacing-s);
-  // border: solid 5px rgba(var(--color-light), 1); 
   box-shadow: var(--shadow);
   border-radius: var(--spacing-m);
   background-color: rgba(var(--color-light), 1);
+  flex-basis: 100%;
+
+  @include medium {
+    flex-basis: 40%;
+  }
 }
 
 .heading {
@@ -41,6 +46,7 @@
   align-items: center;
   justify-content: center;
   min-height: 328px;
+  width: 100%;
   max-width: 100%;
   border: dashed 2px rgba(var(--color-stable), 1);
   box-shadow: none; 

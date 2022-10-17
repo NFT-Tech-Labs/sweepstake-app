@@ -25,17 +25,19 @@ import {
   timelineData,
   profileData,
 } from "utils/data";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
+import SendSolanaSplTokens from 'utils/splTransaction';
 
 export default function Home({ accountData, nfts }) {
   const router = useRouter();
-  const { publicKey, signMessage } = useWallet();
+  const { publicKey, signMessage, sendTransaction } = useWallet();
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
+  const { handlePayment, confirmation, processing } = SendSolanaSplTokens();
 
   useEffect(() => {
     startTransition(() => {
@@ -52,6 +54,9 @@ export default function Home({ accountData, nfts }) {
   }, [publicKey]);
 
   const [count, setCount] = useState(0);
+  const [groupsFilled, setGroupsFilled] = useState(false);
+  const [groupStage, setGroupStage] = useState([]);
+  const [output, setOutput] = useState(tableData);
 
   const signCustomMessage = async () => {
     const address = publicKey.toBase58();
@@ -77,17 +82,11 @@ export default function Home({ accountData, nfts }) {
     }
   };
 
-  const [groupsFilled, setGroupsFilled] = useState(false);
-  const [groupStage, setGroupStage] = useState([]);
-  const [output, setOutput] = useState(tableData);
-
   useEffect(() => {
     output?.every((item) => item.valueA !== null && item.valueB !== null)
       ? setGroupsFilled(true)
       : setGroupsFilled(false);
   }, [output]);
-
-  // console.log(output, "output");
 
   return (
     <div className={styles.home}>
@@ -95,7 +94,7 @@ export default function Home({ accountData, nfts }) {
       <Profile
         publicKey={publicKey?.toBase58()}
         nfts={nfts}
-        disconnect={() => signOut()}
+        disconnect={() => signOut({redirect: false})}
         {...profileData}
       />
       <Divider height={100} />
@@ -150,7 +149,6 @@ export default function Home({ accountData, nfts }) {
               <Divider height={20} />
             </>
           )}
-
           <Table
             groupStage={groupStage}
             matches={output}
@@ -193,7 +191,8 @@ export default function Home({ accountData, nfts }) {
               color={"positive"}
               textColor={"light"}
               size={"xxs"}
-              disabled
+              disabled={!groupsFilled}   
+              onClick={() => handlePayment('ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC', 'ARLQYuL9HEoUtBXpDG26YyvGUAnHJfYbLSstvrm1vS24')}    
             />
           </div>
         </div>

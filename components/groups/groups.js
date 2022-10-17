@@ -39,7 +39,7 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
           {groupStage?.slice(0, 48)?.map((item, index) => {
             return (
               item?.group && (
-                <Tab key={index}>
+                <Tab key={index} tabIndex={'tabindex'}>
                   <Content text={item.group} size={"m"} />
                 </Tab>
               )

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, SystemProgram, Transactio } from "@solana/web3.js";
 
 const CreateTransaction = () => {
   const { connection } = useConnection();

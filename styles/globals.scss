@@ -255,6 +255,13 @@ h6 {
 .slick-dots {
   bottom: -50px;
 }
+
+.react-tabs__tab-list {
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
 .react-tabs__tab {
   border-bottom: none !important;
   padding: var(--spacing-s) var(--spacing-xl) !important;
