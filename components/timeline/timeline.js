@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import classNames from "classnames/bind";
 import styles from "./timeline.module.scss";
 import PropTypes from "prop-types";
-import { Button, Title } from "@components";
+import { Button } from "@components";
 
 const cx = classNames.bind(styles);
 
@@ -60,6 +60,10 @@ Timeline.propTypes = {
   count: PropTypes.number,
   groupsFilled: PropTypes.bool,
   ro16Filled: PropTypes.bool,
+  quarterFilled: PropTypes.bool,
+  semiFilled: PropTypes.bool,
+  thirdFilled: PropTypes.bool,
+  finalFilled: PropTypes.bool,
 };
 
 Timeline.defaultProps = {
@@ -68,6 +72,10 @@ Timeline.defaultProps = {
   count: 1,
   groupsFilled: false,
   ro16Filled: false,
+  quarterFilled: false,
+  semiFilled: false,
+  thirdFilled: false,
+  finalFilled: false,
 };
 
 export default Timeline;
