@@ -70,6 +70,7 @@
 }
 
 .matchResult {
+  display: flex;
   input {
     border: none;
     padding: var(--spacing-s);
@@ -104,6 +105,10 @@
   input {
     background-color: transparent;
   }
+}
+
+.matchPrediction {
+  display: flex;
 }
 
 .country {
@@ -194,5 +199,11 @@
 
   .icon {
     background-color: rgba(var(--color-balanced), 0.1);
+  }
+}
+
+.blank {
+  .icon {
+    background-color: rgba(var(--color-stable), 0.5);
   }
 }

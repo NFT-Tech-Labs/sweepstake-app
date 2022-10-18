@@ -1,9 +1,13 @@
 .timeline {
+  width: 100%;
   ul {
+    display: flex;
+    justify-content: space-evenly;
     list-style: none;
   }
+  margin-bottom: var(--spacing-l);
 }
 
 .item {
-  padding: var(--spacing-m) 0;
+  display: flex;
 }

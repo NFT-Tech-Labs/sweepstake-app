@@ -3,6 +3,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 9px;
 
   th {
     display: none;
@@ -14,10 +15,10 @@
     }
   }
 
-  
   tbody {
     box-shadow: 0 0 0 1px rgba(var(--color-stable), 1);
-    border-radius: var(--radius-m);
+    // border-radius: var(--radius-m);
+    background-color: rgba(var(--color-light), 1);
   }
 
   td {

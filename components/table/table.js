@@ -37,6 +37,8 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       time: "10:00",
       teamA: groupWinners(groupStage, teamX)[0]?.teams[placementX].name,
       teamB: groupWinners(groupStage, teamY)[0]?.teams[placementY].name,
+      resultA: item.resultA,
+      resultB: item.resultB,
       points: "0",
       timestamp: Date.now(),
     };
@@ -53,6 +55,8 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       time: "10:00",
       teamA: getWinners(data.filter((item) => item.type === 8))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 8))[teamY],
+      resultA: item.resultA,
+      resultB: item.resultB,
       points: "0",
       timestamp: Date.now(),
     };
@@ -69,6 +73,8 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       time: "10:00",
       teamA: getWinners(data.filter((item) => item.type === 9))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 9))[teamY],
+      resultA: item.resultA,
+      resultB: item.resultB,
       points: "0",
       timestamp: Date.now(),
     };
@@ -85,6 +91,8 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       time: "10:00",
       teamA: getLosers(data.filter((item) => item.type === 10))[teamX],
       teamB: getLosers(data.filter((item) => item.type === 10))[teamY],
+      resultA: item.resultA,
+      resultB: item.resultB,
       points: "0",
       timestamp: Date.now(),
     };
@@ -101,6 +109,8 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       time: "10:00",
       teamA: getWinners(data.filter((item) => item.type === 10))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 10))[teamY],
+      resultA: item.resultA,
+      resultB: item.resultB,
       points: "0",
       timestamp: Date.now(),
     };
@@ -112,7 +122,9 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueA: Number(newVal) } : item
+          item.id === Number(id)
+            ? { ...item, valueA: Number(newVal) || null }
+            : item
         )
       );
     },
@@ -125,7 +137,9 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueB: Number(newVal) } : item
+          item.id === Number(id)
+            ? { ...item, valueB: Number(newVal) || null }
+            : item
         )
       );
     },
@@ -186,25 +200,25 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
     }
   }, [count]);
 
-  const resultsCheck = data?.filter(
-    (item) => item.resultA && item?.type === count
-  );
+  // const resultsCheck = data?.filter(
+  //   (item) => item.resultA && item?.type === count
+  // );
 
   return (
     <table className={classes}>
       <thead className={styles.head}>
         <tr>
-          <th width={"10%"}>
+          <th width={"15%"}>
             <Content text={"Date"} color={"stable-500"} size={"s"} />
           </th>
           <th>
             <Content text={"Match"} color={"stable-500"} size={"s"} />
           </th>
-          {resultsCheck.length > 0 && (
-            <th>
-              <Content text={"Result"} color={"stable-500"} size={"s"} />
-            </th>
-          )}
+          {/* {resultsCheck.length > 0 && ( */}
+          <th>
+            <Content text={"Result"} color={"stable-500"} size={"s"} />
+          </th>
+          {/* )} */}
           <th width={"10%"}>
             <Content text={"Points"} color={"stable-500"} size={"s"} />
           </th>

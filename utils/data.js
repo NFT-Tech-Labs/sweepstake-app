@@ -10,8 +10,6 @@ const tableData = [
     teamB: "NL",
     valueA: null,
     valueB: null,
-    // resultA: 0,
-    // resultB: 1,
   },
   {
     id: 1,
@@ -24,8 +22,6 @@ const tableData = [
     teamB: "EC",
     valueA: null,
     valueB: null,
-    // resultA: 0,
-    // resultB: 1,
   },
   {
     id: 2,
@@ -38,8 +34,6 @@ const tableData = [
     teamB: "SN",
     valueA: 5,
     valueB: 1,
-    // resultA: 0,
-    // resultB: 1,
   },
   {
     id: 3,
@@ -52,8 +46,6 @@ const tableData = [
     teamB: "EC",
     valueA: 5,
     valueB: 3,
-    // resultA: 5,
-    // resultB: 3,
   },
   {
     id: 4,
@@ -830,19 +822,19 @@ const ctaData = {
 const timelineData = {
   rounds: [
     {
-      text: "Groupstage",
+      text: "Groups",
     },
     {
-      text: "Round of 16",
+      text: "Ro16",
     },
     {
-      text: "Quarter finals",
+      text: "Quarter",
     },
     {
-      text: "Semi finals",
+      text: "Semi",
     },
     {
-      text: "Third place",
+      text: "3rd",
     },
     {
       text: "Final",

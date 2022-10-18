@@ -55,10 +55,9 @@ export default function Home({ accountData, nfts }) {
   }, [publicKey]);
 
   const [count, setCount] = useState(0);
-  const [groupsFilled, setGroupsFilled] = useState(false);
   const [groupStage, setGroupStage] = useState([]);
   const [output, setOutput] = useState(tableData);
-
+  const [groupsFilled, setGroupsFilled] = useState(false);
   const signCustomMessage = async () => {
     const address = publicKey.toBase58();
     const chain = "mainnet";
@@ -84,12 +83,18 @@ export default function Home({ accountData, nfts }) {
   };
 
   useEffect(() => {
-    output?.every((item) => item.valueA !== null && item.valueB !== null)
+    output
+      .slice(0, 48)
+      ?.every((item) => item.valueA !== null && item.valueB !== null)
       ? setGroupsFilled(true)
       : setGroupsFilled(false);
   }, [output]);
 
-  console.log(process.env.NEXT_PUBLIC_TOKEN_MINT);
+  const checkFilled = (round) => {
+    return output?.filter(
+      (item) => item.type === round && item.valueA && item.valueB
+    );
+  };
 
   return (
     <div className={styles.home}>
@@ -114,94 +119,101 @@ export default function Home({ accountData, nfts }) {
       </div>
       <Divider height={40} />
       <div className={styles.grid}>
-        <div className={styles.timelineWrapper}>
-          <Timeline
-            count={count}
-            onChange={(e) => setCount(e)}
-            {...timelineData}
-          />
-        </div>
-        <div className={styles.tableWrapper}>
-          <>
-            <Title
-              tag={"h4"}
-              text={
-                count === 8
-                  ? "Round of 16"
-                  : count === 9
-                  ? "Quarter finals"
-                  : count === 10
-                  ? "Semi finals"
-                  : count === 11
-                  ? "Third place"
-                  : count === 12
-                  ? "Final"
-                  : "Groupstage"
-              }
+        <div className={styles.gridWrapper}>
+          <div className={styles.groupsWrapper}>
+            <Groups
+              data={output}
+              count={count < 8 ? count : 7}
+              onChange={(e) => setGroupStage(e)}
+              onSelect={(e) => setCount(e)}
             />
-            <Divider height={20} />
-          </>
-          {count < 8 && (
-            <>
-              <Groups
-                data={output}
-                count={count}
-                onChange={(e) => setGroupStage(e)}
-                onSelect={(e) => setCount(e)}
+          </div>
+          <div className={styles.tableWrapper}>
+            {/* <>
+              <Title
+                tag={"h4"}
+                text={
+                  count === 8
+                    ? "Round of 16"
+                    : count === 9
+                    ? "Quarter finals"
+                    : count === 10
+                    ? "Semi finals"
+                    : count === 11
+                    ? "Third place"
+                    : count === 12
+                    ? "Final"
+                    : "Groupstage"
+                }
               />
               <Divider height={20} />
-            </>
-          )}
-          <Table
-            groupStage={groupStage}
-            matches={output}
-            count={count}
-            onChange={(e) => setOutput(e)}
-          />
-          <Divider height={20} />
-          <div className={styles.actions}>
-            <div className={styles.pagination}>
-              {count !== 0 && (
-                <Button
-                  classname={styles.next}
-                  text={"Prev"}
-                  link
-                  onClick={() => setCount(count - 1)}
-                  size={"m"}
-                />
-              )}
-              {groupsFilled && count > 6 && (
-                <Button
-                  classname={styles.next}
-                  text={"Next"}
-                  link
-                  onClick={() => setCount(count + 1)}
-                  size={"m"}
-                />
-              )}
-              {count >= 0 && count < 7 && (
-                <Button
-                  classname={styles.next}
-                  text={"Next"}
-                  link
-                  onClick={() => setCount(count + 1)}
-                  size={"m"}
-                />
-              )}
+            </> */}
+            <div className={styles.timelineWrapper}>
+              <Timeline
+                count={count}
+                onChange={(e) => setCount(e)}
+                groupsFilled={groupsFilled}
+                ro16Filled={checkFilled(8).length === 8}
+                quarterFilled={checkFilled(9).length === 4}
+                semiFilled={checkFilled(10).length === 2}
+                thirdFilled={checkFilled(11).length === 1}
+                finalFilled={checkFilled(12).length === 1}
+                {...timelineData}
+              />
             </div>
-            <Button
-              text={"Submit"}
-              color={"positive"}
-              textColor={"light"}
-              size={"xxs"}
-              disabled={!groupsFilled}
-              onClick={() =>
-                handlePayment(
-                  process.env.NEXT_PUBLIC_TOKEN_MINT,
-                  process.env.NEXT_PUBLIC_TREASURE_ADDRESS
-                )
-              }
+            <Table
+              groupStage={groupStage}
+              matches={output}
+              count={count}
+              onChange={(e) => setOutput(e)}
             />
+            <Divider height={20} />
+            <div className={styles.actions}>
+              <div className={styles.pagination}>
+                {count !== 0 && (
+                  <>
+                    <Button
+                      classname={styles.next}
+                      text={"Prev"}
+                      link
+                      onClick={() => setCount(count - 1)}
+                      size={"m"}
+                    />
+                  </>
+                )}
+                {groupsFilled && count > 6 && (
+                  <Button
+                    classname={styles.next}
+                    text={"Next"}
+                    link
+                    onClick={() => setCount(count + 1)}
+                    size={"m"}
+                  />
+                )}
+                {count >= 0 && count < 7 && (
+                  <Button
+                    classname={styles.next}
+                    text={"Next"}
+                    link
+                    onClick={() => setCount(count + 1)}
+                    size={"m"}
+                  />
+                )}
+              </div>
+              <Button
+                text={"Submit"}
+                color={"positive"}
+                textColor={"light"}
+                size={"xxs"}
+                disabled={!groupsFilled}
+                onClick={() =>
+                  handlePayment(
+                    process.env.NEXT_PUBLIC_TOKEN_MINT,
+                    process.env.NEXT_PUBLIC_TREASURE_ADDRESS
+                  )
+                }
+              />
+            </div>
           </div>
         </div>
       </div>

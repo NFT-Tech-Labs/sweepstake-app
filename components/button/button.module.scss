@@ -31,6 +31,49 @@
   letter-spacing: normal;
 }
 
+.active {
+  // &.button {
+  //   opacity: 0.5;
+  // }
+  border: solid 2px rgba(var(--color-energized), 1);
+}
+
+.outline {
+  background: none;
+  border: solid 2px rgba(var(--color-positive), 1);
+
+  > p {
+    color: rgba(var(--color-positive), 1);
+  }
+
+  &.active {
+    background: rgba(var(--color-positive), 1);
+
+    > p {
+      color: rgba(var(--color-light), 1);
+    }
+  }
+}
+
+.filled {
+  &.outline {
+    background: none;
+    border: solid 2px rgba(var(--color-balanced), 1);
+  
+    > p {
+      color: rgba(var(--color-balanced), 1);
+    }
+    
+    &.active {
+      background: rgba(var(--color-balanced), 1);
+  
+      > p {
+        color: rgba(var(--color-light), 1);
+      }
+    }
+  }
+}
+
 .disabled {
   opacity: 0.75;
   pointer-events: none;
