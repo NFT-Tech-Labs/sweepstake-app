@@ -37,3 +37,22 @@
     }
   }
 }
+
+.blur {
+  filter: blur(4px) brightness(0.9);
+}
+
+.tableWrapper {
+  position: relative;
+}
+
+.processing,
+.confirmation {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}

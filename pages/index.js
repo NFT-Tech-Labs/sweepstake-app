@@ -33,13 +33,16 @@ import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
 import SendSolanaSplTokens from "utils/splTransaction";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home({ accountData, nfts }) {
   const router = useRouter();
   const { publicKey, signMessage, sendTransaction } = useWallet();
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
-  const { handlePayment, confirmation, processing } = SendSolanaSplTokens();
+  const { handlePayment, confirmation, processing, error } =
+    SendSolanaSplTokens();
 
   useEffect(() => {
     startTransition(() => {
@@ -59,6 +62,9 @@ export default function Home({ accountData, nfts }) {
   const [groupStage, setGroupStage] = useState([]);
   const [output, setOutput] = useState(tableData);
   const [groupsFilled, setGroupsFilled] = useState(false);
+  const [loading, setLoading] = useState(processing);
+  const [success, setSuccess] = useState(confirmation);
+
   const signCustomMessage = async () => {
     const address = publicKey.toBase58();
     const chain = "mainnet";
@@ -102,8 +108,37 @@ export default function Home({ accountData, nfts }) {
 
   console.log(output);
 
+  useEffect(() => {
+    processing && toast("Processing...");
+  }, [processing]);
+
+  useEffect(() => {
+    confirmation && toast.success("Transaction completed!");
+  }, [confirmation]);
+
+  const handleSubmit = () => {
+    handlePayment(
+      process.env.NEXT_PUBLIC_TOKEN_MINT,
+      process.env.NEXT_PUBLIC_TREASURE_ADDRESS
+    );
+  };
+
   return (
     <div className={styles.home}>
+      {/* {processing && ( */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      {/* )} */}
       <Divider height={40} />
       <Profile
         publicKey={publicKey?.toBase58()}
@@ -171,6 +206,7 @@ export default function Home({ accountData, nfts }) {
               groupStage={groupStage}
               matches={output}
               count={count}
+              // processing={processing}
               onChange={(e) => setOutput(e)}
             />
             <Divider height={20} />
@@ -213,12 +249,7 @@ export default function Home({ accountData, nfts }) {
                   textColor={"light"}
                   size={"xxs"}
                   disabled={filledCount !== 64}
-                  onClick={() =>
-                    handlePayment(
-                      process.env.NEXT_PUBLIC_TOKEN_MINT,
-                      process.env.NEXT_PUBLIC_TREASURE_ADDRESS
-                    )
-                  }
+                  onClick={handleSubmit}
                 />
                 <Divider height={10} />
                 {/* <Content size={"xs"} text={`Filled: ${filledCount}/64`} /> */}

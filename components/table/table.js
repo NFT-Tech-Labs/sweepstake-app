@@ -12,14 +12,25 @@ import {
   thirdPlaceScheme,
   finalScheme,
 } from "../../utils/data";
+import { Vortex } from "react-loader-spinner";
+
 const cx = classNames.bind(styles);
 
-const Table = ({ className, matches, count, groupStage, onChange }) => {
+const Table = ({
+  className,
+  matches,
+  count,
+  groupStage,
+  onChange,
+  processing,
+  confirmation,
+}) => {
   const [data, setData] = useState(matches);
 
   let classes = cx(
     {
       table: true,
+      blur: processing || confirmation,
     },
     className
   );
@@ -200,42 +211,64 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
   //   (item) => item.resultA && item?.type === count
   // );
 
+  const Loader = () => {
+    return (
+      <Vortex
+        visible={true}
+        height="100"
+        width="100"
+        ariaLabel="vortex-loading"
+        wrapperStyle={{}}
+        wrapperClass="vortex-wrapper"
+        colors={["white", "black", "white", "black", "white", "black"]}
+      />
+    );
+  };
+
   return (
-    <table className={classes}>
-      <thead className={styles.head}>
-        <tr>
-          <th width={"15%"}>
-            <Content text={"Date"} color={"stable-500"} size={"s"} />
-          </th>
-          <th>
-            <Content text={"Match"} color={"stable-500"} size={"s"} />
-          </th>
-          {/* {resultsCheck.length > 0 && ( */}
-          <th>
-            <Content text={"Result"} color={"stable-500"} size={"s"} />
-          </th>
-          {/* )} */}
-          <th width={"10%"}>
-            <Content text={"Points"} color={"stable-500"} size={"s"} />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((item, index) => {
-          return (
-            <React.Fragment key={index}>
-              {item?.type === count && (
-                <Row
-                  onChangeA={onInputChangeA}
-                  onChangeB={onInputChangeB}
-                  {...item}
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className={styles.tableWrapper}>
+      {processing && (
+        <div className={styles.processing}>
+          <Loader />
+        </div>
+      )}
+
+      <table className={classes}>
+        <thead className={styles.head}>
+          <tr>
+            <th width={"15%"}>
+              <Content text={"Date"} color={"stable-500"} size={"s"} />
+            </th>
+            <th>
+              <Content text={"Match"} color={"stable-500"} size={"s"} />
+            </th>
+            {/* {resultsCheck.length > 0 && ( */}
+            <th>
+              <Content text={"Result"} color={"stable-500"} size={"s"} />
+            </th>
+            {/* )} */}
+            <th width={"10%"}>
+              <Content text={"Points"} color={"stable-500"} size={"s"} />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                {item?.type === count && (
+                  <Row
+                    onChangeA={onInputChangeA}
+                    onChangeB={onInputChangeB}
+                    {...item}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
@@ -243,12 +276,16 @@ Table.propTypes = {
   className: PropTypes.string,
   matches: PropTypes.array,
   count: PropTypes.number,
+  processing: PropTypes.bool,
+  confirmation: PropTypes.bool,
 };
 
 Table.defaultProps = {
   className: "",
   matches: null,
   count: 0,
+  processing: false,
+  confirmation: false,
 };
 
 export default Table;
