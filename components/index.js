@@ -17,6 +17,7 @@ import Example from "./example/example";
 import Profile from "./profile/profile";
 import Group from "./group/group";
 import Groups from "./groups/groups";
+import TeamSelect from "./teamSelect/teamSelect";
 
 export {
   Layout,
@@ -40,4 +41,5 @@ export {
   Profile,
   Group,
   Groups,
+  TeamSelect,
 };

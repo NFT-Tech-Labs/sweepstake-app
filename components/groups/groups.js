@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./groups.module.scss";
 import PropTypes from "prop-types";
-import { Group, Content } from "@components";
+import { Group, Content, TeamSelect } from "@components";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { groupsScheme } from "../../utils/data";
 import { getTeamPoints } from "../../utils/helpers";

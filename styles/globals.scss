@@ -272,6 +272,10 @@ input[type=number] {
   display: flex;
   overflow-x: scroll;
   overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .react-tabs__tab {

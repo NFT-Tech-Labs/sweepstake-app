@@ -1,0 +1,16 @@
+.teamSelect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select {
+  min-width: 300px;
+  margin: 0 var(--spacing-l)
+}
+
+.option {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+}

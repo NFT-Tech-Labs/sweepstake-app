@@ -16,6 +16,7 @@ import {
   Example,
   Profile,
   Groups,
+  TeamSelect,
 } from "@components";
 import { fetchData } from "utils/api";
 import {
@@ -106,8 +107,6 @@ export default function Home({ accountData, nfts }) {
   const filledCount =
     output.filter((item) => item.valueA && item.valueB).length + 1;
 
-  console.log(output);
-
   useEffect(() => {
     processing && toast("Processing...");
   }, [processing]);
@@ -122,6 +121,8 @@ export default function Home({ accountData, nfts }) {
       process.env.NEXT_PUBLIC_TREASURE_ADDRESS
     );
   };
+
+  console.log(output);
 
   return (
     <div className={styles.home}>
@@ -158,7 +159,9 @@ export default function Home({ accountData, nfts }) {
           <Example key={index} {...example} />
         ))}
       </div>
-      <Divider height={40} />
+      <Divider height={80} />
+      <TeamSelect />
+      <Divider height={80} />
       <div className={styles.grid}>
         <div className={styles.gridWrapper}>
           <div className={styles.groupsWrapper}>
