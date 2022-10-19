@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./teamSelect.module.scss";
@@ -87,7 +88,7 @@ const TeamSelect = ({ className, label, options, ...props }) => {
 
   return (
     <div className={classes}>
-      <Title tag={"h5"} text={"Select your team"} />
+      <Title tag={"h5"} color={"light"} text={"Select your team"} />
       <Select
         className={styles.select}
         defaultValue={{ value: "HR", label: "Croatia" }}
@@ -101,29 +102,6 @@ const TeamSelect = ({ className, label, options, ...props }) => {
         })}
         {...props}
       />
-      {/* <label htmlFor="select" className={styles.label}>
-        {label}
-      </label>
-      <select id={"select"} className={styles.select}>
-        {json?.map((item, index) => (
-          <option
-            key={index}
-            className={styles.option}
-            disabled={item?.disabled}
-          >
-            <ReactCountryFlag
-              countryCode={item?.countryShortCode}
-              svg
-              style={{
-                width: "1.5em",
-                height: "1.5em",
-              }}
-              title={item?.countryShortCode}
-            />
-            {item?.countryName}
-          </option>
-        ))}
-      </select> */}
     </div>
   );
 };

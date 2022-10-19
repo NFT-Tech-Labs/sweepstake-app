@@ -2,11 +2,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 80px 20px;
+  background: linear-gradient(90deg, rgba(5, 15, 59, 0.9178046218) 0%, rgba(3, 3, 36, 0.7105435924) 100%);
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
 .select {
   min-width: 300px;
-  margin: 0 var(--spacing-l)
+  margin: 0 var(--spacing-l);
 }
 
 .option {
