@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
   Title,
+  Content,
   Table,
   Heading,
   Divider,
@@ -95,6 +96,11 @@ export default function Home({ accountData, nfts }) {
       (item) => item.type === round && item.valueA && item.valueB
     );
   };
+
+  const filledCount =
+    output.filter((item) => item.valueA && item.valueB).length + 1;
+
+  console.log(output);
 
   return (
     <div className={styles.home}>
@@ -200,19 +206,23 @@ export default function Home({ accountData, nfts }) {
                   />
                 )}
               </div>
-              <Button
-                text={"Submit"}
-                color={"positive"}
-                textColor={"light"}
-                size={"xxs"}
-                disabled={!groupsFilled}
-                onClick={() =>
-                  handlePayment(
-                    process.env.NEXT_PUBLIC_TOKEN_MINT,
-                    process.env.NEXT_PUBLIC_TREASURE_ADDRESS
-                  )
-                }
-              />
+              <div className={styles.submit}>
+                <Button
+                  text={filledCount !== 64 ? `${filledCount}/64` : "Submit"}
+                  color={"positive"}
+                  textColor={"light"}
+                  size={"xxs"}
+                  disabled={filledCount !== 64}
+                  onClick={() =>
+                    handlePayment(
+                      process.env.NEXT_PUBLIC_TOKEN_MINT,
+                      process.env.NEXT_PUBLIC_TREASURE_ADDRESS
+                    )
+                  }
+                />
+                <Divider height={10} />
+                {/* <Content size={"xs"} text={`Filled: ${filledCount}/64`} /> */}
+              </div>
             </div>
           </div>
         </div>
