@@ -118,13 +118,11 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
 
   const onInputChangeA = useCallback(
     (e) => {
-      const newVal = e?.target?.value;
+      const newVal = e?.target?.value?.slice(0, 2);
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id)
-            ? { ...item, valueA: Number(newVal) || null }
-            : item
+          item.id === Number(id) ? { ...item, valueA: newVal || null } : item
         )
       );
     },
@@ -133,13 +131,11 @@ const Table = ({ className, matches, count, groupStage, onChange }) => {
 
   const onInputChangeB = useCallback(
     (e) => {
-      const newVal = e?.target?.value;
+      const newVal = e?.target?.value?.slice(0, 2);
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id)
-            ? { ...item, valueB: Number(newVal) || null }
-            : item
+          item.id === Number(id) ? { ...item, valueB: newVal || null } : item
         )
       );
     },

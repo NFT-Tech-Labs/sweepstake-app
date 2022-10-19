@@ -207,3 +207,23 @@
     background-color: rgba(var(--color-stable), 0.5);
   }
 }
+
+.filledA {
+  .matchPrediction {
+    input {
+      &:first-child {
+        background-color: #e7f0fe;
+      }
+    }
+  }
+}
+
+.filledB {
+  .matchPrediction {
+    input {
+      &:last-child {
+        background-color: #e7f0fe;
+      }
+    }
+  }
+}

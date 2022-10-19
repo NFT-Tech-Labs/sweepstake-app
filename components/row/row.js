@@ -30,6 +30,8 @@ const Row = ({
       ? (valueA > valueB && resultA > resultB) ||
         (valueA < valueB && resultA < resultB)
       : false;
+  const filledA = valueA !== null;
+  const filledB = valueB !== null;
   const blank = resultA === null || resultB === null;
 
   let classes = cx(
@@ -38,6 +40,8 @@ const Row = ({
       results: resultA || resultB,
       perfect,
       correct,
+      filledA,
+      filledB,
       blank,
     },
     className
@@ -89,18 +93,20 @@ const Row = ({
               <div className={styles.matchPrediction}>
                 <input
                   id={id}
-                  type={"text"}
+                  type={"number"}
                   value={valueA}
-                  maxLength={"2"}
+                  min={"0"}
                   onChange={onChangeA}
+                  onWheel={(e) => e.target.blur()}
                   // disabled={resultA || resultB}
                 />
                 <input
                   id={id}
-                  type={"text"}
+                  type={"number"}
                   value={valueB}
-                  maxLength={"2"}
+                  min={"0"}
                   onChange={onChangeB}
+                  onWheel={(e) => e.target.blur()}
                   // disabled={resultA || resultB}
                 />
               </div>
