@@ -26,6 +26,8 @@ const SendSolanaSplTokens = () => {
   const [error, setError] = useState(false);
 
   const handlePayment = async (mint, recipient) => {
+    setError(false);
+    setConfirmation(false);
     setProcessing(true);
 
     try {

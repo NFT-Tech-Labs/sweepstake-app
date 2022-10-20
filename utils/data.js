@@ -846,21 +846,33 @@ const profileData = {
   tokens: [
     {
       title: {
-        text: "GOAT",
+        text: "DGOAT",
       },
       content: {
         text: "token",
       },
-      percentage: 70,
+      available: 250,
+      required: 500,
     },
     {
       title: {
-        text: "DUST",
+        text: "MVP",
       },
       content: {
         text: "token",
       },
-      percentage: 100,
+      available: 750,
+      required: 750,
+    },
+    {
+      title: {
+        text: "LABS",
+      },
+      content: {
+        text: "token",
+      },
+      available: 375,
+      required: 375,
     },
   ],
 };

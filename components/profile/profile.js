@@ -38,6 +38,10 @@ const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
     </Card>
   );
 
+  const normalize = (val, max, min) => {
+    return (val - min) / (max - min);
+  };
+
   return publicKey ? (
     <div className={classes}>
       <WalletDisconnectButton onClick={disconnect} />
@@ -64,58 +68,62 @@ const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
         <div className={styles.tokens}>
           <Title tag={"h5"} text={"Tokens"} />
           <Divider height={30} />
-          {tokens?.map((item, index) => (
-            <>
-              <Card
-                key={index}
-                boxShadow
-                padding
-                borderRadius
-                className={styles.token}
-              >
-                <div className={styles.details}>
-                  {item?.content && (
+          {tokens?.map((item, index) => {
+            const normalizedPercentage =
+              normalize(item?.available, item?.required, 0) * 100;
+            return (
+              <>
+                <Card
+                  key={index}
+                  boxShadow
+                  padding
+                  borderRadius
+                  className={styles.token}
+                >
+                  <div className={styles.details}>
+                    {item?.content && (
+                      <Content
+                        size={"xs"}
+                        color={"stable-500"}
+                        {...item.content}
+                      />
+                    )}
+                    {item?.title && <Title tag={"h6"} {...item.title} />}
+                  </div>
+                  <div className={styles.amount}>
                     <Content
                       size={"xs"}
                       color={"stable-500"}
-                      {...item.content}
+                      text={`${item?.available}/${item?.required}`}
                     />
-                  )}
-                  {item?.title && <Title tag={"h6"} {...item.title} />}
-                </div>
-                <div className={styles.amount}>
-                  <Content
-                    size={"xs"}
-                    color={"stable-500"}
-                    text={`${item?.percentage}/100`}
-                  />
-                  <div className={styles.progress}>
-                    <div
-                      className={styles.bar}
-                      style={{
-                        width: `${item?.percentage}%`,
-                        backgroundColor:
-                          item?.percentage === 100
-                            ? "rgba(var(--color-balanced), 1)"
-                            : "rgba(var(--color-energized), 1)",
-                      }}
-                    ></div>
+                    <div className={styles.progress}>
+                      <div
+                        className={styles.bar}
+                        style={{
+                          width: `${normalizedPercentage}%`,
+                          backgroundColor:
+                            item?.available === item?.required
+                              ? "rgba(var(--color-balanced), 1)"
+                              : "rgba(var(--color-energized), 1)",
+                        }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
-              </Card>
-              {tokens?.length - 1 === index && (
-                <Content
-                  size={"s"}
-                  text={
-                    item?.percentage === 100
-                      ? "You have enough tokens to participate!"
-                      : "You need to have enough tokens of atleast one shown above"
-                  }
-                  color={"stable-500"}
-                />
-              )}
-            </>
-          ))}
+                </Card>
+                {tokens?.length - 1 === index && (
+                  <Content
+                    size={"s"}
+                    text={
+                      normalizedPercentage === 100
+                        ? "You have enough tokens to participate!"
+                        : "You need to have enough tokens of atleast one shown above"
+                    }
+                    color={"stable-500"}
+                  />
+                )}
+              </>
+            );
+          })}
         </div>
         <div className={styles.collection}>
           <Title tag={"h5"} text={"Collection"} />

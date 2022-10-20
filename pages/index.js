@@ -18,6 +18,7 @@ import {
   Groups,
   TeamSelect,
 } from "@components";
+import Select from "react-select";
 import { fetchData } from "utils/api";
 import {
   tableData,
@@ -62,6 +63,8 @@ export default function Home({ accountData, nfts }) {
   const [count, setCount] = useState(0);
   const [groupStage, setGroupStage] = useState([]);
   const [output, setOutput] = useState(tableData);
+  const [team, setTeam] = useState(null);
+  const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [loading, setLoading] = useState(processing);
   const [success, setSuccess] = useState(confirmation);
@@ -115,14 +118,43 @@ export default function Home({ accountData, nfts }) {
     confirmation && toast.success("Transaction completed!");
   }, [confirmation]);
 
-  const handleSubmit = () => {
-    handlePayment(
-      process.env.NEXT_PUBLIC_TOKEN_MINT,
-      process.env.NEXT_PUBLIC_TREASURE_ADDRESS
-    );
+  useEffect(() => {
+    error && toast.error("Something went wrong!");
+  }, [error]);
+
+  const paymentOptions = [
+    {
+      label: "DGOAT",
+      value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
+    },
+    {
+      label: "MVP",
+      value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
+    },
+    {
+      label: "LABS",
+      value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
+    },
+  ];
+
+  const transformOutputTypes = output?.map((item) => ({
+    ...item,
+    valueA: Number(item?.valueA),
+    valueB: Number(item?.valueB),
+  }));
+
+  const finalOutput = {
+    worldChampion: team?.value,
+    predictions: transformOutputTypes,
   };
 
-  console.log(output);
+  console.log(finalOutput);
+
+  const handleSubmit = () => {
+    handlePayment(paymentToken, process.env.NEXT_PUBLIC_TREASURE_ADDRESS);
+  };
+
+  console.log(paymentToken);
 
   return (
     <div className={styles.home}>
@@ -160,7 +192,7 @@ export default function Home({ accountData, nfts }) {
         ))}
       </div>
       <Divider height={80} />
-      <TeamSelect />
+      <TeamSelect onChange={(e) => setTeam(e)} />
       <Divider height={80} />
       <div className={styles.grid}>
         <div className={styles.gridWrapper}>
@@ -245,13 +277,29 @@ export default function Home({ accountData, nfts }) {
                   />
                 )}
               </div>
-              <div className={styles.submit}>
+              <div className={styles.submitWrapper}>
+                {filledCount === 64 && (
+                  <Select
+                    placeholder={"Choose token"}
+                    options={paymentOptions}
+                    // defaultValue={{
+                    //   label: "DGOAT",
+                    //   value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
+                    // }}
+                    onChange={(e) => setPaymentToken(e?.value)}
+                    className={styles.select}
+                  />
+                )}
                 <Button
-                  text={filledCount !== 64 ? `${filledCount}/64` : "Submit"}
+                  text={
+                    filledCount !== 64 && paymentToken === ""
+                      ? `${filledCount}/64`
+                      : "Submit"
+                  }
                   color={"positive"}
                   textColor={"light"}
                   size={"xxs"}
-                  disabled={filledCount !== 64}
+                  disabled={filledCount !== 64 || paymentToken === ""}
                   onClick={handleSubmit}
                 />
                 <Divider height={10} />

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./teamSelect.module.scss";
 import PropTypes from "prop-types";
@@ -10,7 +10,8 @@ import { Title, Icon } from "@components";
 
 const cx = classNames.bind(styles);
 
-const TeamSelect = ({ className, label, options, ...props }) => {
+const TeamSelect = ({ className, onChange, label, options, ...props }) => {
+  const [selectedTeam, setSelectedTeam] = useState(null);
   let classes = cx({ teamSelect: true }, className);
 
   const teams = [
@@ -48,7 +49,7 @@ const TeamSelect = ({ className, label, options, ...props }) => {
     "UY",
   ];
 
-  const filteredTeams = json.filter((item) =>
+  const filteredTeams = json?.filter((item) =>
     teams.includes(item?.countryShortCode)
   );
 
@@ -86,22 +87,29 @@ const TeamSelect = ({ className, label, options, ...props }) => {
     </components.Option>
   );
 
+  useEffect(() => {
+    onChange(selectedTeam);
+  }, [selectedTeam]);
+
   return (
     <div className={classes}>
       <Title tag={"h5"} color={"light"} text={"Select your team"} />
-      <Select
-        className={styles.select}
-        defaultValue={{ value: "HR", label: "Croatia" }}
-        components={{ Option: IconOption, Control }}
-        options={filteredTeams?.map((item, index) => {
-          return {
-            label: item.countryName,
-            value: item.countryShortCode,
-            key: index,
-          };
-        })}
-        {...props}
-      />
+      {json && (
+        <Select
+          onChange={(e) => setSelectedTeam(e)}
+          className={styles.select}
+          defaultValue={{ value: "HR", label: "Croatia" }}
+          components={{ Option: IconOption, Control }}
+          options={filteredTeams?.map((item, index) => {
+            return {
+              label: item.countryName,
+              value: item.countryShortCode,
+              key: index,
+            };
+          })}
+          {...props}
+        />
+      )}
     </div>
   );
 };
