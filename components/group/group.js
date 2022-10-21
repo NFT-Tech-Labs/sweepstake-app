@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames/bind";
 import styles from "./group.module.scss";
 import PropTypes from "prop-types";
-import { Title } from "@components";
+import { Title, Icon } from "@components";
 import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
@@ -33,16 +33,24 @@ const Group = ({ className, teams }) => {
                 color={index === 0 || index === 1 ? "balanced" : "dark"}
                 text={index + 1}
               />
-              <ReactCountryFlag
-                countryCode={item.name}
-                svg
-                style={{
-                  width: "1.5em",
-                  height: "1.5em",
-                }}
-                title={item.name}
-                className={styles.flag}
-              />
+              {item.name === "EN" && item.name !== "WL" && (
+                <Icon name={"EN"} className={styles.customIconEN} />
+              )}
+              {item.name === "WL" && item.name !== "EN" && (
+                <Icon name={"WL"} className={styles.customIcon} />
+              )}
+              {item.name !== "EN" && item.name !== "WL" && (
+                <ReactCountryFlag
+                  countryCode={item.name}
+                  svg
+                  style={{
+                    width: "1.5em",
+                    height: "1.5em",
+                  }}
+                  title={item.name}
+                  className={styles.flag}
+                />
+              )}
               <Title tag={"h6"} text={item.name} />
             </div>
           )}

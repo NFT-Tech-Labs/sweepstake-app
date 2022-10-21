@@ -80,15 +80,24 @@ const Row = ({
               ].join(" ")}
               emphasize
             />
-            <ReactCountryFlag
-              countryCode={teamA}
-              svg
-              style={{
-                width: "1.5em",
-                height: "1.5em",
-              }}
-              title={teamA}
-            />
+            {teamA === "EN" && teamA !== "WL" && (
+              <Icon name={"EN"} className={styles.customIconEN} />
+            )}
+            {teamA === "WL" && teamA !== "EN" && (
+              <Icon name={"WL"} className={styles.customIcon} />
+            )}
+            {teamA !== "EN" && teamA !== "WL" && (
+              <ReactCountryFlag
+                countryCode={teamA}
+                svg
+                style={{
+                  width: "1.5em",
+                  height: "1.5em",
+                }}
+                title={teamA}
+              />
+            )}
+            <Icon />
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
                 <input
@@ -111,15 +120,23 @@ const Row = ({
                 />
               </div>
             </div>
-            <ReactCountryFlag
-              countryCode={teamB}
-              svg
-              style={{
-                width: "1.5em",
-                height: "1.5em",
-              }}
-              title={teamB}
-            />
+            {teamB === "EN" && teamB !== "WL" && (
+              <Icon name={"EN"} className={styles.customIconEN} />
+            )}
+            {teamB === "WL" && teamB !== "EN" && (
+              <Icon name={"WL"} className={styles.customIcon} />
+            )}
+            {teamB !== "EN" && teamB !== "WL" && (
+              <ReactCountryFlag
+                countryCode={teamB}
+                svg
+                style={{
+                  width: "1.5em",
+                  height: "1.5em",
+                }}
+                title={teamB}
+              />
+            )}
             <Content
               text={teamB}
               size={"xs"}

@@ -14,15 +14,23 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   let classes = cx({ teamSelect: true }, className);
 
+  //   {
+  //     countryName: "England",
+  //     countryShortCode: "EN",
+  //   },
+  //   {
+  //     countryName: "Wales",
+  //     countryShortCode: "WL",
+  //   }
   const teams = [
     "NL",
     "EC",
     "QA",
     "SN",
     "US",
-    "WS",
+    "WL",
     "IR",
-    "GB",
+    "EN",
     "AR",
     "SA",
     "MX",
@@ -53,19 +61,32 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
     teams.includes(item?.countryShortCode)
   );
 
+  console.log(filteredTeams);
+
   const Control = ({ children, ...props }) => {
     return (
       <components.Control {...props}>
-        <ReactCountryFlag
-          countryCode={props?.selectProps?.value?.value}
-          svg
-          style={{
-            width: "1.5em",
-            height: "1.5em",
-            marginLeft: 10,
-          }}
-          title={props?.selectProps?.value?.label}
-        />
+        {props?.selectProps?.value?.value === "EN" &&
+          props?.selectProps?.value?.value !== "WL" && (
+            <Icon name={"EN"} className={styles.customIconEN} />
+          )}
+        {props?.selectProps?.value?.value === "WL" &&
+          props?.selectProps?.value?.value !== "EN" && (
+            <Icon name={"WL"} className={styles.customIcon} />
+          )}
+        {props?.selectProps?.value?.value !== "EN" &&
+          props?.selectProps?.value?.value !== "WL" && (
+            <ReactCountryFlag
+              countryCode={props?.selectProps?.value?.value}
+              svg
+              style={{
+                width: "1.5em",
+                height: "1.5em",
+                marginLeft: 10,
+              }}
+              title={props?.selectProps?.value?.label}
+            />
+          )}
         {children}
       </components.Control>
     );
@@ -98,7 +119,7 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
         <Select
           onChange={(e) => setSelectedTeam(e)}
           className={styles.select}
-          defaultValue={{ value: "HR", label: "Croatia" }}
+          defaultValue={{ value: "AR", label: "Argentina" }}
           components={{ Option: IconOption, Control }}
           options={filteredTeams?.map((item, index) => {
             return {
