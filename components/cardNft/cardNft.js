@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import Image from "next/image";
 import styles from "./cardNft.module.scss";
@@ -8,7 +9,15 @@ import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
 
-const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
+const CardNft = ({
+  className,
+  attributes,
+  image,
+  name,
+  symbol,
+  country,
+  empty,
+}) => {
   const classes = cx(
     {
       cardNft: true,
@@ -19,7 +28,7 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
 
   const EmptyCard = () => (
     <Card overflow className={classes}>
-      <Icon name={"ball"} color={"dark"} />
+      <Icon name={"logo"} color={"dark"} />
       <Divider height={20} />
       <Title tag={"h6"} text={"Don't have DaGoats NFTs?"} />
       <Divider height={5} />
@@ -38,7 +47,7 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
     <EmptyCard />
   ) : (
     <Card className={classes}>
-      <div className={styles.heading}>
+      {/* <div className={styles.heading}>
         {attributes?.map(
           (item) =>
             item.trait_type === "type" && (
@@ -50,9 +59,16 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
               />
             )
         )}
+      </div> */}
+      {image && (
+        <div className={styles.image}>
+          <Image objectFit={"cover"} layout={"fill"} src={image} alt={name} />
+        </div>
+      )}
+      <div className={styles.body}>
         <div className={styles.country}>
           <ReactCountryFlag
-            countryCode={"ES"}
+            countryCode={country}
             svg
             style={{
               width: "auto",
@@ -61,19 +77,19 @@ const CardNft = ({ className, attributes, image, name, symbol, empty }) => {
             title={"nl"}
           />
         </div>
-      </div>
-      {image && (
-        <div className={styles.image}>
-          <Image objectFit={"cover"} layout={"fill"} src={image} alt={name} />
+        <div className={styles.details}>
+          {name && (
+            <Content
+              className={styles.name}
+              size={"xs"}
+              text={name}
+              emphasize
+            />
+          )}
+          {symbol && (
+            <Content className={styles.symbol} size={"xxs"} text={symbol} />
+          )}
         </div>
-      )}
-      <div className={styles.details}>
-        {name && (
-          <Content className={styles.name} size={"xs"} text={name} emphasize />
-        )}
-        {symbol && (
-          <Content className={styles.symbol} size={"xxs"} text={symbol} />
-        )}
       </div>
     </Card>
   );

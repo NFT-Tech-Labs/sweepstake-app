@@ -1,11 +1,15 @@
+@import '../../styles/mixins.scss';
+
 .cardNft {
   position: relative;
-  max-width: 250px;
-  padding: var(--spacing-m) var(--spacing-s);
-  // border: solid 5px rgba(var(--color-light), 1); 
   box-shadow: var(--shadow);
   border-radius: var(--spacing-m);
   background-color: rgba(var(--color-light), 1);
+  flex-basis: 100%;
+
+  @include medium {
+    flex-basis: 33%;
+  }
 }
 
 .heading {
@@ -16,19 +20,30 @@
 
 .image {
   position: relative;
-  min-height: 200px;
-  margin: var(--spacing-s) 0 var(--spacing-xl);
+  min-height: 270px;
+  // margin: var(--spacing-s) 0 var(--spacing-xl);
   width: 100%;
-  border: solid 2px rgba(var(--color-stable), 1); 
+  border-bottom: solid 2px rgba(var(--color-stable), 1); 
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-m);
 }
 
 .country {
   border-radius: 100%;
   width: 32px;
   height: 32px;
-  margin-right: var(--spacing-s);
   overflow: hidden;
   border: solid 1px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .type, .name, .symbol {
@@ -41,6 +56,7 @@
   align-items: center;
   justify-content: center;
   min-height: 328px;
+  width: 100%;
   max-width: 100%;
   border: dashed 2px rgba(var(--color-stable), 1);
   box-shadow: none; 

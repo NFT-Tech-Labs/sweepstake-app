@@ -7,6 +7,7 @@ import { Title, Content, Divider, Card, Button } from "@components";
 
 const cx = classNames.bind(styles);
 
+// eslint-disable-next-line react/prop-types
 const Cta = ({ className, title, content, button, image }) => {
   let classes = cx({ cta: true }, className);
 
@@ -28,6 +29,7 @@ const Cta = ({ className, title, content, button, image }) => {
             layout={"fill"}
             src={image}
             alt={"maradona"}
+            priority
           />
         </div>
       )}

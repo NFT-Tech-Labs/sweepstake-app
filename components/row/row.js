@@ -30,6 +30,9 @@ const Row = ({
       ? (valueA > valueB && resultA > resultB) ||
         (valueA < valueB && resultA < resultB)
       : false;
+  const filledA = valueA !== null;
+  const filledB = valueB !== null;
+  const blank = resultA === null || resultB === null;
 
   let classes = cx(
     {
@@ -37,6 +40,9 @@ const Row = ({
       results: resultA || resultB,
       perfect,
       correct,
+      filledA,
+      filledB,
+      blank,
     },
     className
   );
@@ -46,11 +52,10 @@ const Row = ({
       {date && (
         <td className={styles.date}>
           <div className={styles.dateWrapper}>
-            {group && (
-              <div className={styles.groupWrapper}>
-                <Content text={group} color={"dark"} size={"m"} />
-              </div>
-            )}
+            <div className={styles.groupWrapper}>
+              <Content text={group} color={"dark"} size={"m"} />
+            </div>
+
             <div>
               <Content text={time} className={styles.time} emphasize />
               <Content text={date} color={"stable-500"} size={"xs"} />
@@ -75,44 +80,63 @@ const Row = ({
               ].join(" ")}
               emphasize
             />
-            <ReactCountryFlag
-              countryCode={teamA}
-              svg
-              style={{
-                width: "1.5em",
-                height: "1.5em",
-              }}
-              title={teamA}
-            />
+            {teamA === "EN" && teamA !== "WL" && (
+              <Icon name={"EN"} className={styles.customIconEN} />
+            )}
+            {teamA === "WL" && teamA !== "EN" && (
+              <Icon name={"WL"} className={styles.customIcon} />
+            )}
+            {teamA !== "EN" && teamA !== "WL" && (
+              <ReactCountryFlag
+                countryCode={teamA}
+                svg
+                style={{
+                  width: "1.5em",
+                  height: "1.5em",
+                }}
+                title={teamA}
+              />
+            )}
+            <Icon />
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
                 <input
                   id={id}
-                  type={"text"}
+                  type={"number"}
                   value={valueA}
-                  maxLength={"2"}
+                  min={"0"}
                   onChange={onChangeA}
-                  disabled={resultA || resultB}
+                  onWheel={(e) => e.target.blur()}
+                  // disabled={resultA || resultB}
                 />
                 <input
                   id={id}
-                  type={"text"}
+                  type={"number"}
                   value={valueB}
-                  maxLength={"2"}
+                  min={"0"}
                   onChange={onChangeB}
-                  disabled={resultA || resultB}
+                  onWheel={(e) => e.target.blur()}
+                  // disabled={resultA || resultB}
                 />
               </div>
             </div>
-            <ReactCountryFlag
-              countryCode={teamB}
-              svg
-              style={{
-                width: "1.5em",
-                height: "1.5em",
-              }}
-              title={teamB}
-            />
+            {teamB === "EN" && teamB !== "WL" && (
+              <Icon name={"EN"} className={styles.customIconEN} />
+            )}
+            {teamB === "WL" && teamB !== "EN" && (
+              <Icon name={"WL"} className={styles.customIcon} />
+            )}
+            {teamB !== "EN" && teamB !== "WL" && (
+              <ReactCountryFlag
+                countryCode={teamB}
+                svg
+                style={{
+                  width: "1.5em",
+                  height: "1.5em",
+                }}
+                title={teamB}
+              />
+            )}
             <Content
               text={teamB}
               size={"xs"}
@@ -129,40 +153,45 @@ const Row = ({
           </div>
         </td>
       )}
-      {resultA !== null && resultB !== null && (
-        <td className={styles.status}>
-          <div className={styles.statusWrapper}>
-            <div className={styles.matchResult}>
-              <input
-                id={id}
-                type={"text"}
-                value={resultA}
-                maxLength={"2"}
-                disabled
-                className={resultA > resultB ? styles.win : styles.lose}
-              />
-              <input
-                id={id}
-                type={"text"}
-                value={resultB}
-                maxLength={"2"}
-                disabled
-                className={resultA < resultB ? styles.win : styles.lose}
-              />
-            </div>
-            <div>
-              <Icon
-                name={
-                  perfect ? "checkmark-double" : correct ? "checkmark" : "cross"
-                }
-                color={"dark"}
-                size={"xxs"}
-                className={styles.icon}
-              />
-            </div>
+      <td className={styles.status}>
+        <div className={styles.statusWrapper}>
+          <div className={styles.matchResult}>
+            <input
+              id={id}
+              type={"text"}
+              value={resultA?.toString() || "-"}
+              maxLength={"2"}
+              disabled
+              className={resultA > resultB ? styles.win : styles.lose}
+            />
+            <input
+              id={id}
+              type={"text"}
+              value={resultB?.toString() || "-"}
+              maxLength={"2"}
+              disabled
+              className={resultA < resultB ? styles.win : styles.lose}
+            />
           </div>
-        </td>
-      )}
+          <div>
+            <Icon
+              name={
+                perfect
+                  ? "checkmark-double"
+                  : correct
+                  ? "checkmark"
+                  : blank
+                  ? "blank"
+                  : "cross"
+              }
+              color={"dark"}
+              size={"xxs"}
+              className={styles.icon}
+            />
+          </div>
+        </div>
+      </td>
+
       {points && (
         <td className={styles.points}>
           <Content
@@ -190,7 +219,7 @@ Row.propTypes = {
   resultB: PropTypes.number,
   onChangeA: PropTypes.func,
   onChangeB: PropTypes.func,
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 Row.defaultProps = {

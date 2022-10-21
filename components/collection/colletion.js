@@ -10,15 +10,43 @@ const cx = classNames.bind(styles);
 const Collection = ({ className, nfts }) => {
   let classes = cx({ collection: true }, className);
 
+  const mockData = [
+    {
+      name: "DaGoats",
+      symbol: "DGOAT",
+      image: "/traitsdagoats2.jpg",
+      country: "NL",
+      attributes: [
+        {
+          trait_type: "lol",
+          value: "lol",
+        },
+      ],
+    },
+    {
+      name: "DaGoats",
+      symbol: "DGOAT",
+      image: "/traitsdagoats7.jpg",
+      country: "ES",
+      attributes: [
+        {
+          trait_type: "lol",
+          value: "lol",
+        },
+      ],
+    },
+  ];
+
   return (
     <div className={classes}>
       <div className={styles.wrapper}>
-        <div className={styles.cards}>
-          {nfts?.slice(0, 4).map((item, index) => (
+        {/* {nfts?.slice(0, 4).map((item, index) => (
             <CardNft key={index} {...item} />
-          ))}
-          {(nfts === null || nfts?.length === 0) && <CardNft empty />}
-        </div>
+          ))} */}
+        {mockData?.slice(0, 4).map((item, index) => (
+          <CardNft className={styles.card} key={index} {...item} />
+        ))}
+        {/* {(nfts === null || nfts?.length === 0) && <CardNft empty />} */}
       </div>
     </div>
   );

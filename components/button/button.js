@@ -13,14 +13,21 @@ const Button = ({
   textColor,
   onClick,
   link,
+  outline,
+  active,
   disabled,
+  filled,
   className,
 }) => {
+  // let colorType = outline ? `border-${color}` : `background-${color}`;
   const classes = cx(
     {
       button: true,
       link,
       disabled,
+      outline,
+      active,
+      filled,
       [`background-${color}`]: color,
     },
     className
@@ -41,6 +48,9 @@ Button.propTypes = {
   color: PropTypes.string,
   onClick: PropTypes.func,
   link: PropTypes.bool,
+  outline: PropTypes.bool,
+  active: PropTypes.bool,
+  filled: PropTypes.bool,
   disabled: PropTypes.bool,
 };
 
@@ -52,6 +62,9 @@ Button.defaultProps = {
   color: "positive",
   onClick: () => null,
   link: false,
+  outline: false,
+  active: false,
+  filled: false,
   disabled: false,
 };
 
