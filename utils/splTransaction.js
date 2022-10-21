@@ -16,6 +16,7 @@ import {
   Transaction,
   Connection,
   TransactionInstruction,
+  LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 
 const SendSolanaSplTokens = () => {
@@ -25,7 +26,7 @@ const SendSolanaSplTokens = () => {
   const [confirmation, setConfirmation] = useState(false);
   const [error, setError] = useState(false);
 
-  const handlePayment = async (mint, recipient) => {
+  const handlePayment = async (mint, recipient, amount) => {
     setError(false);
     setConfirmation(false);
     setProcessing(true);
@@ -62,7 +63,7 @@ const SendSolanaSplTokens = () => {
           fromAccount.address, // source
           associatedTokenTo, // dest
           publicKey,
-          1000000000 // transfer 1 USDC, USDC on solana devnet has 6 decimal
+          LAMPORTS_PER_SOL * amount // transfer 1 USDC, USDC on solana devnet has 6 decimal
         )
       );
       const transaction = new Transaction().add(...transactionInstructions);

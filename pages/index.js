@@ -34,6 +34,7 @@ import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
+import SendSolanaTokens from "utils/sendTransaction";
 import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,6 +44,12 @@ export default function Home({ accountData, nfts }) {
   const { publicKey, signMessage, sendTransaction } = useWallet();
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
+  const {
+    handleSolanaPayment,
+    confirmationSolana,
+    processingSolana,
+    errorSolana,
+  } = SendSolanaTokens();
   const { handlePayment, confirmation, processing, error } =
     SendSolanaSplTokens();
 
@@ -111,29 +118,43 @@ export default function Home({ accountData, nfts }) {
     output.filter((item) => item.valueA && item.valueB).length + 1;
 
   useEffect(() => {
-    processing && toast("Processing...");
-  }, [processing]);
+    (processing || processingSolana) && toast("Processing...");
+  }, [processing, processingSolana]);
 
   useEffect(() => {
-    confirmation && toast.success("Transaction completed!");
-  }, [confirmation]);
+    (confirmation || confirmationSolana) &&
+      toast.success("Transaction completed!");
+  }, [confirmation, confirmationSolana]);
 
   useEffect(() => {
-    error && toast.error("Something went wrong!");
-  }, [error]);
+    (errorSolana || errorSolana) && toast.error("Something went wrong!");
+  }, [error, errorSolana]);
 
   const paymentOptions = [
     {
+      label: "SOL",
+      value: "sol",
+      amount: 0.25,
+    },
+    {
+      label: "DUST",
+      value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
+      amount: 7,
+    },
+    {
       label: "DGOAT",
       value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
+      amount: 1,
     },
     {
       label: "MVP",
       value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
+      amount: 750,
     },
     {
       label: "LABS",
       value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
+      amount: 375,
     },
   ];
 
@@ -150,11 +171,29 @@ export default function Home({ accountData, nfts }) {
 
   console.log(finalOutput);
 
-  const handleSubmit = () => {
-    handlePayment(paymentToken, process.env.NEXT_PUBLIC_TREASURE_ADDRESS);
-  };
+  console.log();
 
-  console.log(paymentToken);
+  const handleSubmit = () => {
+    if (publicKey) {
+      const paymentAmount = paymentOptions?.filter(
+        (item) => item.value === paymentToken
+      )[0].amount;
+
+      if (paymentToken !== "sol") {
+        handlePayment(
+          paymentToken,
+          process.env.NEXT_PUBLIC_TREASURE_ADDRESS,
+          paymentAmount
+        );
+      } else {
+        handleSolanaPayment(
+          publicKey,
+          process.env.NEXT_PUBLIC_TREASURE_ADDRESS,
+          paymentAmount
+        );
+      }
+    }
+  };
 
   return (
     <div className={styles.home}>

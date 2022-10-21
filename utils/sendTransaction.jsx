@@ -1,18 +1,20 @@
 import { useState, useCallback } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { LAMPORTS_PER_SOL, SystemProgram, Transactio } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 
-const CreateTransaction = () => {
+const SendSolanaTokens = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
-  const [processing, setProcessing] = useState(false);
-  const [confirmation, setConfirmation] = useState(false);
-  const [error, setError] = useState(false);
+  const [processingSolana, setProcessingSolana] = useState(false);
+  const [confirmationSolana, setConfirmationSolana] = useState(false);
+  const [errorSolana, setErrorSolana] = useState(false);
 
-  const handleTransaction = useCallback(
+  const handleSolanaPayment = useCallback(
     async (senderPublicKey, receiverPublicKey, amount) => {
-      setProcessing(true);
+      setErrorSolana(false);
+      setConfirmationSolana(false);
+      setProcessingSolana(true);
 
       try {
         if (!publicKey) throw new WalletNotConnectedError();
@@ -38,19 +40,24 @@ const CreateTransaction = () => {
           lastValidBlockHeight,
           signature,
         });
-        setConfirmation(true);
+        setConfirmationSolana(true);
       } catch (error) {
         console.warn(error);
-        setConfirmation(false);
-        setError(true);
+        setConfirmationSolana(false);
+        setErrorSolana(true);
       }
 
-      setProcessing(false);
+      setProcessingSolana(false);
     },
     [publicKey, sendTransaction, connection]
   );
 
-  return { processing, confirmation, error, handleTransaction };
+  return {
+    processingSolana,
+    confirmationSolana,
+    errorSolana,
+    handleSolanaPayment,
+  };
 };
 
-export default CreateTransaction;
+export default SendSolanaTokens;

@@ -878,6 +878,26 @@ const profileData = {
   tokens: [
     {
       title: {
+        text: "SOL",
+      },
+      content: {
+        text: "token",
+      },
+      available: 0.25,
+      required: 0.25,
+    },
+    {
+      title: {
+        text: "DUST",
+      },
+      content: {
+        text: "token",
+      },
+      available: 5,
+      required: 7,
+    },
+    {
+      title: {
         text: "DGOAT",
       },
       content: {

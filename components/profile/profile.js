@@ -115,7 +115,7 @@ const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
                     size={"s"}
                     text={
                       normalizedPercentage === 100
-                        ? "You have enough tokens to participate!"
+                        ? "You are able to participate!"
                         : "You need to have enough tokens of atleast one shown above"
                     }
                     color={"stable-500"}
