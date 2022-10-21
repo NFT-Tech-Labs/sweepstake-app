@@ -617,41 +617,57 @@ const roundOf16Scheme = [
     match: 1,
     teamA: "A1",
     teamB: "B2",
+    date: "2 dec",
+    time: "16:00",
   },
   {
     match: 2,
     teamA: "C1",
     teamB: "D2",
+    date: "2 dec",
+    time: "20:00",
   },
   {
     match: 3,
     teamA: "D1",
     teamB: "C2",
+    date: "3 dec",
+    time: "16:00",
   },
   {
     match: 4,
     teamA: "B1",
     teamB: "A2",
+    date: "3 dec",
+    time: "20:00",
   },
   {
     match: 5,
     teamA: "E1",
     teamB: "F2",
+    date: "4 dec",
+    time: "16:00",
   },
   {
     match: 6,
     teamA: "G1",
     teamB: "H2",
+    date: "4 dec",
+    time: "20:00",
   },
   {
     match: 7,
     teamA: "F1",
     teamB: "E2",
+    date: "5 dec",
+    time: "16:00",
   },
   {
     match: 8,
     teamA: "H1",
     teamB: "G2",
+    date: "5 dec",
+    time: "20:00",
   },
 ];
 
@@ -660,21 +676,29 @@ const quarterScheme = [
     match: 1,
     teamA: "WG5",
     teamB: "WG6",
+    date: "9 dec",
+    time: "16:00",
   },
   {
     match: 2,
     teamA: "WG1",
     teamB: "WG2",
+    date: "9 dec",
+    time: "20:00",
   },
   {
     match: 3,
     teamA: "WG7",
     teamB: "WG8",
+    date: "10 dec",
+    time: "16:00",
   },
   {
     match: 4,
     teamA: "WG4",
     teamB: "WG3",
+    date: "10 dec",
+    time: "20:00",
   },
 ];
 
@@ -683,11 +707,15 @@ const semiScheme = [
     match: 1,
     teamA: "WG2",
     teamB: "WG1",
+    date: "13 dec",
+    time: "20:00",
   },
   {
     match: 2,
     teamA: "WG4",
     teamB: "WG3",
+    date: "14 dec",
+    time: "20:00",
   },
 ];
 
@@ -696,6 +724,8 @@ const thirdPlaceScheme = [
     match: 1,
     teamA: "LG1",
     teamB: "LG2",
+    date: "17 dec",
+    time: "20:00",
   },
 ];
 
@@ -704,6 +734,8 @@ const finalScheme = [
     match: 1,
     teamA: "WG1",
     teamB: "WG2",
+    date: "18 dec",
+    time: "20:00",
   },
 ];
 
