@@ -247,18 +247,15 @@ export default function Home({ accountData, nfts }) {
             <Divider height={20} />
             <div className={styles.actions}>
               <div className={styles.pagination}>
-                {count !== 0 && (
-                  <>
-                    <Button
-                      classname={styles.next}
-                      text={"Prev"}
-                      link
-                      onClick={() => setCount(count - 1)}
-                      size={"m"}
-                    />
-                  </>
-                )}
-                {groupsFilled && count > 6 && (
+                <Button
+                  classname={styles.next}
+                  text={"Prev"}
+                  link
+                  onClick={() => setCount(count - 1)}
+                  size={"m"}
+                  disabled={count === 0}
+                />
+                {groupsFilled && count > 6 && count < 12 && (
                   <Button
                     classname={styles.next}
                     text={"Next"}

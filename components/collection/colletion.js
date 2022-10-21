@@ -13,7 +13,7 @@ const Collection = ({ className, nfts }) => {
   const mockData = [
     {
       name: "DaGoats",
-      symbol: "DGOT",
+      symbol: "DGOAT",
       image: "/traitsdagoats2.jpg",
       country: "NL",
       attributes: [
@@ -25,7 +25,7 @@ const Collection = ({ className, nfts }) => {
     },
     {
       name: "DaGoats",
-      symbol: "DGOT",
+      symbol: "DGOAT",
       image: "/traitsdagoats7.jpg",
       country: "ES",
       attributes: [

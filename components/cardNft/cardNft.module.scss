@@ -2,14 +2,13 @@
 
 .cardNft {
   position: relative;
-  padding: var(--spacing-m) var(--spacing-s);
   box-shadow: var(--shadow);
   border-radius: var(--spacing-m);
   background-color: rgba(var(--color-light), 1);
   flex-basis: 100%;
 
   @include medium {
-    flex-basis: 40%;
+    flex-basis: 33%;
   }
 }
 
@@ -22,18 +21,29 @@
 .image {
   position: relative;
   min-height: 270px;
-  margin: var(--spacing-s) 0 var(--spacing-xl);
+  // margin: var(--spacing-s) 0 var(--spacing-xl);
   width: 100%;
-  border: solid 2px rgba(var(--color-stable), 1); 
+  border-bottom: solid 2px rgba(var(--color-stable), 1); 
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-m);
 }
 
 .country {
   border-radius: 100%;
   width: 32px;
   height: 32px;
-  margin-right: var(--spacing-s);
   overflow: hidden;
   border: solid 1px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .type, .name, .symbol {

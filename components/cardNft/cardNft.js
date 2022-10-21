@@ -47,7 +47,7 @@ const CardNft = ({
     <EmptyCard />
   ) : (
     <Card className={classes}>
-      <div className={styles.heading}>
+      {/* <div className={styles.heading}>
         {attributes?.map(
           (item) =>
             item.trait_type === "type" && (
@@ -59,6 +59,13 @@ const CardNft = ({
               />
             )
         )}
+      </div> */}
+      {image && (
+        <div className={styles.image}>
+          <Image objectFit={"cover"} layout={"fill"} src={image} alt={name} />
+        </div>
+      )}
+      <div className={styles.body}>
         <div className={styles.country}>
           <ReactCountryFlag
             countryCode={country}
@@ -70,19 +77,19 @@ const CardNft = ({
             title={"nl"}
           />
         </div>
-      </div>
-      {image && (
-        <div className={styles.image}>
-          <Image objectFit={"cover"} layout={"fill"} src={image} alt={name} />
+        <div className={styles.details}>
+          {name && (
+            <Content
+              className={styles.name}
+              size={"xs"}
+              text={name}
+              emphasize
+            />
+          )}
+          {symbol && (
+            <Content className={styles.symbol} size={"xxs"} text={symbol} />
+          )}
         </div>
-      )}
-      <div className={styles.details}>
-        {name && (
-          <Content className={styles.name} size={"xs"} text={name} emphasize />
-        )}
-        {symbol && (
-          <Content className={styles.symbol} size={"xxs"} text={symbol} />
-        )}
       </div>
     </Card>
   );
