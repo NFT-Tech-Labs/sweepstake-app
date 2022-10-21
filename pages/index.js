@@ -29,7 +29,7 @@ import {
   timelineData,
   profileData,
 } from "utils/data";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
@@ -170,9 +170,6 @@ export default function Home({ accountData, nfts }) {
   };
 
   console.log(finalOutput);
-
-  console.log();
-
   const handleSubmit = () => {
     if (publicKey) {
       const paymentAmount = paymentOptions?.filter(
@@ -197,7 +194,6 @@ export default function Home({ accountData, nfts }) {
 
   return (
     <div className={styles.home}>
-      {/* {processing && ( */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -210,7 +206,6 @@ export default function Home({ accountData, nfts }) {
         pauseOnHover
         theme="dark"
       />
-      {/* )} */}
       <Divider height={40} />
       <Profile
         publicKey={publicKey?.toBase58()}
@@ -244,25 +239,6 @@ export default function Home({ accountData, nfts }) {
             />
           </div>
           <div className={styles.tableWrapper}>
-            {/* <>
-              <Title
-                tag={"h4"}
-                text={
-                  count === 8
-                    ? "Round of 16"
-                    : count === 9
-                    ? "Quarter finals"
-                    : count === 10
-                    ? "Semi finals"
-                    : count === 11
-                    ? "Third place"
-                    : count === 12
-                    ? "Final"
-                    : "Groupstage"
-                }
-              />
-              <Divider height={20} />
-            </> */}
             <div className={styles.timelineWrapper}>
               <Timeline
                 count={count}
@@ -318,10 +294,6 @@ export default function Home({ accountData, nfts }) {
                   <Select
                     placeholder={"Choose token"}
                     options={paymentOptions}
-                    // defaultValue={{
-                    //   label: "DGOAT",
-                    //   value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
-                    // }}
                     onChange={(e) => setPaymentToken(e?.value)}
                     className={styles.select}
                   />
@@ -339,7 +311,6 @@ export default function Home({ accountData, nfts }) {
                   onClick={handleSubmit}
                 />
                 <Divider height={10} />
-                {/* <Content size={"xs"} text={`Filled: ${filledCount}/64`} /> */}
               </div>
             </div>
           </div>

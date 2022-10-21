@@ -63,7 +63,7 @@ const SendSolanaSplTokens = () => {
           fromAccount.address, // source
           associatedTokenTo, // dest
           publicKey,
-          LAMPORTS_PER_SOL * amount // transfer 1 USDC, USDC on solana devnet has 6 decimal
+          LAMPORTS_PER_SOL * amount
         )
       );
       const transaction = new Transaction().add(...transactionInstructions);
