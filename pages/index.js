@@ -38,6 +38,7 @@ import SendSolanaTokens from "utils/sendTransaction";
 import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import crypto from "crypto";
 
 export default function Home({ accountData, nfts }) {
   const router = useRouter();
@@ -76,6 +77,33 @@ export default function Home({ accountData, nfts }) {
   const [loading, setLoading] = useState(processing);
   const [success, setSuccess] = useState(confirmation);
 
+  // const signCustomMessage = async () => {
+  //   const address = publicKey.toBase58();
+  //   const chain = "mainnet";
+  //   const account = {
+  //     address: address,
+  //     chain: chain,
+  //     network: "solana",
+  //   };
+  //   const { message } = await apiPost("api/auth/request-message", account);
+
+  //   const encodedMessage = new TextEncoder().encode(message);
+  //   const signedMessage = await signMessage(encodedMessage, "utf8");
+  //   const signature = base58.encode(signedMessage);
+  //   try {
+  //     await signIn("credentials", {
+  //       message,
+  //       signature,
+  //       redirect: false,
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //     return null;
+  //   }
+  // };
+
+  console.log(session);
+
   const signCustomMessage = async () => {
     const address = publicKey.toBase58();
     const chain = "mainnet";
@@ -84,13 +112,18 @@ export default function Home({ accountData, nfts }) {
       chain: chain,
       network: "solana",
     };
-    const { message } = await apiPost("api/auth/request-message", account);
+
+    // const nonce = crypto.randomBytes(32).toString("base64");
+    // console.log(nonce);
+    const message = `Sign this ${nonce}`;
     const encodedMessage = new TextEncoder().encode(message);
     const signedMessage = await signMessage(encodedMessage, "utf8");
     const signature = base58.encode(signedMessage);
+
+    console.log(signature);
     try {
       await signIn("credentials", {
-        message,
+        address,
         signature,
         redirect: false,
       });
