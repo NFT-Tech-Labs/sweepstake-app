@@ -61,8 +61,6 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
     teams.includes(item?.countryShortCode)
   );
 
-  console.log(filteredTeams);
-
   const Control = ({ children, ...props }) => {
     return (
       <components.Control {...props}>

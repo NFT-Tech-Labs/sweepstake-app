@@ -38,9 +38,9 @@ import SendSolanaTokens from "utils/sendTransaction";
 import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import crypto from "crypto";
+import crypto, { sign } from "crypto";
 
-export default function Home({ accountData, nfts }) {
+export default function Home({ accountData, nfts, users }) {
   const router = useRouter();
   const { publicKey, signMessage, sendTransaction } = useWallet();
   const { data: session, status } = useSession();
@@ -53,6 +53,8 @@ export default function Home({ accountData, nfts }) {
   } = SendSolanaTokens();
   const { handlePayment, confirmation, processing, error } =
     SendSolanaSplTokens();
+
+  console.log(users);
 
   useEffect(() => {
     startTransition(() => {
@@ -104,32 +106,49 @@ export default function Home({ accountData, nfts }) {
 
   console.log(session);
 
+  const user = users?.filter(
+    (item) => item?.address === publicKey?.toBase58()
+  )[0];
+
+  console.log(publicKey);
+
   const signCustomMessage = async () => {
-    const address = publicKey.toBase58();
-    const chain = "mainnet";
-    const account = {
-      address: address,
-      chain: chain,
-      network: "solana",
-    };
+    if (publicKey) {
+      const address = publicKey.toBase58();
 
-    // const nonce = crypto.randomBytes(32).toString("base64");
-    // console.log(nonce);
-    const message = `Sign this ${nonce}`;
-    const encodedMessage = new TextEncoder().encode(message);
-    const signedMessage = await signMessage(encodedMessage, "utf8");
-    const signature = base58.encode(signedMessage);
+      if (user) {
+        const message = user?.nonce;
+        const encodedMessage = new TextEncoder().encode(message);
 
-    console.log(signature);
-    try {
-      await signIn("credentials", {
-        address,
-        signature,
-        redirect: false,
-      });
-    } catch (e) {
-      console.log(e);
-      return null;
+        const signedMessage = await signMessage(encodedMessage, "utf8");
+        const signature = base58.encode(signedMessage);
+        try {
+          await signIn("authCredentials", {
+            address,
+            signature,
+            redirect: false,
+          });
+        } catch (e) {
+          console.log(e);
+          return null;
+        }
+      } else {
+        const message = address;
+        const encodedMessage = new TextEncoder().encode(message);
+
+        const signedMessage = await signMessage(encodedMessage, "utf8");
+        const signature = base58.encode(signedMessage);
+        try {
+          await signIn("createCredentials", {
+            address,
+            signature,
+            redirect: false,
+          });
+        } catch (e) {
+          console.log(e);
+          return null;
+        }
+      }
     }
   };
 
@@ -203,6 +222,7 @@ export default function Home({ accountData, nfts }) {
   };
 
   console.log(finalOutput);
+
   const handleSubmit = () => {
     if (publicKey) {
       const paymentAmount = paymentOptions?.filter(
@@ -384,11 +404,15 @@ export async function getServerSideProps(context) {
   }
 
   const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
+  const users = await fetch(
+    "https://backend-x7q2esrofa-no.a.run.app/api/v1/users"
+  ).then((response) => response.json());
 
   return {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
+      users: users || null,
     },
   };
 }

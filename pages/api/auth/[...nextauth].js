@@ -6,7 +6,8 @@ import Moralis from "moralis";
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: "SignatureAuth",
+      id: "createCredentials",
+      name: "createUser",
       credentials: {
         address: {
           label: "Address",
@@ -21,32 +22,58 @@ export default NextAuth({
         try {
           const { address, signature } = credentials;
 
-          const response = await fetch(
+          const data = await fetch(
             "https://backend-x7q2esrofa-no.a.run.app/api/v1/users",
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ address, signature }),
+              body: JSON.stringify({
+                address,
+                signature,
+              }),
             }
           );
-          const user = await response.json();
+          const user = await data.json();
+          return user;
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      },
+    }),
+    CredentialsProvider({
+      id: "authCredentials",
+      name: "authUser",
+      credentials: {
+        address: {
+          label: "Address",
+          type: "text",
+        },
+        signature: {
+          label: "Signature",
+          type: "text",
+        },
+      },
+      async authorize(credentials) {
+        try {
+          const { address, signature } = credentials;
 
-          console.log(user);
-
-          // const { message, signature } = credentials;
-          // await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
-
-          // const { address, network, profileId, expirationTime } = (
-          //   await Moralis.Auth.verify({ message, signature, network: "solana" })
-          // ).raw;
-          // const user = {
-          //   address,
-          //   network,
-          //   profileId,
-          //   expirationTime,
-          // };
+          const data = await fetch(
+            "https://backend-x7q2esrofa-no.a.run.app/api/v1/auth/sign-in",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                address,
+                signature,
+              }),
+            }
+          );
+          const user = await data.json();
           return user;
         } catch (e) {
           console.error(e);
