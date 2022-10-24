@@ -19,7 +19,8 @@ import {
   TeamSelect,
 } from "@components";
 import Select from "react-select";
-import { fetchData } from "utils/api";
+import { getData, postData } from "utils/api";
+import { fetchData } from "utils/apiNft";
 import {
   tableData,
   headingData,
@@ -53,8 +54,6 @@ export default function Home({ accountData, nfts, users }) {
   } = SendSolanaTokens();
   const { handlePayment, confirmation, processing, error } =
     SendSolanaSplTokens();
-
-  console.log(users);
 
   useEffect(() => {
     startTransition(() => {
@@ -155,19 +154,19 @@ export default function Home({ accountData, nfts, users }) {
   useEffect(() => {
     output
       .slice(0, 48)
-      ?.every((item) => item.valueA !== null && item.valueB !== null)
+      ?.every((item) => item.scoreA !== null && item.scoreB !== null)
       ? setGroupsFilled(true)
       : setGroupsFilled(false);
   }, [output]);
 
   const checkFilled = (round) => {
     return output?.filter(
-      (item) => item.type === round && item.valueA && item.valueB
+      (item) => item.type === round && item.scoreA && item.scoreB
     );
   };
 
   const filledCount =
-    output.filter((item) => item.valueA && item.valueB).length + 1;
+    output.filter((item) => item.scoreA && item.scoreB).length + 1;
 
   useEffect(() => {
     (processing || processingSolana) && toast("Processing...");
@@ -212,8 +211,9 @@ export default function Home({ accountData, nfts, users }) {
 
   const transformOutputTypes = output?.map((item) => ({
     ...item,
-    valueA: Number(item?.valueA),
-    valueB: Number(item?.valueB),
+    matchId: item?.id,
+    scoreA: Number(item?.scoreA),
+    scoreB: Number(item?.scoreB),
   }));
 
   const finalOutput = {
@@ -245,8 +245,21 @@ export default function Home({ accountData, nfts, users }) {
     }
   };
 
+  // const testSubmit = async () => {
+  //   if (session) {
+  //     const sweepstake = await postData(
+  //       "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
+  //       session?.user?.credentials?.accessToken,
+  //       finalOutput
+  //     );
+
+  //     return sweepstake;
+  //   }
+  // };
+
   return (
     <div className={styles.home}>
+      {/* <button onClick={testSubmit}>SubmitSweepstake</button> */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -404,9 +417,10 @@ export async function getServerSideProps(context) {
   }
 
   const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
-  const users = await fetch(
+
+  const users = await getData(
     "https://backend-x7q2esrofa-no.a.run.app/api/v1/users"
-  ).then((response) => response.json());
+  );
 
   return {
     props: {

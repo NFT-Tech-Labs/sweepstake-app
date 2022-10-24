@@ -15,8 +15,8 @@ const Row = ({
   points,
   teamA,
   teamB,
-  valueA,
-  valueB,
+  scoreA,
+  scoreB,
   resultA,
   resultB,
   onChangeA,
@@ -24,14 +24,14 @@ const Row = ({
   id,
 }) => {
   const perfect =
-    resultA || resultB ? valueA === resultA && valueB === resultB : false;
+    resultA || resultB ? scoreA === resultA && scoreB === resultB : false;
   const correct =
     resultA || resultB
-      ? (valueA > valueB && resultA > resultB) ||
-        (valueA < valueB && resultA < resultB)
+      ? (scoreA > scoreB && resultA > resultB) ||
+        (scoreA < scoreB && resultA < resultB)
       : false;
-  const filledA = valueA !== null;
-  const filledB = valueB !== null;
+  const filledA = scoreA !== null;
+  const filledB = scoreB !== null;
   const blank = resultA === null || resultB === null;
 
   let classes = cx(
@@ -72,9 +72,9 @@ const Row = ({
               size={"xs"}
               className={[
                 styles.country,
-                valueA === valueB || valueA === "" || valueB === ""
+                scoreA === scoreB || scoreA === "" || scoreB === ""
                   ? ""
-                  : valueA > valueB
+                  : scoreA > scoreB
                   ? styles.win
                   : styles.lose,
               ].join(" ")}
@@ -103,7 +103,7 @@ const Row = ({
                 <input
                   id={id}
                   type={"number"}
-                  value={valueA}
+                  value={scoreA}
                   min={"0"}
                   onChange={onChangeA}
                   onWheel={(e) => e.target.blur()}
@@ -112,7 +112,7 @@ const Row = ({
                 <input
                   id={id}
                   type={"number"}
-                  value={valueB}
+                  value={scoreB}
                   min={"0"}
                   onChange={onChangeB}
                   onWheel={(e) => e.target.blur()}
@@ -142,9 +142,9 @@ const Row = ({
               size={"xs"}
               className={[
                 styles.country,
-                valueA === valueB || valueA === "" || valueB === ""
+                scoreA === scoreB || scoreA === "" || scoreB === ""
                   ? ""
-                  : valueA < valueB
+                  : scoreA < scoreB
                   ? styles.win
                   : styles.lose,
               ].join(" ")}
@@ -213,8 +213,8 @@ Row.propTypes = {
   points: PropTypes.string,
   teamA: PropTypes.string,
   teamB: PropTypes.string,
-  valueA: PropTypes.number,
-  valueB: PropTypes.number,
+  scoreA: PropTypes.number,
+  scoreB: PropTypes.number,
   resultA: PropTypes.number,
   resultB: PropTypes.number,
   onChangeA: PropTypes.func,
@@ -230,8 +230,8 @@ Row.defaultProps = {
   points: "",
   teamA: "",
   teamB: "",
-  valueA: null,
-  valueB: null,
+  scoreA: null,
+  scoreB: null,
   resultA: null,
   resultB: null,
   onChangeA: () => null,

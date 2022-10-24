@@ -2,11 +2,11 @@ const getTeamPoints = (data, team) => {
   let total = 0;
   data?.map((item) => {
     const chosenTeamValue =
-      (item.teamA === team && item.valueA) ||
-      (item.teamB === team && item.valueB);
+      (item.teamA === team && item.scoreA) ||
+      (item.teamB === team && item.scoreB);
 
     const againstTeamValue =
-      (item.teamA === team) === true ? item.valueB : item.valueA;
+      (item.teamA === team) === true ? item.scoreB : item.scoreA;
 
     chosenTeamValue > againstTeamValue
       ? (total += 3)
@@ -24,7 +24,7 @@ const groupWinners = (data, group) => {
 
 const getWinners = (data) => {
   const winners = data?.map((item) => {
-    return item.valueA > item.valueB ? item.teamA : item.teamB;
+    return item.scoreA > item.scoreB ? item.teamA : item.teamB;
   });
 
   return winners;
@@ -32,7 +32,7 @@ const getWinners = (data) => {
 
 const getLosers = (data) => {
   const losers = data?.map((item) => {
-    return item.valueA < item.valueB ? item.teamA : item.teamB;
+    return item.scoreA < item.scoreB ? item.teamA : item.teamB;
   });
 
   return losers;

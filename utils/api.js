@@ -1,18 +1,35 @@
-/* eslint-disable no-undef */
-export async function fetchData(type, address, method) {
+const postData = async (endpoint, token, body) => {
   const options = {
+    method: "POST",
     headers: {
       accept: "application/json",
-      "x-api-key": process.env.MORALIS_API_KEY,
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
+    body: JSON.stringify(body),
   };
 
-  const res = await fetch(
-    `https://solana-gateway.moralis.io/${type}/${process.env.NETWORK}/${address}/${method}`,
-    options
-  );
+  const res = await fetch(endpoint, options);
 
   const data = res.json();
 
   return data;
-}
+};
+
+const getData = async (endpoint) => {
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+
+  const res = await fetch(endpoint, options);
+
+  const data = res.json();
+
+  return data;
+};
+
+export { postData, getData };

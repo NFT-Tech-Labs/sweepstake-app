@@ -133,7 +133,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueA: newVal || null } : item
+          item.id === Number(id) ? { ...item, scoreA: newVal || null } : item
         )
       );
     },
@@ -146,7 +146,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueB: newVal || null } : item
+          item.id === Number(id) ? { ...item, scoreB: newVal || null } : item
         )
       );
     },
