@@ -42,7 +42,7 @@ const Table = ({
     const placementY = item.teamB.split("")[1] - 1;
 
     return {
-      id: 48 + index,
+      matchId: 48 + index,
       type: 8,
       date: item?.date,
       time: item?.time,
@@ -60,7 +60,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 56 + index,
+      matchId: 56 + index,
       type: 9,
       date: item?.date,
       time: item?.time,
@@ -78,7 +78,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 60 + index,
+      matchId: 60 + index,
       type: 10,
       date: item?.date,
       time: item?.time,
@@ -96,7 +96,7 @@ const Table = ({
     const teamY = item.teamB.split("LG")[1] - 1;
 
     return {
-      id: 62 + index,
+      matchId: 62 + index,
       type: 11,
       date: item?.date,
       time: item?.time,
@@ -114,7 +114,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 63 + index,
+      matchId: 63 + index,
       type: 12,
       date: item?.date,
       time: item?.time,
@@ -133,7 +133,9 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, scoreA: newVal || null } : item
+          item.matchId === Number(id)
+            ? { ...item, scoreA: newVal || null }
+            : item
         )
       );
     },
@@ -146,7 +148,9 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, scoreB: newVal || null } : item
+          item.matchId === Number(id)
+            ? { ...item, scoreB: newVal || null }
+            : item
         )
       );
     },
@@ -190,7 +194,7 @@ const Table = ({
     }
 
     const filteredData = arrType.reduce((result, obj) => {
-      let row = result.find((x) => x.id === obj.id);
+      let row = result.find((x) => x.matchId === obj.matchId);
       if (!row) result.push({ ...obj });
       else if (row.timestamp < obj.timestamp) Object.assign(row, obj);
       return result;

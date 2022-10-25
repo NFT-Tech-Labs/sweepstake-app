@@ -21,7 +21,7 @@ const Row = ({
   resultB,
   onChangeA,
   onChangeB,
-  id,
+  matchId,
 }) => {
   const perfect =
     resultA || resultB ? scoreA === resultA && scoreB === resultB : false;
@@ -101,7 +101,7 @@ const Row = ({
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
                 <input
-                  id={id}
+                  id={matchId}
                   type={"number"}
                   value={scoreA}
                   min={"0"}
@@ -110,7 +110,7 @@ const Row = ({
                   // disabled={resultA || resultB}
                 />
                 <input
-                  id={id}
+                  id={matchId}
                   type={"number"}
                   value={scoreB}
                   min={"0"}
@@ -157,7 +157,7 @@ const Row = ({
         <div className={styles.statusWrapper}>
           <div className={styles.matchResult}>
             <input
-              id={id}
+              id={matchId}
               type={"text"}
               value={resultA?.toString() || "-"}
               maxLength={"2"}
@@ -165,7 +165,7 @@ const Row = ({
               className={resultA > resultB ? styles.win : styles.lose}
             />
             <input
-              id={id}
+              id={matchId}
               type={"text"}
               value={resultB?.toString() || "-"}
               maxLength={"2"}
@@ -219,7 +219,7 @@ Row.propTypes = {
   resultB: PropTypes.number,
   onChangeA: PropTypes.func,
   onChangeB: PropTypes.func,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  matchId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 Row.defaultProps = {
@@ -236,7 +236,7 @@ Row.defaultProps = {
   resultB: null,
   onChangeA: () => null,
   onChangeB: () => null,
-  id: "",
+  matchId: "",
 };
 
 export default memo(Row);

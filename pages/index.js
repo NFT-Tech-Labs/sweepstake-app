@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect, useTransition, useCallback } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
@@ -41,7 +41,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import crypto, { sign } from "crypto";
 
-export default function Home({ accountData, nfts, users }) {
+export default function Home({ accountData, nfts, users, sweepstake }) {
   const router = useRouter();
   const { publicKey, signMessage, sendTransaction } = useWallet();
   const { data: session, status } = useSession();
@@ -75,78 +75,26 @@ export default function Home({ accountData, nfts, users }) {
   const [team, setTeam] = useState(null);
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
-  const [loading, setLoading] = useState(processing);
-  const [success, setSuccess] = useState(confirmation);
 
-  // const signCustomMessage = async () => {
-  //   const address = publicKey.toBase58();
-  //   const chain = "mainnet";
-  //   const account = {
-  //     address: address,
-  //     chain: chain,
-  //     network: "solana",
-  //   };
-  //   const { message } = await apiPost("api/auth/request-message", account);
-
-  //   const encodedMessage = new TextEncoder().encode(message);
-  //   const signedMessage = await signMessage(encodedMessage, "utf8");
-  //   const signature = base58.encode(signedMessage);
-  //   try {
-  //     await signIn("credentials", {
-  //       message,
-  //       signature,
-  //       redirect: false,
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //     return null;
-  //   }
-  // };
-
-  console.log(session);
-
-  const user = users?.filter(
-    (item) => item?.address === publicKey?.toBase58()
-  )[0];
-
-  console.log(publicKey);
+  // console.log(session);
 
   const signCustomMessage = async () => {
     if (publicKey) {
       const address = publicKey.toBase58();
+      const message = address;
+      const encodedMessage = new TextEncoder().encode(message);
 
-      if (user) {
-        const message = user?.nonce;
-        const encodedMessage = new TextEncoder().encode(message);
-
-        const signedMessage = await signMessage(encodedMessage, "utf8");
-        const signature = base58.encode(signedMessage);
-        try {
-          await signIn("authCredentials", {
-            address,
-            signature,
-            redirect: false,
-          });
-        } catch (e) {
-          console.log(e);
-          return null;
-        }
-      } else {
-        const message = address;
-        const encodedMessage = new TextEncoder().encode(message);
-
-        const signedMessage = await signMessage(encodedMessage, "utf8");
-        const signature = base58.encode(signedMessage);
-        try {
-          await signIn("createCredentials", {
-            address,
-            signature,
-            redirect: false,
-          });
-        } catch (e) {
-          console.log(e);
-          return null;
-        }
+      const signedMessage = await signMessage(encodedMessage, "utf8");
+      const signature = base58.encode(signedMessage);
+      try {
+        await signIn("authCredentials", {
+          address,
+          signature,
+          redirect: false,
+        });
+      } catch (e) {
+        console.log(e);
+        return null;
       }
     }
   };
@@ -211,7 +159,6 @@ export default function Home({ accountData, nfts, users }) {
 
   const transformOutputTypes = output?.map((item) => ({
     ...item,
-    matchId: item?.id,
     scoreA: Number(item?.scoreA),
     scoreB: Number(item?.scoreB),
   }));
@@ -221,10 +168,10 @@ export default function Home({ accountData, nfts, users }) {
     predictions: transformOutputTypes,
   };
 
-  console.log(finalOutput);
+  // console.log(finalOutput);
 
   const handleSubmit = () => {
-    if (publicKey) {
+    if (publicKey && session) {
       const paymentAmount = paymentOptions?.filter(
         (item) => item.value === paymentToken
       )[0].amount;
@@ -245,18 +192,40 @@ export default function Home({ accountData, nfts, users }) {
     }
   };
 
-  // const testSubmit = async () => {
-  //   if (session) {
-  //     const sweepstake = await postData(
-  //       "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
-  //       session?.user?.credentials?.accessToken,
-  //       finalOutput
-  //     );
+  console.log(confirmation, confirmationSolana);
 
-  //     return sweepstake;
-  //   }
-  // };
+  const submitSweepstake = async () => {
+    if (
+      publicKey &&
+      session &&
+      team &&
+      filledCount === 64 &&
+      (confirmation || confirmationSolana)
+    ) {
+      const sweepstake = await postData(
+        "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
+        session?.user?.credentials?.accessToken,
+        finalOutput
+      );
+      console.log("confirmed");
 
+      return sweepstake;
+    }
+  };
+
+  useEffect(() => {
+    submitSweepstake();
+  }, [confirmation, confirmationSolana]);
+
+  // Filled in sweepstake response misses keys: Date, Group and Type
+  const transformSweepstake = sweepstake?.predictions?.map((item, index) => {
+    return {
+      ...item,
+      type: index < 6 ? 0 : 1,
+    };
+  });
+
+  console.log(transformOutputTypes, "lol");
   return (
     <div className={styles.home}>
       {/* <button onClick={testSubmit}>SubmitSweepstake</button> */}
@@ -320,7 +289,7 @@ export default function Home({ accountData, nfts, users }) {
             </div>
             <Table
               groupStage={groupStage}
-              matches={output}
+              matches={sweepstake ? transformSweepstake : output}
               count={count}
               // processing={processing}
               onChange={(e) => setOutput(e)}
@@ -373,7 +342,7 @@ export default function Home({ accountData, nfts, users }) {
                   color={"positive"}
                   textColor={"light"}
                   size={"xxs"}
-                  disabled={filledCount !== 64 || paymentToken === ""}
+                  disabled={filledCount !== 64 || paymentToken === "" || !team}
                   onClick={handleSubmit}
                 />
                 <Divider height={10} />
@@ -422,11 +391,26 @@ export async function getServerSideProps(context) {
     "https://backend-x7q2esrofa-no.a.run.app/api/v1/users"
   );
 
+  const sweepstakes = await getData(
+    "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes"
+  );
+
+  let sweepstake;
+
+  if (session) {
+    sweepstake = sweepstakes?.filter(
+      (item) => item?.user?.address === session?.user?.user?.address
+    )[0];
+  }
+
+  console.log(sweepstake);
+
   return {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
       users: users || null,
+      sweepstake: sweepstake || null,
     },
   };
 }
