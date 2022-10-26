@@ -22,6 +22,7 @@ const Row = ({
   onChangeA,
   onChangeB,
   matchId,
+  disabled,
 }) => {
   const perfect =
     resultA || resultB ? scoreA === resultA && scoreB === resultB : false;
@@ -43,6 +44,7 @@ const Row = ({
       filledA,
       filledB,
       blank,
+      disabled,
     },
     className
   );
@@ -107,7 +109,7 @@ const Row = ({
                   min={"0"}
                   onChange={onChangeA}
                   onWheel={(e) => e.target.blur()}
-                  // disabled={resultA || resultB}
+                  disabled={disabled || resultA || resultB}
                 />
                 <input
                   id={matchId}
@@ -116,7 +118,7 @@ const Row = ({
                   min={"0"}
                   onChange={onChangeB}
                   onWheel={(e) => e.target.blur()}
-                  // disabled={resultA || resultB}
+                  disabled={disabled || resultA || resultB}
                 />
               </div>
             </div>
@@ -195,7 +197,7 @@ const Row = ({
       {points && (
         <td className={styles.points}>
           <Content
-            text={perfect ? 5 : correct ? 3 : 0}
+            text={perfect ? "5" : correct ? "3" : "0"}
             color={"positive"}
             size={"m"}
           />

@@ -55,10 +55,21 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
   const { handlePayment, confirmation, processing, error } =
     SendSolanaSplTokens();
 
+  const [count, setCount] = useState(0);
+  const [groupStage, setGroupStage] = useState([]);
+  const [output, setOutput] = useState(tableData);
+  const [team, setTeam] = useState(null);
+  const [paymentToken, setPaymentToken] = useState("");
+  const [groupsFilled, setGroupsFilled] = useState(false);
+  const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
+
   useEffect(() => {
     startTransition(() => {
       session && status === "authenticated" && router.push("/");
     });
+    if (sweepstake?.predictions) {
+      setSweepstakeDisabled(true);
+    }
   }, [session, status]);
 
   useEffect(() => {
@@ -68,13 +79,7 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
       return;
     }
   }, [publicKey]);
-
-  const [count, setCount] = useState(0);
-  const [groupStage, setGroupStage] = useState([]);
-  const [output, setOutput] = useState(tableData);
-  const [team, setTeam] = useState(null);
-  const [paymentToken, setPaymentToken] = useState("");
-  const [groupsFilled, setGroupsFilled] = useState(false);
+  console.log(sweepstakeDisabled, sweepstake, "sweep");
 
   // console.log(session);
 
@@ -168,8 +173,6 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     predictions: transformOutputTypes,
   };
 
-  // console.log(finalOutput);
-
   const handleSubmit = () => {
     if (publicKey && session) {
       const paymentAmount = paymentOptions?.filter(
@@ -192,23 +195,22 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     }
   };
 
-  console.log(confirmation, confirmationSolana);
+  const confirmed =
+    session &&
+    team &&
+    filledCount === 64 &&
+    (confirmation || confirmationSolana);
 
   const submitSweepstake = async () => {
-    if (
-      publicKey &&
-      session &&
-      team &&
-      filledCount === 64 &&
-      (confirmation || confirmationSolana)
-    ) {
+    if (confirmed) {
       const sweepstake = await postData(
         "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
         session?.user?.credentials?.accessToken,
         finalOutput
       );
       console.log("confirmed");
-
+      setSweepstakeDisabled(true);
+      setCount(0);
       return sweepstake;
     }
   };
@@ -217,18 +219,27 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
 
-  // Filled in sweepstake response misses keys: Date, Group and Type
-  const transformSweepstake = sweepstake?.predictions?.map((item, index) => {
-    return {
-      ...item,
-      type: index < 6 ? 0 : 1,
-    };
-  });
+  let transformSweepstake;
+  let sortSweepstakes;
+  let submitedSweepstake;
 
-  console.log(transformOutputTypes, "lol");
+  if (sweepstake) {
+    transformSweepstake = sweepstake?.predictions?.map((item) => ({
+      ...item,
+      points: item.points.toString(),
+    }));
+
+    sortSweepstakes = transformSweepstake?.sort(
+      (a, b) => a.matchId - b.matchId
+    );
+
+    // Filled in sweepstake response misses keys: Date, Group and Type
+    submitedSweepstake = tableData?.map((item, index) =>
+      Object.assign({}, item, sortSweepstakes[index])
+    );
+  }
   return (
     <div className={styles.home}>
-      {/* <button onClick={testSubmit}>SubmitSweepstake</button> */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -289,8 +300,9 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
             </div>
             <Table
               groupStage={groupStage}
-              matches={sweepstake ? transformSweepstake : output}
+              matches={sweepstake ? submitedSweepstake : output}
               count={count}
+              disabled={sweepstakeDisabled}
               // processing={processing}
               onChange={(e) => setOutput(e)}
             />
@@ -324,29 +336,32 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
                   />
                 )}
               </div>
-              <div className={styles.submitWrapper}>
-                {filledCount === 64 && (
-                  <Select
-                    placeholder={"Choose token"}
-                    options={paymentOptions}
-                    onChange={(e) => setPaymentToken(e?.value)}
-                    className={styles.select}
+              {!sweepstakeDisabled && (
+                <div className={styles.submitWrapper}>
+                  {filledCount === 64 && (
+                    <Select
+                      placeholder={"Choose token"}
+                      options={paymentOptions}
+                      onChange={(e) => setPaymentToken(e?.value)}
+                      className={styles.select}
+                    />
+                  )}
+                  <Button
+                    text={
+                      filledCount !== 64 && paymentToken === ""
+                        ? `${filledCount}/64`
+                        : "Submit"
+                    }
+                    color={"positive"}
+                    textColor={"light"}
+                    size={"xxs"}
+                    disabled={
+                      filledCount !== 64 || paymentToken === "" || !team
+                    }
+                    onClick={handleSubmit}
                   />
-                )}
-                <Button
-                  text={
-                    filledCount !== 64 && paymentToken === ""
-                      ? `${filledCount}/64`
-                      : "Submit"
-                  }
-                  color={"positive"}
-                  textColor={"light"}
-                  size={"xxs"}
-                  disabled={filledCount !== 64 || paymentToken === "" || !team}
-                  onClick={handleSubmit}
-                />
-                <Divider height={10} />
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -395,6 +410,7 @@ export async function getServerSideProps(context) {
     "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes"
   );
 
+  // Check if user has sweepstake or not
   let sweepstake;
 
   if (session) {

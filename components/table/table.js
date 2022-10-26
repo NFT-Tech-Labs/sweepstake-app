@@ -24,6 +24,7 @@ const Table = ({
   onChange,
   processing,
   confirmation,
+  disabled,
 }) => {
   const [data, setData] = useState(matches);
 
@@ -264,6 +265,7 @@ const Table = ({
                   <Row
                     onChangeA={onInputChangeA}
                     onChangeB={onInputChangeB}
+                    disabled={disabled}
                     {...item}
                   />
                 )}
