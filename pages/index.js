@@ -192,6 +192,8 @@ export default function Home({ accountData, nfts }) {
     }
   };
 
+  console.log(filledCount);
+
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -290,7 +292,7 @@ export default function Home({ accountData, nfts }) {
                 )}
               </div>
               <div className={styles.submitWrapper}>
-                {filledCount === 64 && (
+                {filledCount - 1 === 64 && (
                   <Select
                     placeholder={"Choose token"}
                     options={paymentOptions}
@@ -300,14 +302,14 @@ export default function Home({ accountData, nfts }) {
                 )}
                 <Button
                   text={
-                    filledCount !== 64 && paymentToken === ""
-                      ? `${filledCount}/64`
+                    filledCount - 1 !== 64 && paymentToken === ""
+                      ? `${filledCount - 1}/64`
                       : "Submit"
                   }
                   color={"positive"}
                   textColor={"light"}
                   size={"xxs"}
-                  disabled={filledCount !== 64 || paymentToken === ""}
+                  disabled={filledCount - 1 !== 64 || paymentToken === ""}
                   onClick={handleSubmit}
                 />
                 <Divider height={10} />
