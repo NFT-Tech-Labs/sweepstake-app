@@ -135,7 +135,10 @@ const Table = ({
       setData((prev) =>
         prev?.map((item) =>
           item.matchId === Number(id)
-            ? { ...item, scoreA: newVal || null }
+            ? {
+                ...item,
+                scoreA: newVal || null,
+              }
             : item
         )
       );
@@ -150,7 +153,50 @@ const Table = ({
       setData((prev) =>
         prev?.map((item) =>
           item.matchId === Number(id)
-            ? { ...item, scoreB: newVal || null }
+            ? {
+                ...item,
+                scoreB: newVal || null,
+              }
+            : item
+        )
+      );
+    },
+    [setData]
+  );
+
+  const onInputChangeExtensionA = useCallback(
+    (e) => {
+      const id = e?.target?.id;
+      setData((prev) =>
+        prev?.map((item) =>
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                extensionA: true,
+                extensionB: false,
+                extensionWinner: item.teamA,
+              }
+            : item
+        )
+      );
+    },
+    [setData]
+  );
+
+  console.log(data);
+
+  const onInputChangeExtensionB = useCallback(
+    (e) => {
+      const id = e?.target?.id;
+      setData((prev) =>
+        prev?.map((item) =>
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                extensionA: false,
+                extensionB: true,
+                extensionWinner: item.teamB,
+              }
             : item
         )
       );
@@ -265,7 +311,11 @@ const Table = ({
                   <Row
                     onChangeA={onInputChangeA}
                     onChangeB={onInputChangeB}
+                    onChangeExtensionA={onInputChangeExtensionA}
+                    onChangeExtensionB={onInputChangeExtensionB}
+                    count={count}
                     disabled={disabled}
+                    index={index}
                     {...item}
                   />
                 )}

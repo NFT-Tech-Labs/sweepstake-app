@@ -79,9 +79,7 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
       return;
     }
   }, [publicKey]);
-  console.log(sweepstakeDisabled, sweepstake, "sweep");
-
-  // console.log(session);
+  // console.log(sweepstakeDisabled, sweepstake, "sweep");
 
   const signCustomMessage = async () => {
     if (publicKey) {
@@ -117,6 +115,17 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
       (item) => item.type === round && item.scoreA && item.scoreB
     );
   };
+
+  const checkFilledDraw = (round) => {
+    return output?.filter(
+      (item) =>
+        item.type === round &&
+        !item.extensionWinner &&
+        item.scoreA === item.scoreB
+    );
+  };
+
+  console.log(checkFilledDraw(8));
 
   const filledCount =
     output.filter((item) => item.scoreA && item.scoreB).length + 1;
@@ -290,11 +299,24 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
                 count={count}
                 onChange={(e) => setCount(e)}
                 groupsFilled={groupsFilled}
-                ro16Filled={checkFilled(8).length === 8}
-                quarterFilled={checkFilled(9).length === 4}
-                semiFilled={checkFilled(10).length === 2}
-                thirdFilled={checkFilled(11).length === 1}
-                finalFilled={checkFilled(12).length === 1}
+                ro16Filled={
+                  checkFilled(8).length === 8 && checkFilledDraw(8).length === 0
+                }
+                quarterFilled={
+                  checkFilled(9).length === 4 && checkFilledDraw(9).length === 0
+                }
+                semiFilled={
+                  checkFilled(10).length === 2 &&
+                  checkFilledDraw(10).length === 0
+                }
+                thirdFilled={
+                  checkFilled(11).length === 1 &&
+                  checkFilledDraw(11).length === 0
+                }
+                finalFilled={
+                  checkFilled(12).length === 1 &&
+                  checkFilledDraw(12).length === 0
+                }
                 {...timelineData}
               />
             </div>

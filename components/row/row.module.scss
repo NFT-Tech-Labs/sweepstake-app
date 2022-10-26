@@ -22,7 +22,7 @@
 
 .match {
   position: relative;
-  input {
+  .inputMatch {
     border: none;
     padding: var(--spacing-s);
     max-width: 40px;
@@ -179,24 +179,18 @@
 }
 
 .results {
-  // background: rgba(var(--color-assertive), 0.1);
-
   .icon {
     background-color: rgba(var(--color-assertive), 0.1);
   }
 }
 
 .correct {
-  // background-color: rgba(var(--color-light), 0.1);
-
   .icon {
     background-color: rgba(var(--color-balanced), 0.1);
   }
 }
 
 .perfect {
-  // background-color: rgba(var(--color-balanced), 0.1);
-
   .icon {
     background-color: rgba(var(--color-balanced), 0.1);
   }

@@ -19,10 +19,16 @@ const Row = ({
   scoreB,
   resultA,
   resultB,
+  extensionA,
+  extensionB,
   onChangeA,
   onChangeB,
+  onChangeExtensionA,
+  onChangeExtensionB,
   matchId,
   disabled,
+  index,
+  count,
 }) => {
   const perfect =
     resultA || resultB ? scoreA === resultA && scoreB === resultB : false;
@@ -34,6 +40,7 @@ const Row = ({
   const filledA = scoreA !== null;
   const filledB = scoreB !== null;
   const blank = resultA === null || resultB === null;
+  const draw = scoreA === scoreB && scoreA !== null && scoreB !== null;
 
   let classes = cx(
     {
@@ -57,7 +64,6 @@ const Row = ({
             <div className={styles.groupWrapper}>
               <Content text={group} color={"dark"} size={"m"} />
             </div>
-
             <div>
               <Content text={time} className={styles.time} emphasize />
               <Content text={date} color={"stable-500"} size={"xs"} />
@@ -82,23 +88,36 @@ const Row = ({
               ].join(" ")}
               emphasize
             />
-            {teamA === "EN" && teamA !== "WL" && (
-              <Icon name={"EN"} className={styles.customIconEN} />
-            )}
-            {teamA === "WL" && teamA !== "EN" && (
-              <Icon name={"WL"} className={styles.customIcon} />
-            )}
-            {teamA !== "EN" && teamA !== "WL" && (
-              <ReactCountryFlag
-                countryCode={teamA}
-                svg
-                style={{
-                  width: "1.5em",
-                  height: "1.5em",
-                }}
-                title={teamA}
-              />
-            )}
+            <div>
+              {teamA === "EN" && teamA !== "WL" && (
+                <Icon name={"EN"} className={styles.customIconEN} />
+              )}
+              {teamA === "WL" && teamA !== "EN" && (
+                <Icon name={"WL"} className={styles.customIcon} />
+              )}
+              {teamA !== "EN" && teamA !== "WL" && (
+                <ReactCountryFlag
+                  countryCode={teamA}
+                  svg
+                  style={{
+                    width: "1.5em",
+                    height: "1.5em",
+                  }}
+                  title={teamA}
+                />
+              )}
+              {draw && count > 7 && (
+                <input
+                  id={matchId}
+                  name={`extensionWinner_${index}`}
+                  type={"radio"}
+                  value={teamA}
+                  checked={extensionA}
+                  onChange={onChangeExtensionA}
+                  className={styles.extensionWinner}
+                />
+              )}
+            </div>
             <Icon />
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
@@ -110,6 +129,7 @@ const Row = ({
                   onChange={onChangeA}
                   onWheel={(e) => e.target.blur()}
                   disabled={disabled || resultA || resultB}
+                  className={styles.inputMatch}
                 />
                 <input
                   id={matchId}
@@ -119,26 +139,40 @@ const Row = ({
                   onChange={onChangeB}
                   onWheel={(e) => e.target.blur()}
                   disabled={disabled || resultA || resultB}
+                  className={styles.inputMatch}
                 />
               </div>
             </div>
-            {teamB === "EN" && teamB !== "WL" && (
-              <Icon name={"EN"} className={styles.customIconEN} />
-            )}
-            {teamB === "WL" && teamB !== "EN" && (
-              <Icon name={"WL"} className={styles.customIcon} />
-            )}
-            {teamB !== "EN" && teamB !== "WL" && (
-              <ReactCountryFlag
-                countryCode={teamB}
-                svg
-                style={{
-                  width: "1.5em",
-                  height: "1.5em",
-                }}
-                title={teamB}
-              />
-            )}
+            <div>
+              {teamB === "EN" && teamB !== "WL" && (
+                <Icon name={"EN"} className={styles.customIconEN} />
+              )}
+              {teamB === "WL" && teamB !== "EN" && (
+                <Icon name={"WL"} className={styles.customIcon} />
+              )}
+              {teamB !== "EN" && teamB !== "WL" && (
+                <ReactCountryFlag
+                  countryCode={teamB}
+                  svg
+                  style={{
+                    width: "1.5em",
+                    height: "1.5em",
+                  }}
+                  title={teamB}
+                />
+              )}
+              {draw && count > 7 && (
+                <input
+                  id={matchId}
+                  name={`extensionWinner_${index}`}
+                  type={"radio"}
+                  value={teamB}
+                  checked={extensionB}
+                  onChange={onChangeExtensionB}
+                  className={styles.extensionWinner}
+                />
+              )}
+            </div>
             <Content
               text={teamB}
               size={"xs"}
@@ -193,7 +227,6 @@ const Row = ({
           </div>
         </div>
       </td>
-
       {points && (
         <td className={styles.points}>
           <Content
@@ -219,9 +252,15 @@ Row.propTypes = {
   scoreB: PropTypes.number,
   resultA: PropTypes.number,
   resultB: PropTypes.number,
+  extensionA: PropTypes.bool,
+  extensionB: PropTypes.bool,
   onChangeA: PropTypes.func,
   onChangeB: PropTypes.func,
+  onChangeExtensionA: PropTypes.func,
+  onChangeExtensionB: PropTypes.func,
   matchId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  disabled: PropTypes.bool,
+  index: PropTypes.number,
 };
 
 Row.defaultProps = {
@@ -236,9 +275,15 @@ Row.defaultProps = {
   scoreB: null,
   resultA: null,
   resultB: null,
+  extensionA: false,
+  extensionB: false,
   onChangeA: () => null,
   onChangeB: () => null,
+  onChangeC: () => null,
+  onChangeD: () => null,
   matchId: "",
+  disabled: false,
+  index: 0,
 };
 
 export default memo(Row);

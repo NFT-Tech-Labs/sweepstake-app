@@ -24,7 +24,11 @@ const groupWinners = (data, group) => {
 
 const getWinners = (data) => {
   const winners = data?.map((item) => {
-    return item.scoreA > item.scoreB ? item.teamA : item.teamB;
+    if (item.extensionWinner && item.scoreA === item.scoreB) {
+      return item?.extensionWinner;
+    } else {
+      return item.scoreA > item.scoreB ? item.teamA : item.teamB;
+    }
   });
 
   return winners;
@@ -32,7 +36,11 @@ const getWinners = (data) => {
 
 const getLosers = (data) => {
   const losers = data?.map((item) => {
-    return item.scoreA < item.scoreB ? item.teamA : item.teamB;
+    if (item.extensionWinner && item.scoreA === item.scoreB) {
+      return item.extensionWinner === item.teamA ? item.teamB : item.teamA;
+    } else {
+      return item.scoreA < item.scoreB ? item.teamA : item.teamB;
+    }
   });
 
   return losers;
