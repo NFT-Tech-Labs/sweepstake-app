@@ -67,9 +67,10 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     startTransition(() => {
       session && status === "authenticated" && router.push("/");
     });
-    if (sweepstake?.predictions) {
-      setSweepstakeDisabled(true);
-    }
+
+    setSweepstakeDisabled(
+      session?.user?.user?.sweepstake?.length > 0 ? true : false
+    );
   }, [session, status]);
 
   useEffect(() => {
@@ -124,9 +125,6 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
         item.scoreA === item.scoreB
     );
   };
-
-  console.log(checkFilledDraw(8));
-
   const filledCount =
     output.filter((item) => item.scoreA && item.scoreB).length + 1;
 
@@ -204,14 +202,17 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     }
   };
 
-  const confirmed =
-    session &&
-    team &&
-    filledCount === 64 &&
-    (confirmation || confirmationSolana);
+  console.log(session);
+  console.log(finalOutput, "outp");
 
   const submitSweepstake = async () => {
-    if (confirmed) {
+    if (
+      publicKey &&
+      session &&
+      team &&
+      filledCount === 64 &&
+      (confirmation || confirmationSolana)
+    ) {
       const sweepstake = await postData(
         "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
         session?.user?.credentials?.accessToken,
@@ -440,9 +441,6 @@ export async function getServerSideProps(context) {
       (item) => item?.user?.address === session?.user?.user?.address
     )[0];
   }
-
-  console.log(sweepstake);
-
   return {
     props: {
       accountData: accountData || null,

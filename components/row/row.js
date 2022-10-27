@@ -9,8 +9,8 @@ const cx = classNames.bind(styles);
 
 const Row = ({
   className,
-  date,
-  time,
+  playDate,
+  playTime,
   group,
   points,
   teamA,
@@ -58,15 +58,15 @@ const Row = ({
 
   return (
     <tr className={classes}>
-      {date && (
-        <td className={styles.date}>
+      {playDate && (
+        <td className={styles.playDate}>
           <div className={styles.dateWrapper}>
             <div className={styles.groupWrapper}>
               <Content text={group} color={"dark"} size={"m"} />
             </div>
             <div>
-              <Content text={time} className={styles.time} emphasize />
-              <Content text={date} color={"stable-500"} size={"xs"} />
+              <Content text={playTime} className={styles.playTime} emphasize />
+              <Content text={playDate} color={"stable-500"} size={"xs"} />
             </div>
           </div>
         </td>
@@ -242,8 +242,8 @@ const Row = ({
 
 Row.propTypes = {
   className: PropTypes.string,
-  date: PropTypes.string,
-  time: PropTypes.string,
+  playDate: PropTypes.string,
+  playTime: PropTypes.string,
   group: PropTypes.string,
   points: PropTypes.string,
   teamA: PropTypes.string,
@@ -265,8 +265,8 @@ Row.propTypes = {
 
 Row.defaultProps = {
   className: "",
-  date: "",
-  time: "",
+  playDate: "",
+  playTime: "",
   group: "",
   points: "",
   teamA: "",

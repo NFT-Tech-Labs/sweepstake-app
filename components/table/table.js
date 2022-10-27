@@ -45,8 +45,9 @@ const Table = ({
     return {
       matchId: 48 + index,
       type: 8,
-      date: item?.date,
-      time: item?.time,
+      group: "A",
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: groupWinners(groupStage, teamX)[0]?.teams[placementX].name,
       teamB: groupWinners(groupStage, teamY)[0]?.teams[placementY].name,
       resultA: item.resultA,
@@ -63,8 +64,9 @@ const Table = ({
     return {
       matchId: 56 + index,
       type: 9,
-      date: item?.date,
-      time: item?.time,
+      group: "A",
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 8))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 8))[teamY],
       resultA: item.resultA,
@@ -81,8 +83,9 @@ const Table = ({
     return {
       matchId: 60 + index,
       type: 10,
-      date: item?.date,
-      time: item?.time,
+      group: "A",
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 9))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 9))[teamY],
       resultA: item.resultA,
@@ -99,8 +102,9 @@ const Table = ({
     return {
       matchId: 62 + index,
       type: 11,
-      date: item?.date,
-      time: item?.time,
+      group: "A",
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getLosers(data.filter((item) => item.type === 10))[teamX],
       teamB: getLosers(data.filter((item) => item.type === 10))[teamY],
       resultA: item.resultA,
@@ -117,8 +121,9 @@ const Table = ({
     return {
       matchId: 63 + index,
       type: 12,
-      date: item?.date,
-      time: item?.time,
+      group: "A",
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 10))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 10))[teamY],
       resultA: item.resultA,
@@ -182,8 +187,6 @@ const Table = ({
     },
     [setData]
   );
-
-  console.log(data);
 
   const onInputChangeExtensionB = useCallback(
     (e) => {
