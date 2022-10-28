@@ -929,6 +929,34 @@ const profileData = {
   ],
 };
 
+const paymentOptions = [
+  {
+    label: "SOL",
+    value: "sol",
+    amount: 0.25,
+  },
+  {
+    label: "DUST",
+    value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
+    amount: 7,
+  },
+  {
+    label: "DGOAT",
+    value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
+    amount: 1,
+  },
+  {
+    label: "MVP",
+    value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
+    amount: 750,
+  },
+  {
+    label: "LABS",
+    value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
+    amount: 375,
+  },
+];
+
 export {
   tableData,
   groupsScheme,
@@ -943,4 +971,5 @@ export {
   ctaData,
   timelineData,
   profileData,
+  paymentOptions,
 };

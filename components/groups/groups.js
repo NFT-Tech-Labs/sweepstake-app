@@ -5,7 +5,11 @@ import PropTypes from "prop-types";
 import { Group, Content, TeamSelect } from "@components";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { groupsScheme } from "../../utils/data";
-import { getTeamPoints } from "../../utils/helpers";
+import {
+  getTeamPoints,
+  getTeamGoals,
+  getTeamGoalsDifference,
+} from "../../utils/helpers";
 import "react-tabs/style/react-tabs.css";
 
 const cx = classNames.bind(styles);
@@ -19,12 +23,20 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
       teams: item.teams.map((item) => ({
         name: item,
         points: getTeamPoints(data.slice(0, 48), item),
+        goalsDifference: getTeamGoalsDifference(data.slice(0, 48), item),
+        goals: getTeamGoals(data.slice(0, 48), item),
       })),
     };
   });
-
   // sort group by points
-  groupStage?.map((item) => item.teams.sort((a, b) => b.points - a.points));
+  groupStage?.map((item) =>
+    item.teams.sort(
+      (a, b) =>
+        b.points - a.points ||
+        b.goalsDifference - a.goalsDifference ||
+        b.goals - a.goals
+    )
+  );
 
   useEffect(() => {
     if (onChange) {

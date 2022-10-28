@@ -29,6 +29,7 @@ import {
   examplesData,
   timelineData,
   profileData,
+  paymentOptions,
 } from "utils/data";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
@@ -39,11 +40,10 @@ import SendSolanaTokens from "utils/sendTransaction";
 import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import crypto, { sign } from "crypto";
 
-export default function Home({ accountData, nfts, users, sweepstake }) {
+export default function Home({ accountData, nfts, sweepstakes }) {
   const router = useRouter();
-  const { publicKey, signMessage, sendTransaction } = useWallet();
+  const { publicKey, signMessage } = useWallet();
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
@@ -63,16 +63,21 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
 
-  useEffect(() => {
-    startTransition(() => {
-      session && status === "authenticated" && router.push("/");
-    });
+  // Fetched sweepstake predictions from API
+  let predictions;
+  let predictionsTransformed;
 
-    setSweepstakeDisabled(
-      session?.user?.user?.sweepstake?.length > 0 ? true : false
-    );
-  }, [session, status]);
+  if (sweepstakes) {
+    predictions = sweepstakes[0]?.predictions;
 
+    // TO-DO: points should be number
+    predictionsTransformed = predictions?.map((item) => ({
+      ...item,
+      points: item?.points.toString(),
+    }));
+  }
+
+  // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
     if (!session && status !== "authenticated") {
       publicKey && signCustomMessage();
@@ -80,8 +85,8 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
       return;
     }
   }, [publicKey]);
-  // console.log(sweepstakeDisabled, sweepstake, "sweep");
 
+  // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
     if (publicKey) {
       const address = publicKey.toBase58();
@@ -90,12 +95,14 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
 
       const signedMessage = await signMessage(encodedMessage, "utf8");
       const signature = base58.encode(signedMessage);
+      console.log(signature);
       try {
         await signIn("authCredentials", {
           address,
           signature,
           redirect: false,
         });
+        router.reload();
       } catch (e) {
         console.log(e);
         return null;
@@ -103,6 +110,7 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     }
   };
 
+  // Check if groupstage (48 matches) is filled (types 0-7)
   useEffect(() => {
     output
       .slice(0, 48)
@@ -111,12 +119,14 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
       : setGroupsFilled(false);
   }, [output]);
 
+  // Check function to see if an individual round is filled (types 8-12)
   const checkFilled = (round) => {
     return output?.filter(
       (item) => item.type === round && item.scoreA && item.scoreB
     );
   };
 
+  // Check function to see if an individual round with draws is filled (types 8-12)
   const checkFilledDraw = (round) => {
     return output?.filter(
       (item) =>
@@ -125,61 +135,39 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
         item.scoreA === item.scoreB
     );
   };
+
+  // Keeps track of how many matches are filled in
   const filledCount =
     output.filter((item) => item.scoreA && item.scoreB).length + 1;
 
+  // Status notifications based on the payment/transaction responses
   useEffect(() => {
     (processing || processingSolana) && toast("Processing...");
   }, [processing, processingSolana]);
-
   useEffect(() => {
     (confirmation || confirmationSolana) &&
       toast.success("Transaction completed!");
   }, [confirmation, confirmationSolana]);
-
   useEffect(() => {
     (errorSolana || errorSolana) && toast.error("Something went wrong!");
   }, [error, errorSolana]);
 
-  const paymentOptions = [
-    {
-      label: "SOL",
-      value: "sol",
-      amount: 0.25,
-    },
-    {
-      label: "DUST",
-      value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
-      amount: 7,
-    },
-    {
-      label: "DGOAT",
-      value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
-      amount: 1,
-    },
-    {
-      label: "MVP",
-      value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
-      amount: 750,
-    },
-    {
-      label: "LABS",
-      value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
-      amount: 375,
-    },
-  ];
-
+  // Transforms the predictions output to correct format which is accepted by the API
+  // TO-DO: scoreA and scoreB should be numbers
   const transformOutputTypes = output?.map((item) => ({
     ...item,
     scoreA: Number(item?.scoreA),
     scoreB: Number(item?.scoreB),
   }));
 
+  // The output that gets send to the API
+  // Selected team and Predictions filled in by the user
   const finalOutput = {
     worldChampion: team?.value,
     predictions: transformOutputTypes,
   };
 
+  // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
     if (publicKey && session) {
       const paymentAmount = paymentOptions?.filter(
@@ -202,9 +190,7 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     }
   };
 
-  console.log(session);
-  console.log(finalOutput, "outp");
-
+  // Submit sweepstake function which sends the output to the database based on conditions
   const submitSweepstake = async () => {
     if (
       publicKey &&
@@ -225,29 +211,11 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
     }
   };
 
+  // Triggers the submitSweepstake function based on conditions (confirmation)
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
-
-  let transformSweepstake;
-  let sortSweepstakes;
-  let submitedSweepstake;
-
-  if (sweepstake) {
-    transformSweepstake = sweepstake?.predictions?.map((item) => ({
-      ...item,
-      points: item.points.toString(),
-    }));
-
-    sortSweepstakes = transformSweepstake?.sort(
-      (a, b) => a.matchId - b.matchId
-    );
-
-    // Filled in sweepstake response misses keys: Date, Group and Type
-    submitedSweepstake = tableData?.map((item, index) =>
-      Object.assign({}, item, sortSweepstakes[index])
-    );
-  }
+  console.log(predictionsTransformed);
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -282,113 +250,121 @@ export default function Home({ accountData, nfts, users, sweepstake }) {
         ))}
       </div>
       <Divider height={80} />
-      <TeamSelect onChange={(e) => setTeam(e)} />
-      <Divider height={80} />
-      <div className={styles.grid}>
-        <div className={styles.gridWrapper}>
-          <div className={styles.groupsWrapper}>
-            <Groups
-              data={output}
-              count={count < 8 ? count : 7}
-              onChange={(e) => setGroupStage(e)}
-              onSelect={(e) => setCount(e)}
-            />
-          </div>
-          <div className={styles.tableWrapper}>
-            <div className={styles.timelineWrapper}>
-              <Timeline
-                count={count}
-                onChange={(e) => setCount(e)}
-                groupsFilled={groupsFilled}
-                ro16Filled={
-                  checkFilled(8).length === 8 && checkFilledDraw(8).length === 0
-                }
-                quarterFilled={
-                  checkFilled(9).length === 4 && checkFilledDraw(9).length === 0
-                }
-                semiFilled={
-                  checkFilled(10).length === 2 &&
-                  checkFilledDraw(10).length === 0
-                }
-                thirdFilled={
-                  checkFilled(11).length === 1 &&
-                  checkFilledDraw(11).length === 0
-                }
-                finalFilled={
-                  checkFilled(12).length === 1 &&
-                  checkFilledDraw(12).length === 0
-                }
-                {...timelineData}
-              />
-            </div>
-            <Table
-              groupStage={groupStage}
-              matches={sweepstake ? submitedSweepstake : output}
-              count={count}
-              disabled={sweepstakeDisabled}
-              // processing={processing}
-              onChange={(e) => setOutput(e)}
-            />
-            <Divider height={20} />
-            <div className={styles.actions}>
-              <div className={styles.pagination}>
-                <Button
-                  classname={styles.next}
-                  text={"Prev"}
-                  link
-                  onClick={() => setCount(count - 1)}
-                  size={"m"}
-                  disabled={count === 0}
+      {/* TO-DO: Create a separate grid component for the table and timeline */}
+      {session && (
+        <>
+          <TeamSelect onChange={(e) => setTeam(e)} />
+          <Divider height={80} />
+          <div className={styles.grid}>
+            <div className={styles.gridWrapper}>
+              <div className={styles.groupsWrapper}>
+                <Groups
+                  data={output}
+                  count={count < 8 ? count : 7}
+                  onChange={(e) => setGroupStage(e)}
+                  onSelect={(e) => setCount(e)}
                 />
-                {groupsFilled && count > 6 && count < 12 && (
-                  <Button
-                    classname={styles.next}
-                    text={"Next"}
-                    link
-                    onClick={() => setCount(count + 1)}
-                    size={"m"}
-                  />
-                )}
-                {count >= 0 && count < 7 && (
-                  <Button
-                    classname={styles.next}
-                    text={"Next"}
-                    link
-                    onClick={() => setCount(count + 1)}
-                    size={"m"}
-                  />
-                )}
               </div>
-              {!sweepstakeDisabled && (
-                <div className={styles.submitWrapper}>
-                  {filledCount === 64 && (
-                    <Select
-                      placeholder={"Choose token"}
-                      options={paymentOptions}
-                      onChange={(e) => setPaymentToken(e?.value)}
-                      className={styles.select}
-                    />
-                  )}
-                  <Button
-                    text={
-                      filledCount !== 64 && paymentToken === ""
-                        ? `${filledCount}/64`
-                        : "Submit"
+              <div className={styles.tableWrapper}>
+                <div className={styles.timelineWrapper}>
+                  <Timeline
+                    count={count}
+                    onChange={(e) => setCount(e)}
+                    groupsFilled={groupsFilled}
+                    ro16Filled={
+                      checkFilled(8).length === 8 &&
+                      checkFilledDraw(8).length === 0
                     }
-                    color={"positive"}
-                    textColor={"light"}
-                    size={"xxs"}
-                    disabled={
-                      filledCount !== 64 || paymentToken === "" || !team
+                    quarterFilled={
+                      checkFilled(9).length === 4 &&
+                      checkFilledDraw(9).length === 0
                     }
-                    onClick={handleSubmit}
+                    semiFilled={
+                      checkFilled(10).length === 2 &&
+                      checkFilledDraw(10).length === 0
+                    }
+                    thirdFilled={
+                      checkFilled(11).length === 1 &&
+                      checkFilledDraw(11).length === 0
+                    }
+                    finalFilled={
+                      checkFilled(12).length === 1 &&
+                      checkFilledDraw(12).length === 0
+                    }
+                    {...timelineData}
                   />
                 </div>
-              )}
+                <Table
+                  groupStage={groupStage}
+                  matches={
+                    predictionsTransformed ? predictionsTransformed : output
+                  }
+                  count={count}
+                  disabled={predictionsTransformed}
+                  onChange={(e) => setOutput(e)}
+                />
+                <Divider height={20} />
+                <div className={styles.actions}>
+                  <div className={styles.pagination}>
+                    <Button
+                      classname={styles.next}
+                      text={"Prev"}
+                      link
+                      onClick={() => setCount(count - 1)}
+                      size={"m"}
+                      disabled={count === 0}
+                    />
+                    {groupsFilled && count > 6 && count < 12 && (
+                      <Button
+                        classname={styles.next}
+                        text={"Next"}
+                        link
+                        onClick={() => setCount(count + 1)}
+                        size={"m"}
+                      />
+                    )}
+                    {count >= 0 && count < 7 && (
+                      <Button
+                        classname={styles.next}
+                        text={"Next"}
+                        link
+                        onClick={() => setCount(count + 1)}
+                        size={"m"}
+                      />
+                    )}
+                  </div>
+                  {!sweepstakeDisabled && !predictionsTransformed && (
+                    <div className={styles.submitWrapper}>
+                      {filledCount === 64 && (
+                        <Select
+                          placeholder={"Choose token"}
+                          options={paymentOptions}
+                          onChange={(e) => setPaymentToken(e?.value)}
+                          className={styles.select}
+                        />
+                      )}
+                      <Button
+                        text={
+                          filledCount !== 64 && paymentToken === ""
+                            ? `${filledCount}/64`
+                            : "Submit"
+                        }
+                        color={"positive"}
+                        textColor={"light"}
+                        size={"xxs"}
+                        disabled={
+                          filledCount !== 64 || paymentToken === "" || !team
+                        }
+                        onClick={handleSubmit}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
@@ -425,28 +401,20 @@ export async function getServerSideProps(context) {
 
   const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
 
-  const users = await getData(
-    "https://backend-x7q2esrofa-no.a.run.app/api/v1/users"
-  );
-
-  const sweepstakes = await getData(
-    "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes"
-  );
-
-  // Check if user has sweepstake or not
-  let sweepstake;
+  let user;
 
   if (session) {
-    sweepstake = sweepstakes?.filter(
-      (item) => item?.user?.address === session?.user?.user?.address
-    )[0];
+    user = await getData(
+      `https://backend-x7q2esrofa-no.a.run.app/api/v1/users/${session?.user?.user?.id}`
+    );
   }
+
   return {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
-      users: users || null,
-      sweepstake: sweepstake || null,
+      users: null,
+      sweepstakes: user?.sweepstakes || null,
     },
   };
 }

@@ -18,6 +18,62 @@ const getTeamPoints = (data, team) => {
   return total;
 };
 
+const getTeamGoals = (data, team) => {
+  let goals = 0;
+
+  data?.map((item) => {
+    if (item.teamA === team) {
+      return (goals += Number(item.scoreA));
+    }
+
+    if (item.teamB === team) {
+      return (goals += Number(item.scoreB));
+    }
+  });
+
+  return goals;
+};
+
+const getTeamGoalsDifference = (data, team) => {
+  let difference = 0;
+
+  data?.map((item) => {
+    if (item.teamA === team) {
+      return (difference += Number(item.scoreA) - Number(item.scoreB));
+    }
+
+    if (item.teamB === team) {
+      return (difference += Number(item.scoreB) - Number(item.scoreA));
+    }
+  });
+
+  return difference;
+};
+
+const getGreaterTeamPoints = (teamA, teamB) => {
+  if (getTeamGoals(teamA) > getTeamGoals(teamB)) {
+    return teamA;
+  } else {
+    return teamB;
+  }
+};
+
+const getGreaterTeamGoals = (teamA, teamB) => {
+  if (getTeamGoalsDifference(teamA) > getTeamGoalsDifference(teamB)) {
+    return teamA;
+  } else {
+    return teamB;
+  }
+};
+
+const getGreaterTeamGoalsDifference = (teamA, teamB) => {
+  if (getTeamGoalsDifference(teamA) > getTeamGoalsDifference(teamB)) {
+    return teamA;
+  } else {
+    return teamB;
+  }
+};
+
 const groupWinners = (data, group) => {
   return data?.filter((item) => item?.group === group);
 };
@@ -46,4 +102,11 @@ const getLosers = (data) => {
   return losers;
 };
 
-export { getTeamPoints, groupWinners, getWinners, getLosers };
+export {
+  getTeamPoints,
+  getTeamGoals,
+  getTeamGoalsDifference,
+  groupWinners,
+  getWinners,
+  getLosers,
+};

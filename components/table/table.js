@@ -45,7 +45,6 @@ const Table = ({
     return {
       matchId: 48 + index,
       type: 8,
-      group: "A",
       playDate: item?.playDate,
       playTime: item?.playTime,
       teamA: groupWinners(groupStage, teamX)[0]?.teams[placementX].name,
@@ -64,7 +63,6 @@ const Table = ({
     return {
       matchId: 56 + index,
       type: 9,
-      group: "A",
       playDate: item?.playDate,
       playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 8))[teamX],
@@ -83,7 +81,6 @@ const Table = ({
     return {
       matchId: 60 + index,
       type: 10,
-      group: "A",
       playDate: item?.playDate,
       playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 9))[teamX],
@@ -102,7 +99,6 @@ const Table = ({
     return {
       matchId: 62 + index,
       type: 11,
-      group: "A",
       playDate: item?.playDate,
       playTime: item?.playTime,
       teamA: getLosers(data.filter((item) => item.type === 10))[teamX],
@@ -121,7 +117,6 @@ const Table = ({
     return {
       matchId: 63 + index,
       type: 12,
-      group: "A",
       playDate: item?.playDate,
       playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 10))[teamX],

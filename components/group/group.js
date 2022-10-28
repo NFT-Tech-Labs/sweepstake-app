@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames/bind";
 import styles from "./group.module.scss";
 import PropTypes from "prop-types";
-import { Title, Icon } from "@components";
+import { Title, Content, Icon } from "@components";
 import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
@@ -53,6 +53,16 @@ const Group = ({ className, teams }) => {
               )}
               <Title tag={"h6"} text={item.name} />
             </div>
+          )}
+          {item.goals && (
+            <Content size={"xs"} color={"positive"} text={item.goals} />
+          )}
+          {item.goals && (
+            <Content
+              size={"xs"}
+              color={"positive"}
+              text={item.goalsDifference}
+            />
           )}
           {item.points !== null && (
             <Title tag={"h6"} color={"positive"} text={item.points} />
