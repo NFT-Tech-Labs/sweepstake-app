@@ -54,19 +54,38 @@ const Group = ({ className, teams }) => {
               <Title tag={"h6"} text={item.name} />
             </div>
           )}
-          {item.goals && (
-            <Content size={"xs"} color={"positive"} text={item.goals} />
-          )}
-          {item.goals && (
+          <div className={styles.points}>
             <Content
               size={"xs"}
               color={"positive"}
-              text={item.goalsDifference}
+              text={item.goalsGreater ? item.goalsGreater : "/"}
             />
-          )}
-          {item.points !== null && (
-            <Title tag={"h6"} color={"positive"} text={item.points} />
-          )}
+            <Content
+              size={"xs"}
+              color={"positive"}
+              text={
+                item.goalsDifferenceGreater ? item.goalsDifferenceGreater : "/"
+              }
+            />
+            <Content
+              size={"xs"}
+              color={"positive"}
+              text={item.pointsGreater ? item.pointsGreater : "/"}
+            />
+            {item.goals && (
+              <Content size={"xs"} color={"positive"} text={item.goals} />
+            )}
+            {item.goalsDifference && (
+              <Content
+                size={"xs"}
+                color={"positive"}
+                text={item.goalsDifference}
+              />
+            )}
+            {item.points !== null && (
+              <Title tag={"h6"} color={"positive"} text={item.points} />
+            )}
+          </div>
         </div>
       ))}
     </div>

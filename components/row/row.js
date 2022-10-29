@@ -118,7 +118,6 @@ const Row = ({
                 />
               )}
             </div>
-            <Icon />
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
                 <input
@@ -134,7 +133,7 @@ const Row = ({
                 <input
                   id={matchId}
                   type={"number"}
-                  value={scoreB}
+                  value={scoreB === 0 ? 0 : scoreB}
                   min={"0"}
                   onChange={onChangeB}
                   onWheel={(e) => e.target.blur()}

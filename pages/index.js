@@ -211,6 +211,8 @@ export default function Home({ accountData, nfts, sweepstakes }) {
     }
   };
 
+  console.log(output);
+
   // Triggers the submitSweepstake function based on conditions (confirmation)
   useEffect(() => {
     submitSweepstake();
