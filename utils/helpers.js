@@ -62,11 +62,12 @@ const getGreaterTeamPoints = (data, teamA, teamB) => {
       return item;
     }
   });
-  const totalPointsA = getTeamPoints(data, teamA);
-  const totalPointsB = getTeamPoints(data, teamB);
 
-  const tiedMatchPointsA = getTeamPoints(tiedMatch, teamA);
-  const tiedMatchPointsB = getTeamPoints(tiedMatch, teamB);
+  const totalPointsA = getTeamPoints(data, tiedMatch[0]?.teamA);
+  const totalPointsB = getTeamPoints(data, tiedMatch[0]?.teamB);
+
+  const tiedMatchPointsA = getTeamPoints(tiedMatch, tiedMatch[0]?.teamA);
+  const tiedMatchPointsB = getTeamPoints(tiedMatch, tiedMatch[0]?.teamB);
 
   return {
     [tiedMatch[0]?.teamA]: Number(totalPointsA) - Number(tiedMatchPointsA),
@@ -84,15 +85,22 @@ const getGreaterTeamGoalsDifference = (data, teamA, teamB) => {
       return item;
     }
   });
-  const totalPointsA = getTeamGoalsDifference(data, teamA);
-  const totalPointsB = getTeamGoalsDifference(data, teamB);
 
-  const tiedMatchPointsA = getTeamGoalsDifference(tiedMatch, teamA);
-  const tiedMatchPointsB = getTeamGoalsDifference(tiedMatch, teamB);
+  const totalPointsA = getTeamGoalsDifference(data, tiedMatch[0]?.teamA);
+  const totalPointsB = getTeamGoalsDifference(data, tiedMatch[0]?.teamB);
+
+  const tiedMatchPointsA = getTeamGoalsDifference(
+    tiedMatch,
+    tiedMatch[0]?.teamA
+  );
+  const tiedMatchPointsB = getTeamGoalsDifference(
+    tiedMatch,
+    tiedMatch[0]?.teamB
+  );
 
   return {
-    [tiedMatch[0]?.teamA]: Number(totalPointsB) - Number(tiedMatchPointsB),
-    [tiedMatch[0]?.teamB]: Number(totalPointsA) - Number(tiedMatchPointsA),
+    [tiedMatch[0]?.teamA]: Number(totalPointsA) - Number(tiedMatchPointsA),
+    [tiedMatch[0]?.teamB]: Number(totalPointsB) - Number(tiedMatchPointsB),
   };
 };
 
@@ -106,15 +114,16 @@ const getGreaterTeamGoals = (data, teamA, teamB) => {
       return item;
     }
   });
-  const totalPointsA = getTeamGoals(data, teamA);
-  const totalPointsB = getTeamGoals(data, teamB);
 
-  const tiedMatchPointsA = getTeamGoals(tiedMatch, teamA);
-  const tiedMatchPointsB = getTeamGoals(tiedMatch, teamB);
+  const totalPointsA = getTeamGoals(data, tiedMatch[0]?.teamA);
+  const totalPointsB = getTeamGoals(data, tiedMatch[0]?.teamB);
+
+  const tiedMatchPointsA = getTeamGoals(tiedMatch, tiedMatch[0]?.teamA);
+  const tiedMatchPointsB = getTeamGoals(tiedMatch, tiedMatch[0]?.teamB);
 
   return {
-    [tiedMatch[0]?.teamA]: Number(totalPointsB) - Number(tiedMatchPointsB),
-    [tiedMatch[0]?.teamB]: Number(totalPointsA) - Number(tiedMatchPointsA),
+    [tiedMatch[0]?.teamA]: Number(totalPointsA) - Number(tiedMatchPointsA),
+    [tiedMatch[0]?.teamB]: Number(totalPointsB) - Number(tiedMatchPointsB),
   };
 };
 
