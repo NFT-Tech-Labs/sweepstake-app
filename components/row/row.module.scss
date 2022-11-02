@@ -1,6 +1,6 @@
 .row {
   td {
-    padding: var(--spacing-l) var(--spacing-xl);
+    padding: var(--spacing-l);
     border-bottom: solid 1px rgba(var(--color-stable), 1);
   }
 
@@ -124,10 +124,18 @@
 
   &:first-of-type {
     margin-right: var(--spacing-m);
+
+    .worldChampionA & {
+      border: dashed 1px rgba(var(--color-dark), 1);
+    }
   }
 
   &:last-of-type {
     margin-left: var(--spacing-m);
+
+    .worldChampionB & {
+      border: dashed 1px rgba(var(--color-dark), 1);
+    }
   }
 }
 
@@ -238,4 +246,8 @@
 
 .disabled {
   opacity: 0.75;
+}
+
+.worldChampion {
+  border: dashed 2px;
 }

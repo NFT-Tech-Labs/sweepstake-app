@@ -13,9 +13,7 @@
 
 .groupsWrapper {
   display: flex;
-  max-width: 25%;
-  // background-color: rgba(var(--color-light), 1);
-  // box-shadow: var(--shadow);
+  max-width: 30%;
   border-radius: 10px;
   height: 100%;
 }
@@ -32,6 +30,11 @@
 .actions {
   display: flex;
   justify-content: space-between;
+}
+
+.rulesWrapper {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .examples {

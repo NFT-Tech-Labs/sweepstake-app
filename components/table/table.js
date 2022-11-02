@@ -25,6 +25,7 @@ const Table = ({
   processing,
   confirmation,
   disabled,
+  worldChampion,
 }) => {
   const [data, setData] = useState(matches);
 
@@ -313,6 +314,7 @@ const Table = ({
                     onChangeExtensionB={onInputChangeExtensionB}
                     count={count}
                     disabled={disabled}
+                    worldChampion={worldChampion}
                     index={index}
                     {...item}
                   />
@@ -332,6 +334,7 @@ Table.propTypes = {
   count: PropTypes.number,
   processing: PropTypes.bool,
   confirmation: PropTypes.bool,
+  worldChampion: PropTypes.string,
 };
 
 Table.defaultProps = {
@@ -340,6 +343,7 @@ Table.defaultProps = {
   count: 0,
   processing: false,
   confirmation: false,
+  worldChampion: "",
 };
 
 export default Table;

@@ -100,7 +100,7 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
         </TabList>
         {groupStageUpdated?.map((item, index) => (
           <TabPanel key={index}>
-            {item?.teams && <Group key={index} teams={item.teams} />}
+            <>{item?.teams && <Group key={index} teams={item.teams} />}</>
           </TabPanel>
         ))}
       </Tabs>

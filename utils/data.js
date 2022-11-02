@@ -1,3 +1,134 @@
+const teams = [
+  {
+    countryName: "Ecuador",
+    countryShortCode: "EC",
+  },
+  {
+    countryName: "Qatar",
+    countryShortCode: "QA",
+  },
+  {
+    countryName: "Senegal",
+    countryShortCode: "SN",
+  },
+  {
+    countryName: "United States",
+    countryShortCode: "US",
+  },
+  {
+    countryName: "Senegal",
+    countryShortCode: "SN",
+  },
+  {
+    countryName: "Wales",
+    countryShortCode: "WL",
+  },
+  {
+    countryName: "Iran",
+    countryShortCode: "IR",
+  },
+  {
+    countryName: "England",
+    countryShortCode: "EN",
+  },
+  {
+    countryName: "Argentina",
+    countryShortCode: "AR",
+  },
+  {
+    countryName: "Saudi Arabia",
+    countryShortCode: "SA",
+  },
+  {
+    countryName: "Mexico",
+    countryShortCode: "MX",
+  },
+  {
+    countryName: "Poland",
+    countryShortCode: "PL",
+  },
+  {
+    countryName: "France",
+    countryShortCode: "FR",
+  },
+  {
+    countryName: "Australia",
+    countryShortCode: "AU",
+  },
+  {
+    countryName: "Denmark",
+    countryShortCode: "DK",
+  },
+  {
+    countryName: "Tunesia",
+    countryShortCode: "TN",
+  },
+  {
+    countryName: "Costa Rica",
+    countryShortCode: "CR",
+  },
+  {
+    countryName: "Japan",
+    countryShortCode: "JP",
+  },
+  {
+    countryName: "Spain",
+    countryShortCode: "ES",
+  },
+  {
+    countryName: "Germany",
+    countryShortCode: "DE",
+  },
+  {
+    countryName: "Belgium",
+    countryShortCode: "BE",
+  },
+  {
+    countryName: "Morocco",
+    countryShortCode: "MA",
+  },
+  {
+    countryName: "Croatia",
+    countryShortCode: "HR",
+  },
+  {
+    countryName: "Canada",
+    countryShortCode: "CA",
+  },
+  {
+    countryName: "Serbia",
+    countryShortCode: "RS",
+  },
+  {
+    countryName: "Brazil",
+    countryShortCode: "BR",
+  },
+  {
+    countryName: "Cameroon",
+    countryShortCode: "CM",
+  },
+  {
+    countryName: "Switzerland",
+    countryShortCode: "CH",
+  },
+  {
+    countryName: "Ghana",
+    countryShortCode: "GH",
+  },
+  {
+    countryName: "Portugal",
+    countryShortCode: "PT",
+  },
+  {
+    countryName: "South Korea",
+    countryShortCode: "KR",
+  },
+  {
+    countryName: "Uruguay",
+    countryShortCode: "UY",
+  },
+];
+
 const tableData = [
   {
     matchId: 0,
@@ -749,51 +880,100 @@ const headingData = {
   },
 };
 
-const cardRulesData = {
-  icon: {
-    name: "info",
-  },
-  title: {
-    text: "Rules",
-  },
-  content: {
-    text: "Make sure to fill in all rounds before submitting",
-    color: "stable-700",
-  },
-  rules: [
-    {
-      icon: {
-        name: "checkmark-double",
-      },
-      content: {
-        text: "3 points: Predict match score and winner",
-      },
-      subtext: {
-        text: "5 points: If the match includes your world cup team",
-      },
+const rulesData = [
+  {
+    icon: {
+      name: "info",
     },
-    {
-      icon: {
-        name: "checkmark",
-      },
-      content: {
-        text: "1 points: Predict the winning team",
-      },
-      subtext: {
-        text: "3 points: if the match includes your world cup team",
-      },
+    title: {
+      text: "Overall Rules",
     },
-    {
-      icon: {
-        name: "cross",
-      },
-      content: {
-        text: "0 points: Predict wrong",
-        color: "assertive",
-      },
+    content: {
+      text: "Make sure to fill in all rounds before submitting",
+      color: "stable-700",
     },
-  ],
-};
+    rules: [
+      {
+        icon: {
+          name: "checkmark-double",
+        },
+        content: {
+          text: "3 points: Predict match score and winner/draw",
+        },
+        subtext: {
+          text: "5 points: If the match includes your seleceted team",
+        },
+      },
+      {
+        icon: {
+          name: "checkmark",
+        },
+        content: {
+          text: "1 points: Predict winner/draw",
+        },
+        subtext: {
+          text: "3 points: if the match includes your selected team",
+        },
+      },
+      {
+        icon: {
+          name: "cross",
+        },
+        content: {
+          text: "0 points: Predict wrong",
+          color: "assertive",
+        },
+      },
+    ],
+  },
+  {
+    icon: {
+      name: "info",
+    },
+    title: {
+      text: "Ro16, Quarters & Semi Rules",
+    },
+    content: {
+      text: "Make sure to fill in all rounds before submitting",
+      color: "stable-700",
+    },
+    rules: [
+      {
+        icon: {
+          name: "checkmark-double",
+        },
+        content: {
+          text: "1 points: Team predicted reaches the rounds in different positions",
+        },
+        subtext: {
+          text: "3 points: If positions are exactly placed",
+        },
+      },
+    ],
+  },
+  {
+    icon: {
+      name: "info",
+    },
+    title: {
+      text: "Final & 3rd place Rules",
+    },
+    content: {
+      text: "Make sure to fill in all rounds before submitting",
+      color: "stable-700",
+    },
+    rules: [
+      {
+        icon: {
+          name: "checkmark-double",
+        },
+        content: {
+          text: "3 points: Team predicted reaches the Final or 3rd place",
+        },
+      },
+    ],
+  },
+];
 
 const examplesData = [
   {
@@ -849,29 +1029,6 @@ const ctaData = {
     textColor: "light",
   },
   image: "https://dagoats.io/wp-content/uploads/2022/06/maradona.png",
-};
-
-const timelineData = {
-  rounds: [
-    {
-      text: "Groups",
-    },
-    {
-      text: "Ro16",
-    },
-    {
-      text: "Quarter",
-    },
-    {
-      text: "Semi",
-    },
-    {
-      text: "3rd",
-    },
-    {
-      text: "Final",
-    },
-  ],
 };
 
 const profileData = {
@@ -931,33 +1088,34 @@ const profileData = {
 
 const paymentOptions = [
   {
-    label: "SOL",
+    label: "0.25 SOL",
     value: "sol",
     amount: 0.25,
   },
   {
-    label: "DUST",
+    label: "7 DUST",
     value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
     amount: 7,
   },
   {
-    label: "DGOAT",
+    label: "1 DGOAT",
     value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
     amount: 1,
   },
   {
-    label: "MVP",
+    label: "750 MVP",
     value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
     amount: 750,
   },
   {
-    label: "LABS",
+    label: "375 LABS",
     value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
     amount: 375,
   },
 ];
 
 export {
+  teams,
   tableData,
   groupsScheme,
   roundOf16Scheme,
@@ -966,10 +1124,9 @@ export {
   thirdPlaceScheme,
   finalScheme,
   headingData,
-  cardRulesData,
+  rulesData,
   examplesData,
   ctaData,
-  timelineData,
   profileData,
   paymentOptions,
 };

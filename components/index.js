@@ -12,7 +12,7 @@ import Cta from "./cta/cta";
 import Wallet from "./wallet/wallet";
 import Collection from "./collection/colletion";
 import CardNft from "./cardNft/cardNft";
-import CardRules from "./cardRules/cardRules";
+import Rules from "./rules/rules";
 import Example from "./example/example";
 import Profile from "./profile/profile";
 import Group from "./group/group";
@@ -36,7 +36,7 @@ export {
   Collection,
   Icon,
   CardNft,
-  CardRules,
+  Rules,
   Example,
   Profile,
   Group,

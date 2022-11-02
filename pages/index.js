@@ -12,7 +12,7 @@ import {
   Timeline,
   Button,
   Cta,
-  CardRules,
+  Rules,
   Example,
   Profile,
   Groups,
@@ -24,10 +24,9 @@ import { fetchData } from "utils/apiNft";
 import {
   tableData,
   headingData,
-  cardRulesData,
+  rulesData,
   ctaData,
   examplesData,
-  timelineData,
   profileData,
   paymentOptions,
 } from "utils/data";
@@ -62,6 +61,35 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
+
+  const timelineData = {
+    rounds: [
+      {
+        text: "Groups",
+        onClick: () => setCount(0),
+      },
+      {
+        text: "Ro16",
+        onClick: () => setCount(8),
+      },
+      {
+        text: "Quarter",
+        onClick: () => setCount(9),
+      },
+      {
+        text: "Semi",
+        onClick: () => setCount(10),
+      },
+      {
+        text: "3rd",
+        onClick: () => setCount(11),
+      },
+      {
+        text: "Final",
+        onClick: () => setCount(12),
+      },
+    ],
+  };
 
   // Fetched sweepstake predictions from API
   let predictions;
@@ -136,6 +164,17 @@ export default function Home({ accountData, nfts, sweepstakes }) {
     );
   };
 
+  const ro16Filled =
+    checkFilled(8).length === 8 && checkFilledDraw(8).length === 0;
+  const quarterFilled =
+    checkFilled(9).length === 4 && checkFilledDraw(9).length === 0;
+  const semiFilled =
+    checkFilled(10).length === 2 && checkFilledDraw(10).length === 0;
+  const thirdFilled =
+    checkFilled(11).length === 1 && checkFilledDraw(11).length === 0;
+  const finalFilled =
+    checkFilled(12).length === 1 && checkFilledDraw(12).length === 0;
+
   // Keeps track of how many matches are filled in
   const filledCount =
     output.filter((item) => item.scoreA && item.scoreB).length + 1;
@@ -163,7 +202,7 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   // The output that gets send to the API
   // Selected team and Predictions filled in by the user
   const finalOutput = {
-    worldChampion: team?.value,
+    worldChampion: team?.value || "AR",
     predictions: transformOutputTypes,
   };
 
@@ -217,7 +256,9 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
-  console.log(predictionsTransformed);
+
+  console.log(finalOutput);
+
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -243,9 +284,13 @@ export default function Home({ accountData, nfts, sweepstakes }) {
       <Heading {...headingData} />
       <Divider height={20} />
       <Cta {...ctaData} />
-      <Divider height={40} />
-      <CardRules {...cardRulesData} />
-      <Divider height={20} />
+      <Divider height={80} />
+      <div className={styles.rulesWrapper}>
+        {rulesData?.map((item, index) => (
+          <Rules key={index} {...item} />
+        ))}
+      </div>
+      <Divider height={80} />
       <div className={styles.examples}>
         {examplesData?.map((example, index) => (
           <Example key={index} {...example} />
@@ -273,26 +318,11 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                     count={count}
                     onChange={(e) => setCount(e)}
                     groupsFilled={groupsFilled}
-                    ro16Filled={
-                      checkFilled(8).length === 8 &&
-                      checkFilledDraw(8).length === 0
-                    }
-                    quarterFilled={
-                      checkFilled(9).length === 4 &&
-                      checkFilledDraw(9).length === 0
-                    }
-                    semiFilled={
-                      checkFilled(10).length === 2 &&
-                      checkFilledDraw(10).length === 0
-                    }
-                    thirdFilled={
-                      checkFilled(11).length === 1 &&
-                      checkFilledDraw(11).length === 0
-                    }
-                    finalFilled={
-                      checkFilled(12).length === 1 &&
-                      checkFilledDraw(12).length === 0
-                    }
+                    ro16Filled={ro16Filled}
+                    quarterFilled={quarterFilled}
+                    semiFilled={semiFilled}
+                    thirdFilled={thirdFilled}
+                    finalFilled={finalFilled}
                     {...timelineData}
                   />
                 </div>
@@ -304,6 +334,7 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                   count={count}
                   disabled={predictionsTransformed}
                   onChange={(e) => setOutput(e)}
+                  worldChampion={finalOutput?.worldChampion}
                 />
                 <Divider height={20} />
                 <div className={styles.actions}>
@@ -323,6 +354,23 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                         link
                         onClick={() => setCount(count + 1)}
                         size={"m"}
+                        disabled={
+                          (!groupsFilled && count === 7) ||
+                          ((!groupsFilled || !ro16Filled) && count === 8) ||
+                          ((!groupsFilled || !ro16Filled || !quarterFilled) &&
+                            count === 9) ||
+                          ((!groupsFilled ||
+                            !ro16Filled ||
+                            !quarterFilled ||
+                            !semiFilled) &&
+                            count === 10) ||
+                          ((!groupsFilled ||
+                            !ro16Filled ||
+                            !quarterFilled ||
+                            !semiFilled ||
+                            !thirdFilled) &&
+                            count === 11)
+                        }
                       />
                     )}
                     {count >= 0 && count < 7 && (
@@ -355,7 +403,9 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                         textColor={"light"}
                         size={"xxs"}
                         disabled={
-                          filledCount !== 64 || paymentToken === "" || !team
+                          filledCount !== 64 ||
+                          paymentToken === "" ||
+                          !finalOutput.worldChampion
                         }
                         onClick={handleSubmit}
                       />

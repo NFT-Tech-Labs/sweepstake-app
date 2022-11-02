@@ -29,6 +29,7 @@ const Row = ({
   disabled,
   index,
   count,
+  worldChampion,
 }) => {
   const perfect =
     resultA || resultB ? scoreA === resultA && scoreB === resultB : false;
@@ -52,6 +53,8 @@ const Row = ({
       filledB,
       blank,
       disabled,
+      worldChampionA: teamA === worldChampion,
+      worldChampionB: teamB === worldChampion,
     },
     className
   );
@@ -260,6 +263,8 @@ Row.propTypes = {
   matchId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   disabled: PropTypes.bool,
   index: PropTypes.number,
+  count: PropTypes.number,
+  worldChampion: PropTypes.string,
 };
 
 Row.defaultProps = {
@@ -283,6 +288,8 @@ Row.defaultProps = {
   matchId: "",
   disabled: false,
   index: 0,
+  count: 0,
+  worldChampion: "",
 };
 
 export default memo(Row);

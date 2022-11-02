@@ -1,9 +1,6 @@
 .group {
   max-width: 600px;
   border: solid 1px rgba(var(--color-stable), 1);
-  // border-radius: var(--spacing-m);
-  // border-top-right-radius: 0;
-  // border-top-left-radius: 0;
   background-color: rgba(var(--color-light), 1);
 }
 
@@ -13,7 +10,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: solid 1px rgba(var(--color-stable), 1);
-  padding: var(--spacing-l) var(--spacing-xl);
+  padding: var(--spacing-l);
 
   &:last-child {
     border-bottom: none;
@@ -35,7 +32,7 @@
 }
 
 .flag {
-  margin: 0 var(--spacing-m);
+  margin: 0 var(--spacing-s);
 }
 
 .name {
@@ -43,7 +40,7 @@
 }
 
 .customIconEN svg {
-  margin: 0 var(--spacing-m);
+  margin: 0 var(--spacing-s);
   width: 24px !important;
   height: 24px !important;
   
@@ -53,16 +50,93 @@
 }
 
 .customIcon svg {
-  margin: 0 var(--spacing-m);
+  margin: 0 var(--spacing-s);
   width: 25px !important;
   height: 24px !important;
 }
 
-.points {
+.score {
   display: flex;
   align-items: center;
 
   p {
-    padding-right: 10px;
+    margin-left: var(--spacing-xs);
+    width: 20px;
+    text-align: right;
   }
 }
+
+.points {
+  position: relative;
+  margin-left: var(--spacing-l);
+}
+
+// .goalsDifference,
+// .goals,
+// .pointsGreater,
+// .goalsDifferenceGreater,
+// .goalsGreater {
+//   position: relative;
+// }
+
+// .teamLast {
+//   .goalsDifference,
+//   .goals,
+//   .pointsGreater,
+//   .goalsDifferenceGreater,
+//   .goalsGreater {
+//     &:after {
+//       content: "";
+//       font-size: 12px;
+//       position: absolute;
+//       bottom: -44px;
+//       display: flex;
+//       color: black;
+//       background: white;
+//       justify-content: center;
+//       align-items: center;
+//       width: 100%;
+//       left: 0;
+//       width: 25px;
+//       right: 0;
+//       height: 19px;
+//     }
+//   }
+
+//   .goalsDifference {
+//     &:after {
+//       content: 'GD';
+//       border-right: solid 1px rgba(var(--color-stable), 1);
+//       border-bottom: solid 1px rgba(var(--color-stable), 1);
+//     }
+//   }
+
+//   .goals {
+//     &:after {
+//       content: 'GS';
+//       border-bottom: solid 1px rgba(var(--color-stable), 1);
+//     }
+//   }
+
+//   .pointsGreater {
+//     &:after {
+//       content: 'PG';
+//       border-bottom: solid 1px rgba(var(--color-stable), 1);
+//     }
+//   }
+
+//   .goalsDifferenceGreater {
+//     &:after {
+//       content: 'V';
+//       border-bottom: solid 1px rgba(var(--color-stable), 1);
+//     }
+//   }
+
+//   .goalsGreater {
+//     &:after {
+//       content: 'GG';
+//       border-left: solid 1px rgba(var(--color-stable), 1);
+//       border-bottom: solid 1px rgba(var(--color-stable), 1);
+//     }
+//   }
+// }
