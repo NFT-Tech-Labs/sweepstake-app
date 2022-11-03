@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import classNames from "classnames/bind";
 import styles from "./table.module.scss";
 import PropTypes from "prop-types";
-import { Content, Row, Button } from "@components";
+import { Content, Row, Snackbar } from "@components";
 import { groupWinners, getWinners, getLosers } from "../../utils/helpers";
 import {
   roundOf16Scheme,
@@ -275,6 +275,17 @@ const Table = ({
     );
   };
 
+  const drawCheck = data?.filter(
+    (item) =>
+      item.scoreA &&
+      item.scoreB !== null &&
+      item.scoreA === item.scoreB &&
+      item.type > 7 &&
+      item.type === count
+  );
+
+  console.log(drawCheck.length > 0);
+
   return (
     <div className={styles.tableWrapper}>
       {processing && (
@@ -282,7 +293,17 @@ const Table = ({
           <Loader />
         </div>
       )}
-
+      {drawCheck.length > 0 && (
+        <Snackbar
+          title={{
+            text: "Draw",
+          }}
+          content={{
+            text: "Make sure to select a winner",
+          }}
+          className={styles.snackbar}
+        />
+      )}
       <table className={classes}>
         <thead className={styles.head}>
           <tr>

@@ -117,6 +117,7 @@ const Row = ({
                   value={teamA}
                   checked={extensionA}
                   onChange={onChangeExtensionA}
+                  disabled={disabled || resultA || resultB}
                   className={styles.extensionWinner}
                 />
               )}
@@ -171,6 +172,7 @@ const Row = ({
                   value={teamB}
                   checked={extensionB}
                   onChange={onChangeExtensionB}
+                  disabled={disabled || resultA || resultB}
                   className={styles.extensionWinner}
                 />
               )}

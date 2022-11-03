@@ -18,6 +18,7 @@ import Profile from "./profile/profile";
 import Group from "./group/group";
 import Groups from "./groups/groups";
 import TeamSelect from "./teamSelect/teamSelect";
+import Snackbar from "./snackbar/snackbar";
 
 export {
   Layout,
@@ -42,4 +43,5 @@ export {
   Group,
   Groups,
   TeamSelect,
+  Snackbar,
 };

@@ -17,6 +17,7 @@ import {
   Profile,
   Groups,
   TeamSelect,
+  Snackbar,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -179,6 +180,19 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   const filledCount =
     output.filter((item) => item.scoreA && item.scoreB).length + 1;
 
+  const disabledCheck =
+    (!groupsFilled && count === 7) ||
+    ((!groupsFilled || !ro16Filled) && count === 8) ||
+    ((!groupsFilled || !ro16Filled || !quarterFilled) && count === 9) ||
+    ((!groupsFilled || !ro16Filled || !quarterFilled || !semiFilled) &&
+      count === 10) ||
+    ((!groupsFilled ||
+      !ro16Filled ||
+      !quarterFilled ||
+      !semiFilled ||
+      !thirdFilled) &&
+      count === 11);
+
   // Status notifications based on the payment/transaction responses
   useEffect(() => {
     (processing || processingSolana) && toast("Processing...");
@@ -234,7 +248,6 @@ export default function Home({ accountData, nfts, sweepstakes }) {
     if (
       publicKey &&
       session &&
-      team &&
       filledCount === 64 &&
       (confirmation || confirmationSolana)
     ) {
@@ -332,7 +345,9 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                     predictionsTransformed ? predictionsTransformed : output
                   }
                   count={count}
-                  disabled={predictionsTransformed}
+                  disabled={
+                    predictionsTransformed || confirmation || confirmationSolana
+                  }
                   onChange={(e) => setOutput(e)}
                   worldChampion={finalOutput?.worldChampion}
                 />
@@ -354,23 +369,7 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                         link
                         onClick={() => setCount(count + 1)}
                         size={"m"}
-                        disabled={
-                          (!groupsFilled && count === 7) ||
-                          ((!groupsFilled || !ro16Filled) && count === 8) ||
-                          ((!groupsFilled || !ro16Filled || !quarterFilled) &&
-                            count === 9) ||
-                          ((!groupsFilled ||
-                            !ro16Filled ||
-                            !quarterFilled ||
-                            !semiFilled) &&
-                            count === 10) ||
-                          ((!groupsFilled ||
-                            !ro16Filled ||
-                            !quarterFilled ||
-                            !semiFilled ||
-                            !thirdFilled) &&
-                            count === 11)
-                        }
+                        disabled={disabledCheck}
                       />
                     )}
                     {count >= 0 && count < 7 && (
