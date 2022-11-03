@@ -160,10 +160,13 @@ export default function Home({ accountData, nfts, sweepstakes }) {
     return output?.filter(
       (item) =>
         item.type === round &&
-        !item.extensionWinner &&
+        !item.extensionA &&
+        !item.extensionB &&
         item.scoreA === item.scoreB
     );
   };
+
+  console.log(checkFilledDraw(8));
 
   const ro16Filled =
     checkFilled(8).length === 8 && checkFilledDraw(8).length === 0;
