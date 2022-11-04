@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import classNames from "classnames/bind";
 import styles from "./table.module.scss";
 import PropTypes from "prop-types";
-import { Content, Row, Button } from "@components";
+import { Content, Row, Snackbar } from "@components";
 import { groupWinners, getWinners, getLosers } from "../../utils/helpers";
 import {
   roundOf16Scheme,
@@ -24,6 +24,8 @@ const Table = ({
   onChange,
   processing,
   confirmation,
+  disabled,
+  worldChampion,
 }) => {
   const [data, setData] = useState(matches);
 
@@ -42,10 +44,10 @@ const Table = ({
     const placementY = item.teamB.split("")[1] - 1;
 
     return {
-      id: 48 + index,
+      matchId: 48 + index,
       type: 8,
-      date: item?.date,
-      time: item?.time,
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: groupWinners(groupStage, teamX)[0]?.teams[placementX].name,
       teamB: groupWinners(groupStage, teamY)[0]?.teams[placementY].name,
       resultA: item.resultA,
@@ -60,10 +62,10 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 56 + index,
+      matchId: 56 + index,
       type: 9,
-      date: item?.date,
-      time: item?.time,
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 8))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 8))[teamY],
       resultA: item.resultA,
@@ -78,10 +80,10 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 60 + index,
+      matchId: 60 + index,
       type: 10,
-      date: item?.date,
-      time: item?.time,
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 9))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 9))[teamY],
       resultA: item.resultA,
@@ -96,10 +98,10 @@ const Table = ({
     const teamY = item.teamB.split("LG")[1] - 1;
 
     return {
-      id: 62 + index,
+      matchId: 62 + index,
       type: 11,
-      date: item?.date,
-      time: item?.time,
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getLosers(data.filter((item) => item.type === 10))[teamX],
       teamB: getLosers(data.filter((item) => item.type === 10))[teamY],
       resultA: item.resultA,
@@ -114,10 +116,10 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
-      id: 63 + index,
+      matchId: 63 + index,
       type: 12,
-      date: item?.date,
-      time: item?.time,
+      playDate: item?.playDate,
+      playTime: item?.playTime,
       teamA: getWinners(data.filter((item) => item.type === 10))[teamX],
       teamB: getWinners(data.filter((item) => item.type === 10))[teamY],
       resultA: item.resultA,
@@ -133,7 +135,12 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueA: newVal || null } : item
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                scoreA: newVal || null,
+              }
+            : item
         )
       );
     },
@@ -146,7 +153,50 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.id === Number(id) ? { ...item, valueB: newVal || null } : item
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                scoreB: newVal || null,
+              }
+            : item
+        )
+      );
+    },
+    [setData]
+  );
+
+  const onInputChangeExtensionA = useCallback(
+    (e) => {
+      const id = e?.target?.id;
+      setData((prev) =>
+        prev?.map((item) =>
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                extensionA: true,
+                extensionB: false,
+                extensionWinner: item.teamA,
+              }
+            : item
+        )
+      );
+    },
+    [setData]
+  );
+
+  const onInputChangeExtensionB = useCallback(
+    (e) => {
+      const id = e?.target?.id;
+      setData((prev) =>
+        prev?.map((item) =>
+          item.matchId === Number(id)
+            ? {
+                ...item,
+                extensionA: false,
+                extensionB: true,
+                extensionWinner: item.teamB,
+              }
+            : item
         )
       );
     },
@@ -190,7 +240,7 @@ const Table = ({
     }
 
     const filteredData = arrType.reduce((result, obj) => {
-      let row = result.find((x) => x.id === obj.id);
+      let row = result.find((x) => x.matchId === obj.matchId);
       if (!row) result.push({ ...obj });
       else if (row.timestamp < obj.timestamp) Object.assign(row, obj);
       return result;
@@ -225,6 +275,17 @@ const Table = ({
     );
   };
 
+  const drawCheck = data?.filter(
+    (item) =>
+      item.scoreA &&
+      item.scoreB !== null &&
+      item.scoreA === item.scoreB &&
+      item.type > 7 &&
+      item.type === count
+  );
+
+  console.log(drawCheck.length > 0);
+
   return (
     <div className={styles.tableWrapper}>
       {processing && (
@@ -232,7 +293,17 @@ const Table = ({
           <Loader />
         </div>
       )}
-
+      {drawCheck.length > 0 && (
+        <Snackbar
+          title={{
+            text: "Draw",
+          }}
+          content={{
+            text: "Make sure to select a winner",
+          }}
+          className={styles.snackbar}
+        />
+      )}
       <table className={classes}>
         <thead className={styles.head}>
           <tr>
@@ -260,6 +331,12 @@ const Table = ({
                   <Row
                     onChangeA={onInputChangeA}
                     onChangeB={onInputChangeB}
+                    onChangeExtensionA={onInputChangeExtensionA}
+                    onChangeExtensionB={onInputChangeExtensionB}
+                    count={count}
+                    disabled={disabled}
+                    worldChampion={worldChampion}
+                    index={index}
                     {...item}
                   />
                 )}
@@ -278,6 +355,7 @@ Table.propTypes = {
   count: PropTypes.number,
   processing: PropTypes.bool,
   confirmation: PropTypes.bool,
+  worldChampion: PropTypes.string,
 };
 
 Table.defaultProps = {
@@ -286,6 +364,7 @@ Table.defaultProps = {
   count: 0,
   processing: false,
   confirmation: false,
+  worldChampion: "",
 };
 
 export default Table;

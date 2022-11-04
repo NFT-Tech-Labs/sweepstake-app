@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames/bind";
 import styles from "./group.module.scss";
 import PropTypes from "prop-types";
-import { Title, Icon } from "@components";
+import { Title, Content, Icon } from "@components";
 import ReactCountryFlag from "react-country-flag";
 
 const cx = classNames.bind(styles);
@@ -23,7 +23,9 @@ const Group = ({ className, teams }) => {
           className={
             index === 0 || index === 1
               ? [styles.team, styles.qualified].join(" ")
-              : styles.team
+              : index === 3
+              ? [styles.team, styles.teamLast].join(" ")
+              : [styles.team]
           }
         >
           {item.name && (
@@ -54,9 +56,60 @@ const Group = ({ className, teams }) => {
               <Title tag={"h6"} text={item.name} />
             </div>
           )}
-          {item.points !== null && (
-            <Title tag={"h6"} color={"positive"} text={item.points} />
-          )}
+          <div className={styles.score}>
+            {item.goalsGreater !== null && (
+              <Content
+                size={"xs"}
+                color={"dark"}
+                text={item.goalsGreater ? item.goalsGreater : "/"}
+                className={styles.goalsGreater}
+              />
+            )}
+            {item.goalsDifferenceGreater !== null && (
+              <Content
+                size={"xs"}
+                color={"dark"}
+                text={
+                  item.goalsDifferenceGreater
+                    ? item.goalsDifferenceGreater
+                    : "/"
+                }
+                className={styles.goalsDifferenceGreater}
+              />
+            )}
+            {item.pointsGreater !== null && (
+              <Content
+                size={"xs"}
+                color={"dark"}
+                text={item.pointsGreater ? item.pointsGreater : "/"}
+                className={styles.pointsGreater}
+              />
+            )}
+            {item.goals !== null && (
+              <Content
+                size={"xs"}
+                color={"dark"}
+                text={item.goals}
+                className={styles.goals}
+              />
+            )}
+            {item.goalsDifference !== null && (
+              <Content
+                size={"xs"}
+                color={"dark"}
+                text={item.goalsDifference}
+                className={styles.goalsDifference}
+              />
+            )}
+            {item.points !== null && (
+              <Title
+                tag={"h6"}
+                color={"positive"}
+                text={item.points}
+                className={styles.points}
+              />
+            )}
+          </div>
         </div>
       ))}
     </div>
