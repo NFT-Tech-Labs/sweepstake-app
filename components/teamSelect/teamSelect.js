@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./teamSelect.module.scss";
 import PropTypes from "prop-types";
+import { teams } from "utils/data";
 import Select, { components } from "react-select";
-import json from "country-region-data/data.json";
+// import json from "country-region-data/data.json";
 import ReactCountryFlag from "react-country-flag";
 import { Title, Icon } from "@components";
 
@@ -14,52 +15,16 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   let classes = cx({ teamSelect: true }, className);
 
-  //   {
-  //     countryName: "England",
-  //     countryShortCode: "EN",
-  //   },
-  //   {
-  //     countryName: "Wales",
-  //     countryShortCode: "WL",
-  //   }
-  const teams = [
-    "NL",
-    "EC",
-    "QA",
-    "SN",
-    "US",
-    "WL",
-    "IR",
-    "EN",
-    "AR",
-    "SA",
-    "MX",
-    "PL",
-    "FR",
-    "AU",
-    "DK",
-    "TN",
-    "CR",
-    "JP",
-    "ES",
-    "DE",
-    "BE",
-    "MA",
-    "HR",
-    "CA",
-    "RS",
-    "BR",
-    "CM",
-    "CH",
-    "GH",
-    "PT",
-    "KR",
-    "UY",
-  ];
+  const sortedTeam = teams.sort(function (a, b) {
+    if (a.countryName < b.countryName) {
+      return -1;
+    }
+    if (a.countryName > b.countryName) {
+      return 1;
+    }
+    return 0;
+  });
 
-  const filteredTeams = json?.filter((item) =>
-    teams.includes(item?.countryShortCode)
-  );
   const Control = ({ children, ...props }) => {
     return (
       <components.Control {...props}>
@@ -91,17 +56,25 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
 
   const IconOption = (props) => (
     <components.Option className={styles.option} {...props}>
-      {props.data.label}
-      <ReactCountryFlag
-        countryCode={props.data?.value}
-        svg
-        style={{
-          width: "1.5em",
-          height: "1.5em",
-          marginLeft: 10,
-        }}
-        title={props.data?.label}
-      />
+      {props.data?.label}
+      {props.data?.value === "EN" && props.data?.value !== "WL" && (
+        <Icon name={"EN"} className={styles.customIconEN} />
+      )}
+      {props.data?.value === "WL" && props.data?.value !== "EN" && (
+        <Icon name={"WL"} className={styles.customIcon} />
+      )}
+      {props.data?.value !== "EN" && props.data?.value !== "WL" && (
+        <ReactCountryFlag
+          countryCode={props.data?.value}
+          svg
+          style={{
+            width: "1.5em",
+            height: "1.5em",
+            marginLeft: 10,
+          }}
+          title={props.data?.label}
+        />
+      )}
     </components.Option>
   );
 
@@ -112,13 +85,13 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
   return (
     <div className={classes}>
       <Title tag={"h5"} color={"light"} text={"Select your team"} />
-      {json && (
+      {teams && (
         <Select
           onChange={(e) => setSelectedTeam(e)}
           className={styles.select}
           defaultValue={{ value: "AR", label: "Argentina" }}
           components={{ Option: IconOption, Control }}
-          options={filteredTeams?.map((item, index) => {
+          options={sortedTeam?.map((item, index) => {
             return {
               label: item.countryName,
               value: item.countryShortCode,

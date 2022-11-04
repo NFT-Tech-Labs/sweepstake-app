@@ -1,7 +1,15 @@
-.cardRules {
+@import '../..//styles/mixins.scss';
+
+.rules {
   display: inline-flex;
   flex-direction: column;
+  flex-basis: 100%;
   padding: var(--spacing-l);
+
+
+  @include medium {
+    flex-basis: 33%;
+  }
 }
 
 .iconWrapper {

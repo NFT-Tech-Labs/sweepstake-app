@@ -34,6 +34,23 @@ const Timeline = ({
                 (thirdFilled && index === 4) ||
                 (finalFilled && index === 5)
               }
+              disabled={
+                (!groupsFilled && index === 1) ||
+                ((!groupsFilled || !ro16Filled) && index === 2) ||
+                ((!groupsFilled || !ro16Filled || !quarterFilled) &&
+                  index === 3) ||
+                ((!groupsFilled ||
+                  !ro16Filled ||
+                  !quarterFilled ||
+                  !semiFilled) &&
+                  index === 4) ||
+                ((!groupsFilled ||
+                  !ro16Filled ||
+                  !quarterFilled ||
+                  !semiFilled ||
+                  !thirdFilled) &&
+                  index === 5)
+              }
               active={
                 count < 8
                   ? index === 0
