@@ -62,6 +62,12 @@
   }
 }
 
+.icon-balanced {
+  path {
+    stroke: rgba(var(--color-balanced), 1);   
+  }
+}
+
 .icon-energized {
   path {
     fill: #ffc84e;

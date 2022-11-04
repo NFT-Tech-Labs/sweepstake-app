@@ -11,7 +11,15 @@ import { Title, Icon } from "@components";
 
 const cx = classNames.bind(styles);
 
-const TeamSelect = ({ className, onChange, label, options, ...props }) => {
+const TeamSelect = ({
+  className,
+  onChange,
+  defaultValue,
+  disabled,
+  label,
+  options,
+  ...props
+}) => {
   const [selectedTeam, setSelectedTeam] = useState(null);
   let classes = cx({ teamSelect: true }, className);
 
@@ -89,7 +97,8 @@ const TeamSelect = ({ className, onChange, label, options, ...props }) => {
         <Select
           onChange={(e) => setSelectedTeam(e)}
           className={styles.select}
-          defaultValue={{ value: "AR", label: "Argentina" }}
+          defaultValue={defaultValue}
+          isDisabled={disabled}
           components={{ Option: IconOption, Control }}
           options={sortedTeam?.map((item, index) => {
             return {

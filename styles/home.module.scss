@@ -58,3 +58,14 @@
   margin-right: var(--spacing-m);
   min-width: 150px;
 }
+
+.submitted {
+  display: flex;
+  align-items: center;
+}
+
+.submittedIcon {
+  border: dashed 2px rgba(var(--color-balanced), 1);
+  padding: var(--spacing-xs);
+  border-radius: 100%;
+}

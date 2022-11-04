@@ -17,7 +17,7 @@ import {
   Profile,
   Groups,
   TeamSelect,
-  Snackbar,
+  Icon,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -30,6 +30,7 @@ import {
   examplesData,
   profileData,
   paymentOptions,
+  teams,
 } from "utils/data";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
@@ -95,16 +96,27 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   // Fetched sweepstake predictions from API
   let predictions;
   let predictionsTransformed;
+  let worldChampion;
+  let worldChampionTransformed;
 
   if (sweepstakes) {
     predictions = sweepstakes[0]?.predictions;
+    worldChampion = sweepstakes[0]?.worldChampion;
 
     // TO-DO: points should be number
     predictionsTransformed = predictions?.map((item) => ({
       ...item,
       points: item?.points.toString(),
     }));
+
+    worldChampionTransformed = {
+      label: teams?.filter((item) => item.countryShortCode === worldChampion)[0]
+        ?.countryName,
+      value: worldChampion,
+    };
   }
+
+  console.log(worldChampion);
 
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
@@ -129,9 +141,8 @@ export default function Home({ accountData, nfts, sweepstakes }) {
         await signIn("authCredentials", {
           address,
           signature,
-          redirect: false,
+          callbackUrl: "/",
         });
-        router.reload();
       } catch (e) {
         console.log(e);
         return null;
@@ -165,8 +176,6 @@ export default function Home({ accountData, nfts, sweepstakes }) {
         item.scoreA === item.scoreB
     );
   };
-
-  console.log(checkFilledDraw(8));
 
   const ro16Filled =
     checkFilled(8).length === 8 && checkFilledDraw(8).length === 0;
@@ -266,15 +275,12 @@ export default function Home({ accountData, nfts, sweepstakes }) {
     }
   };
 
-  console.log(output);
-
   // Triggers the submitSweepstake function based on conditions (confirmation)
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
 
   console.log(finalOutput);
-
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -316,7 +322,19 @@ export default function Home({ accountData, nfts, sweepstakes }) {
       {/* TO-DO: Create a separate grid component for the table and timeline */}
       {session && (
         <>
-          <TeamSelect onChange={(e) => setTeam(e)} />
+          <TeamSelect
+            defaultValue={
+              worldChampionTransformed?.value
+                ? worldChampionTransformed
+                : { label: "Argentina", value: "AR" }
+            }
+            disabled={
+              worldChampionTransformed?.value ||
+              confirmation ||
+              confirmationSolana
+            }
+            onChange={(e) => setTeam(e)}
+          />
           <Divider height={80} />
           <div className={styles.grid}>
             <div className={styles.gridWrapper}>
@@ -385,6 +403,15 @@ export default function Home({ accountData, nfts, sweepstakes }) {
                       />
                     )}
                   </div>
+                  {predictionsTransformed && (
+                    <Button
+                      text={"Submitted"}
+                      color={"balanced"}
+                      disabled
+                      textColor={"light"}
+                      size={"xxs"}
+                    />
+                  )}
                   {!sweepstakeDisabled && !predictionsTransformed && (
                     <div className={styles.submitWrapper}>
                       {filledCount === 64 && (
