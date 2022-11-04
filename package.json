@@ -2,6 +2,7 @@
   "name": "dagoatsapp",
   "version": "0.1.0",
   "private": true,
+  "main": "function.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

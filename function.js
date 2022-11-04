@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import { https } from "firebase-functions";
-import { next } from "next";
-const isDev = process.env.NODE_ENV !== "production";
+import next from "next";
+const isProd = process.env.NODE_ENV !== "development";
 
 const server = next({
-  dev: isDev,
+  dev: !isProd,
   conf: { distDir: ".next" },
 });
 
