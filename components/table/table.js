@@ -284,8 +284,6 @@ const Table = ({
       item.type === count
   );
 
-  console.log(drawCheck.length > 0);
-
   return (
     <div className={styles.tableWrapper}>
       {processing && (

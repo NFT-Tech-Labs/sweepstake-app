@@ -42,10 +42,10 @@ import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Home({ accountData, nfts, sweepstakes }) {
+export default function Home({ accountData, session, nfts, sweepstakes }) {
   const router = useRouter();
   const { publicKey, signMessage } = useWallet();
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
     handleSolanaPayment,
@@ -115,17 +115,14 @@ export default function Home({ accountData, nfts, sweepstakes }) {
       value: worldChampion,
     };
   }
-
-  console.log(worldChampion);
-
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
-    if (!session && status !== "authenticated") {
-      publicKey && signCustomMessage();
-    } else {
-      return;
-    }
-  }, [publicKey]);
+    startTransition(() => {
+      if (session === null) {
+        signCustomMessage();
+      }
+    });
+  }, [session, publicKey]);
 
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
@@ -279,8 +276,8 @@ export default function Home({ accountData, nfts, sweepstakes }) {
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
-
-  console.log(finalOutput);
+  console.log("sess", session);
+  // console.log(finalOutput);
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -494,7 +491,7 @@ export async function getServerSideProps(context) {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
-      users: null,
+      session: session || null,
       sweepstakes: user?.sweepstakes || null,
     },
   };
