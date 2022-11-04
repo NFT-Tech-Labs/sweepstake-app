@@ -8,8 +8,8 @@
     ],
     "rewrites": [
       {
-        "source": ".next/server/pages/_app.js",
-        "destination": "/"
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }
