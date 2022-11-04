@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import { https } from "firebase-functions";
-import next from "next";
+const { https } = require("firebase-functions");
+const { default: next } = require("next");
 const isProd = process.env.NODE_ENV !== "development";
 
 const server = next({
