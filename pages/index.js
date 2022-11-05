@@ -115,6 +115,7 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
       value: worldChampion,
     };
   }
+
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
     if (session === null) {
@@ -405,15 +406,16 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
                       />
                     )}
                   </div>
-                  {predictionsTransformed && (
-                    <Button
-                      text={"Submitted"}
-                      color={"balanced"}
-                      disabled
-                      textColor={"light"}
-                      size={"xxs"}
-                    />
-                  )}
+                  {sweepstakeDisabled ||
+                    (predictionsTransformed && (
+                      <Button
+                        text={"Submitted"}
+                        color={"balanced"}
+                        disabled
+                        textColor={"light"}
+                        size={"xxs"}
+                      />
+                    ))}
                   {!sweepstakeDisabled && !predictionsTransformed && (
                     <div className={styles.submitWrapper}>
                       {filledCount === 64 && (
