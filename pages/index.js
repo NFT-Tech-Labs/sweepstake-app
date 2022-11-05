@@ -44,7 +44,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Home({ accountData, session, nfts, sweepstakes }) {
   const router = useRouter();
-  const { publicKey, signMessage } = useWallet();
+  const { publicKey, signMessage, disconnect } = useWallet();
   // const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
@@ -117,11 +117,9 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
   }
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
-    startTransition(() => {
-      if (session === null) {
-        signCustomMessage();
-      }
-    });
+    if (session === null) {
+      signCustomMessage();
+    }
   }, [session, publicKey]);
 
   // Signature function for signing messages with the user address.
@@ -276,7 +274,13 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
+  console.log("pk", publicKey);
   console.log("sess", session);
+
+  const handleDisconnect = () => {
+    signOut({ redirect: "/" });
+  };
+
   // console.log(finalOutput);
   return (
     <div className={styles.home}>
@@ -294,9 +298,10 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
       />
       <Divider height={40} />
       <Profile
+        session={session}
         publicKey={publicKey?.toBase58()}
         nfts={nfts}
-        disconnect={() => signOut({ redirect: false })}
+        disconnect={handleDisconnect}
         {...profileData}
       />
       <Divider height={100} />

@@ -4,6 +4,7 @@ import styles from "./profile.module.scss";
 import {
   WalletMultiButton,
   WalletDisconnectButton,
+  WalletConnectButton,
 } from "@solana/wallet-adapter-react-ui";
 import classNames from "classnames/bind";
 import PropTypes from "prop-types";
@@ -11,11 +12,18 @@ import { Card, Title, Icon, Divider, Content, Collection } from "@components";
 
 const cx = classNames.bind(styles);
 
-const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
+const Profile = ({
+  className,
+  publicKey,
+  session,
+  tokens,
+  nfts,
+  disconnect,
+}) => {
   const classes = cx(
     {
       profile: true,
-      notConnected: !publicKey,
+      notConnected: !session,
     },
     className
   );
@@ -42,7 +50,7 @@ const Profile = ({ className, publicKey, tokens, nfts, disconnect }) => {
     return (val - min) / (max - min);
   };
 
-  return publicKey ? (
+  return session ? (
     <div className={classes}>
       <WalletDisconnectButton onClick={disconnect} />
       <Divider height={20} />
