@@ -880,6 +880,16 @@ const headingData = {
   },
 };
 
+const headingRulesData = {
+  title: {
+    text: "Rules",
+  },
+  content: {
+    text: "The rules for the point system in each round",
+    color: "stable-700",
+  },
+};
+
 const rulesData = [
   {
     icon: {
@@ -1129,6 +1139,7 @@ export {
   thirdPlaceScheme,
   finalScheme,
   headingData,
+  headingRulesData,
   rulesData,
   examplesData,
   ctaData,

@@ -25,6 +25,7 @@ import { fetchData } from "utils/apiNft";
 import {
   tableData,
   headingData,
+  headingRulesData,
   rulesData,
   ctaData,
   examplesData,
@@ -102,6 +103,7 @@ export default function Home({
       },
     ],
   };
+
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
     if (session === null) {
@@ -339,146 +341,141 @@ export default function Home({
       <Divider height={20} />
       <Cta {...ctaData} />
       <Divider height={80} />
+      <div className={styles.examples}>
+        {examplesData?.map((example, index) => (
+          <Example key={index} {...example} />
+        ))}
+      </div>
+      <Divider height={40} />
+      <TeamSelect
+        defaultValue={
+          worldChampionTransformed?.value
+            ? worldChampionTransformed
+            : { label: "Argentina", value: "AR" }
+        }
+        disabled={
+          worldChampionTransformed?.value || confirmation || confirmationSolana
+        }
+        onChange={(e) => setTeam(e)}
+      />
+      <Divider height={80} />
+      <div className={styles.grid}>
+        <div className={styles.gridWrapper}>
+          <div className={styles.groupsWrapper}>
+            <Groups
+              data={output}
+              count={count < 8 ? count : 7}
+              onChange={(e) => setGroupStage(e)}
+              onSelect={(e) => setCount(e)}
+            />
+          </div>
+          <div className={styles.tableWrapper}>
+            <div className={styles.timelineWrapper}>
+              <Timeline
+                count={count}
+                onChange={(e) => setCount(e)}
+                groupsFilled={groupsFilled}
+                ro16Filled={ro16Filled}
+                quarterFilled={quarterFilled}
+                semiFilled={semiFilled}
+                thirdFilled={thirdFilled}
+                finalFilled={finalFilled}
+                {...timelineData}
+              />
+            </div>
+            <Table
+              groupStage={groupStage}
+              matches={predictionsTransformed ? predictionsTransformed : output}
+              count={count}
+              disabled={
+                predictionsTransformed || confirmation || confirmationSolana
+              }
+              onChange={(e) => setOutput(e)}
+              worldChampion={finalOutput?.worldChampion}
+            />
+            <Divider height={20} />
+            <div className={styles.actions}>
+              <div className={styles.pagination}>
+                <Button
+                  classname={styles.next}
+                  text={"Prev"}
+                  link
+                  onClick={() => setCount(count - 1)}
+                  size={"m"}
+                  disabled={count === 0}
+                />
+                {groupsFilled && count > 6 && count < 12 && (
+                  <Button
+                    classname={styles.next}
+                    text={"Next"}
+                    link
+                    onClick={() => setCount(count + 1)}
+                    size={"m"}
+                    disabled={disabledCheck}
+                  />
+                )}
+                {count >= 0 && count < 7 && (
+                  <Button
+                    classname={styles.next}
+                    text={"Next"}
+                    link
+                    onClick={() => setCount(count + 1)}
+                    size={"m"}
+                  />
+                )}
+              </div>
+              {(sweepstakeDisabled || predictionsTransformed) && (
+                <Button
+                  text={"Submitted"}
+                  color={"balanced"}
+                  disabled
+                  textColor={"light"}
+                  size={"xxs"}
+                />
+              )}
+              {!sweepstakeDisabled && !predictionsTransformed && (
+                <div className={styles.submitWrapper}>
+                  {filledCount === 64 && (
+                    <Select
+                      placeholder={"Choose token"}
+                      options={paymentOptions}
+                      onChange={(e) => setPaymentToken(e?.value)}
+                      className={styles.select}
+                    />
+                  )}
+                  {session && (
+                    <Button
+                      text={
+                        filledCount !== 64 && paymentToken === ""
+                          ? `${filledCount}/64`
+                          : "Submit"
+                      }
+                      color={"positive"}
+                      textColor={"light"}
+                      size={"xxs"}
+                      disabled={
+                        filledCount !== 64 ||
+                        paymentToken === "" ||
+                        !finalOutput.worldChampion
+                      }
+                      onClick={handleSubmit}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Divider height={80} />
+      <Heading {...headingRulesData} />
       <div className={styles.rulesWrapper}>
         {rulesData?.map((item, index) => (
           <Rules key={index} {...item} />
         ))}
       </div>
       <Divider height={80} />
-      <div className={styles.examples}>
-        {examplesData?.map((example, index) => (
-          <Example key={index} {...example} />
-        ))}
-      </div>
-      <Divider height={80} />
       {/* TO-DO: Create a separate grid component for the table and timeline */}
-      {session && (
-        <>
-          <TeamSelect
-            defaultValue={
-              worldChampionTransformed?.value
-                ? worldChampionTransformed
-                : { label: "Argentina", value: "AR" }
-            }
-            disabled={
-              worldChampionTransformed?.value ||
-              confirmation ||
-              confirmationSolana
-            }
-            onChange={(e) => setTeam(e)}
-          />
-          <Divider height={80} />
-          <div className={styles.grid}>
-            <div className={styles.gridWrapper}>
-              <div className={styles.groupsWrapper}>
-                <Groups
-                  data={output}
-                  count={count < 8 ? count : 7}
-                  onChange={(e) => setGroupStage(e)}
-                  onSelect={(e) => setCount(e)}
-                />
-              </div>
-              <div className={styles.tableWrapper}>
-                <div className={styles.timelineWrapper}>
-                  <Timeline
-                    count={count}
-                    onChange={(e) => setCount(e)}
-                    groupsFilled={groupsFilled}
-                    ro16Filled={ro16Filled}
-                    quarterFilled={quarterFilled}
-                    semiFilled={semiFilled}
-                    thirdFilled={thirdFilled}
-                    finalFilled={finalFilled}
-                    {...timelineData}
-                  />
-                </div>
-                <Table
-                  groupStage={groupStage}
-                  matches={
-                    predictionsTransformed ? predictionsTransformed : output
-                  }
-                  count={count}
-                  disabled={
-                    predictionsTransformed || confirmation || confirmationSolana
-                  }
-                  onChange={(e) => setOutput(e)}
-                  worldChampion={finalOutput?.worldChampion}
-                />
-                <Divider height={20} />
-                <div className={styles.actions}>
-                  <div className={styles.pagination}>
-                    <Button
-                      classname={styles.next}
-                      text={"Prev"}
-                      link
-                      onClick={() => setCount(count - 1)}
-                      size={"m"}
-                      disabled={count === 0}
-                    />
-                    {groupsFilled && count > 6 && count < 12 && (
-                      <Button
-                        classname={styles.next}
-                        text={"Next"}
-                        link
-                        onClick={() => setCount(count + 1)}
-                        size={"m"}
-                        disabled={disabledCheck}
-                      />
-                    )}
-                    {count >= 0 && count < 7 && (
-                      <Button
-                        classname={styles.next}
-                        text={"Next"}
-                        link
-                        onClick={() => setCount(count + 1)}
-                        size={"m"}
-                      />
-                    )}
-                  </div>
-                  {sweepstakeDisabled ||
-                    (predictionsTransformed && (
-                      <Button
-                        text={"Submitted"}
-                        color={"balanced"}
-                        disabled
-                        textColor={"light"}
-                        size={"xxs"}
-                      />
-                    ))}
-                  {!sweepstakeDisabled && !predictionsTransformed && (
-                    <div className={styles.submitWrapper}>
-                      {filledCount === 64 && (
-                        <Select
-                          placeholder={"Choose token"}
-                          options={paymentOptions}
-                          onChange={(e) => setPaymentToken(e?.value)}
-                          className={styles.select}
-                        />
-                      )}
-                      <Button
-                        text={
-                          filledCount !== 64 && paymentToken === ""
-                            ? `${filledCount}/64`
-                            : "Submit"
-                        }
-                        color={"positive"}
-                        textColor={"light"}
-                        size={"xxs"}
-                        disabled={
-                          filledCount !== 64 ||
-                          paymentToken === "" ||
-                          !finalOutput.worldChampion
-                        }
-                        onClick={handleSubmit}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }
