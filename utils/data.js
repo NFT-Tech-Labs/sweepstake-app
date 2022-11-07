@@ -1035,23 +1035,14 @@ const profileData = {
   tokens: [
     {
       title: {
-        text: "SOL",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0.25,
-      required: 0.25,
-    },
-    {
-      title: {
         text: "DUST",
       },
       content: {
         text: "token",
       },
-      available: 5,
+      available: 0,
       required: 7,
+      mint: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
     },
     {
       title: {
@@ -1060,8 +1051,9 @@ const profileData = {
       content: {
         text: "token",
       },
-      available: 250,
+      available: 0,
       required: 500,
+      mint: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
     },
     {
       title: {
@@ -1070,7 +1062,8 @@ const profileData = {
       content: {
         text: "token",
       },
-      available: 750,
+      mint: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
+      available: 0,
       required: 750,
     },
     {
@@ -1080,8 +1073,20 @@ const profileData = {
       content: {
         text: "token",
       },
-      available: 375,
+      available: 0,
       required: 375,
+      mint: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
+    },
+    {
+      title: {
+        text: "MANGO",
+      },
+      content: {
+        text: "token",
+      },
+      available: 0,
+      required: 5,
+      mint: "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
     },
   ],
 };

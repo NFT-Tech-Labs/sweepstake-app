@@ -19,6 +19,8 @@ import Group from "./group/group";
 import Groups from "./groups/groups";
 import TeamSelect from "./teamSelect/teamSelect";
 import Snackbar from "./snackbar/snackbar";
+import Token from "./token/token";
+import Tokens from "./tokens/tokens";
 
 export {
   Layout,
@@ -44,4 +46,6 @@ export {
   Groups,
   TeamSelect,
   Snackbar,
+  Token,
+  Tokens,
 };

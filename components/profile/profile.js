@@ -8,7 +8,15 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import classNames from "classnames/bind";
 import PropTypes from "prop-types";
-import { Card, Title, Icon, Divider, Content, Collection } from "@components";
+import {
+  Card,
+  Title,
+  Icon,
+  Divider,
+  Content,
+  Collection,
+  Tokens,
+} from "@components";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +25,7 @@ const Profile = ({
   publicKey,
   session,
   tokens,
+  solana,
   nfts,
   disconnect,
 }) => {
@@ -46,10 +55,6 @@ const Profile = ({
     </Card>
   );
 
-  const normalize = (val, max, min) => {
-    return (val - min) / (max - min);
-  };
-
   return session ? (
     <div className={classes}>
       <WalletDisconnectButton onClick={disconnect} />
@@ -73,65 +78,10 @@ const Profile = ({
       </div>
       <Divider height={80} />
       <div className={styles.grid}>
-        <div className={styles.tokens}>
+        <div className={styles.balance}>
           <Title tag={"h5"} text={"Tokens"} />
           <Divider height={30} />
-          {tokens?.map((item, index) => {
-            const normalizedPercentage =
-              normalize(item?.available, item?.required, 0) * 100;
-            return (
-              <>
-                <Card
-                  key={index}
-                  boxShadow
-                  padding
-                  borderRadius
-                  className={styles.token}
-                >
-                  <div className={styles.details}>
-                    {item?.content && (
-                      <Content
-                        size={"xs"}
-                        color={"stable-500"}
-                        {...item.content}
-                      />
-                    )}
-                    {item?.title && <Title tag={"h6"} {...item.title} />}
-                  </div>
-                  <div className={styles.amount}>
-                    <Content
-                      size={"xs"}
-                      color={"stable-500"}
-                      text={`${item?.available}/${item?.required}`}
-                    />
-                    <div className={styles.progress}>
-                      <div
-                        className={styles.bar}
-                        style={{
-                          width: `${normalizedPercentage}%`,
-                          backgroundColor:
-                            item?.available === item?.required
-                              ? "rgba(var(--color-balanced), 1)"
-                              : "rgba(var(--color-energized), 1)",
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                </Card>
-                {tokens?.length - 1 === index && (
-                  <Content
-                    size={"s"}
-                    text={
-                      normalizedPercentage === 100
-                        ? "You are able to participate!"
-                        : "You need to have enough tokens of atleast one shown above"
-                    }
-                    color={"stable-500"}
-                  />
-                )}
-              </>
-            );
-          })}
+          <Tokens data={tokens} solanaData={solana} />
         </div>
         <div className={styles.collection}>
           <Title tag={"h5"} text={"Collection"} />

@@ -28,9 +28,9 @@ import {
   rulesData,
   ctaData,
   examplesData,
-  profileData,
   paymentOptions,
   teams,
+  profileData,
 } from "utils/data";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
@@ -40,9 +40,19 @@ import { signIn } from "next-auth/react";
 import SendSolanaTokens from "utils/sendTransaction";
 import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
+import { useConnection } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Home({ accountData, session, nfts, sweepstakes }) {
+export default function Home({
+  accountData,
+  session,
+  nfts,
+  tokensBalance,
+  solanaBalance,
+  sweepstakes,
+}) {
+  const { connection } = useConnection();
+
   const router = useRouter();
   const { publicKey, signMessage, disconnect } = useWallet();
   // const { data: session, status } = useSession();
@@ -92,36 +102,21 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
       },
     ],
   };
-
-  // Fetched sweepstake predictions from API
-  let predictions;
-  let predictionsTransformed;
-  let worldChampion;
-  let worldChampionTransformed;
-
-  if (sweepstakes) {
-    predictions = sweepstakes[0]?.predictions;
-    worldChampion = sweepstakes[0]?.worldChampion;
-
-    // TO-DO: points should be number
-    predictionsTransformed = predictions?.map((item) => ({
-      ...item,
-      points: item?.points.toString(),
-    }));
-
-    worldChampionTransformed = {
-      label: teams?.filter((item) => item.countryShortCode === worldChampion)[0]
-        ?.countryName,
-      value: worldChampion,
-    };
-  }
-
   // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
     if (session === null) {
       signCustomMessage();
     }
   }, [session, publicKey]);
+
+  useEffect(() => {
+    if (publicKey && session) {
+      if (publicKey?.toBase58() !== session?.user?.user?.address) {
+        signOut();
+        disconnect();
+      }
+    }
+  }, [publicKey]);
 
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
@@ -145,6 +140,39 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
       }
     }
   };
+
+  const fetchedTokensBalance = profileData?.tokens.map((item) => {
+    return {
+      ...item,
+      available:
+        Number(
+          tokensBalance?.filter((token) => item.mint === token.mint)[0]?.amount
+        ) || item?.available,
+    };
+  });
+
+  // Fetched sweepstake predictions from API
+  let predictions;
+  let predictionsTransformed;
+  let worldChampion;
+  let worldChampionTransformed;
+
+  if (sweepstakes) {
+    predictions = sweepstakes[0]?.predictions;
+    worldChampion = sweepstakes[0]?.worldChampion;
+
+    // TO-DO: points should be number
+    predictionsTransformed = predictions?.map((item) => ({
+      ...item,
+      points: item?.points.toString(),
+    }));
+
+    worldChampionTransformed = {
+      label: teams?.filter((item) => item.countryShortCode === worldChampion)[0]
+        ?.countryName,
+      value: worldChampion,
+    };
+  }
 
   // Check if groupstage (48 matches) is filled (types 0-7)
   useEffect(() => {
@@ -303,7 +331,8 @@ export default function Home({ accountData, session, nfts, sweepstakes }) {
         publicKey={publicKey?.toBase58()}
         nfts={nfts}
         disconnect={handleDisconnect}
-        {...profileData}
+        tokens={fetchedTokensBalance}
+        solana={solanaBalance}
       />
       <Divider height={100} />
       <Heading {...headingData} />
@@ -487,17 +516,35 @@ export async function getServerSideProps(context) {
   const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
 
   let user;
+  let tokensBalance;
+  let solanaBalance;
 
   if (session) {
     user = await getData(
       `https://backend-x7q2esrofa-no.a.run.app/api/v1/users/${session?.user?.user?.id}`
     );
+
+    tokensBalance = await fetchData(
+      "account",
+      session?.user?.user?.address,
+      "tokens"
+    );
+
+    solanaBalance = await fetchData(
+      "account",
+      session?.user?.user?.address,
+      "balance"
+    );
   }
+
+  console.log("balance", solanaBalance);
 
   return {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
+      tokensBalance: tokensBalance || null,
+      solanaBalance: solanaBalance || null,
       session: session || null,
       sweepstakes: user?.sweepstakes || null,
     },
