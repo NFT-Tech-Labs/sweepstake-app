@@ -9,7 +9,7 @@ export async function fetchData(type, address, method) {
     };
 
     const res = await fetch(
-      `https://solana-gateway.moralis.io/${type}/${process.env.NETWORK}/${address}/${method}`,
+      `https://solana-gateway.moralis.io/${type}/${process.env.MORALIS_NETWORK}/${address}/${method}`,
       options
     );
     const data = res.json();

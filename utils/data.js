@@ -1045,13 +1045,24 @@ const profileData = {
   tokens: [
     {
       title: {
+        text: "USDC",
+      },
+      content: {
+        text: "token",
+      },
+      available: 0,
+      required: 10,
+      mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    },
+    {
+      title: {
         text: "DUST",
       },
       content: {
         text: "token",
       },
       available: 0,
-      required: 7,
+      required: 10,
       mint: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
     },
     {
@@ -1065,67 +1076,32 @@ const profileData = {
       required: 500,
       mint: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
     },
-    {
-      title: {
-        text: "MVP",
-      },
-      content: {
-        text: "token",
-      },
-      mint: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
-      available: 0,
-      required: 750,
-    },
-    {
-      title: {
-        text: "LABS",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0,
-      required: 375,
-      mint: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
-    },
-    {
-      title: {
-        text: "MANGO",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0,
-      required: 5,
-      mint: "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
-    },
   ],
 };
 
 const paymentOptions = [
   {
-    label: "0.25 SOL",
+    label: "0.02 SOL",
     value: "sol",
-    amount: 0.25,
+    amount: 0.02,
   },
   {
-    label: "7 DUST",
+    label: "10 USDC",
+    value: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    amount: 10,
+    decimals: 1000000,
+  },
+  {
+    label: "10 DUST",
     value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
-    amount: 7,
+    amount: 10,
+    decimals: 1000000000,
   },
   {
     label: "1 DGOAT",
     value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
     amount: 1,
-  },
-  {
-    label: "750 MVP",
-    value: "9eHik3eHYXzCvQVCJgSWzzsFUTV8vQdPyAfSCpugbJfe",
-    amount: 750,
-  },
-  {
-    label: "375 LABS",
-    value: "LABSwpcfDjvRRMmEs87Y9yrj4pS9eofVS6cSbJm2zCW",
-    amount: 375,
+    decimals: 1000000000,
   },
 ];
 

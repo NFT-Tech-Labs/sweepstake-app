@@ -26,7 +26,7 @@ const SendSolanaSplTokens = () => {
   const [confirmation, setConfirmation] = useState(false);
   const [error, setError] = useState(false);
 
-  const handlePayment = async (mint, recipient, amount) => {
+  const handlePayment = async (mint, recipient, amount, decimals) => {
     setError(false);
     setConfirmation(false);
     setProcessing(true);
@@ -63,7 +63,7 @@ const SendSolanaSplTokens = () => {
           fromAccount.address, // source
           associatedTokenTo, // dest
           publicKey,
-          LAMPORTS_PER_SOL * amount
+          decimals * amount
         )
       );
       const transaction = new Transaction().add(...transactionInstructions);
@@ -88,7 +88,7 @@ const SendSolanaSplTokens = () => {
       setConfirmation(true);
       // signature is transaction address, you can confirm your transaction on 'https://explorer.solana.com/?cluster=devnet'
     } catch (error) {
-      console.warn(error);
+      console.log(error);
       setConfirmation(false);
       setError(true);
     }

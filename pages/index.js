@@ -21,7 +21,7 @@ import {
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
-import { fetchData } from "utils/apiNft";
+import { fetchData } from "utils/apiMoralis";
 import {
   tableData,
   headingData,
@@ -111,6 +111,7 @@ export default function Home({
     }
   }, [session, publicKey]);
 
+  // If user switches wallet address during session, signout and disconnect
   useEffect(() => {
     if (publicKey && session) {
       if (publicKey?.toBase58() !== session?.user?.user?.address) {
@@ -233,15 +234,28 @@ export default function Home({
 
   // Status notifications based on the payment/transaction responses
   useEffect(() => {
-    (processing || processingSolana) && toast("Processing...");
-  }, [processing, processingSolana]);
+    processingSolana && toast("Processing...");
+  }, [processingSolana]);
+
   useEffect(() => {
-    (confirmation || confirmationSolana) &&
-      toast.success("Transaction completed!");
-  }, [confirmation, confirmationSolana]);
+    processing && toast("Processing...");
+  }, [processing]);
+
   useEffect(() => {
-    (errorSolana || errorSolana) && toast.error("Something went wrong!");
-  }, [error, errorSolana]);
+    confirmationSolana && toast.success("Transaction completed!");
+  }, [confirmationSolana]);
+
+  useEffect(() => {
+    confirmation && toast.success("Transaction completed!");
+  }, [confirmation]);
+
+  useEffect(() => {
+    errorSolana && toast.error("Something went wrong!");
+  }, [errorSolana]);
+
+  useEffect(() => {
+    error && toast.error("Something went wrong!");
+  }, [error]);
 
   // Transforms the predictions output to correct format which is accepted by the API
   // TO-DO: scoreA and scoreB should be numbers
@@ -265,16 +279,25 @@ export default function Home({
         (item) => item.value === paymentToken
       )[0].amount;
 
+      const paymentDecimals = paymentOptions?.filter(
+        (item) => item.value === paymentToken
+      )[0].decimals;
+
+      console.log(paymentAmount, "amount");
+      console.log(paymentDecimals, "decimals");
       if (paymentToken !== "sol") {
+        console.log(paymentToken);
         handlePayment(
           paymentToken,
-          process.env.NEXT_PUBLIC_TREASURE_ADDRESS,
-          paymentAmount
+          process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
+          paymentAmount,
+          paymentDecimals
         );
       } else {
+        console.log("solpayment");
         handleSolanaPayment(
           publicKey,
-          process.env.NEXT_PUBLIC_TREASURE_ADDRESS,
+          process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
           paymentAmount
         );
       }
@@ -305,8 +328,8 @@ export default function Home({
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
-  console.log("pk", publicKey);
-  console.log("sess", session);
+  // console.log("pk", publicKey);
+  // console.log("sess", session);
 
   const handleDisconnect = () => {
     signOut({ redirect: "/" });
@@ -534,7 +557,7 @@ export async function getServerSideProps(context) {
     );
   }
 
-  console.log("balance", solanaBalance);
+  console.log(tokensBalance);
 
   return {
     props: {

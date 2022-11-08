@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./token.module.scss";
 import PropTypes from "prop-types";
@@ -6,20 +6,24 @@ import { Title, Content, Card } from "@components";
 
 const cx = classNames.bind(styles);
 
-const Token = ({
-  className,
-  title,
-  content,
-  available,
-  required,
-  normalizeValue,
-}) => {
+const Token = ({ className, title, content, available, required }) => {
+  const [value, setValue] = useState(0);
   let classes = cx(
     {
       token: true,
     },
     className
   );
+
+  const normalize = (val, max, min) => {
+    return (val - min) / (max - min);
+  };
+
+  const normalizeValue = normalize(available, required, 0) * 100;
+
+  useEffect(() => {
+    setValue(normalizeValue);
+  }, []);
 
   return (
     <Card boxShadow padding borderRadius className={classes}>
@@ -35,14 +39,14 @@ const Token = ({
         />
         <div className={styles.progress}>
           <div
-            className={styles.bar}
             style={{
-              width: `${normalizeValue}%`,
+              width: `${value}%`,
               backgroundColor:
-                available === required
+                available >= required
                   ? "rgba(var(--color-balanced), 1)"
                   : "rgba(var(--color-energized), 1)",
             }}
+            className={styles.bar}
           ></div>
         </div>
       </div>

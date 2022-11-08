@@ -35,4 +35,6 @@
 .bar {
   background-color: rgba(var(--color-balanced), 1);
   border-radius: var(--radius-s);
+  transition: 1s ease;
+  transition-delay: 2s;
 }
