@@ -1081,9 +1081,9 @@ const profileData = {
 
 const paymentOptions = [
   {
-    label: "0.02 SOL",
+    label: "0.25 SOL",
     value: "sol",
-    amount: 0.02,
+    amount: 0.25,
   },
   {
     label: "10 USDC",

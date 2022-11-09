@@ -6,6 +6,8 @@
   border-radius: var(--spacing-m);
   background-color: rgba(var(--color-light), 1);
   flex-basis: 100%;
+  border: solid 2px;
+  opacity: 0.5;
 
   @include medium {
     flex-basis: 33%;

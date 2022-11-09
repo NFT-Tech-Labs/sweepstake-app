@@ -85,6 +85,11 @@ const Profile = ({
         </div>
         <div className={styles.collection}>
           <Title tag={"h5"} text={"Collection"} />
+          <Content
+            size={"s"}
+            text={"To be minted, coming soon"}
+            color={"stable-500"}
+          />
           <Divider height={30} />
           <Collection nfts={nfts} />
         </div>
