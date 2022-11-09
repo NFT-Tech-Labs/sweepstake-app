@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition, useCallback } from "react";
+import * as anchor from "@project-serum/anchor";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
@@ -55,7 +56,7 @@ export default function Home({
   const { connection } = useConnection();
 
   const router = useRouter();
-  const { publicKey, signMessage, disconnect } = useWallet();
+  const { publicKey, signMessage, disconnect, signTransaction } = useWallet();
   // const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
@@ -74,6 +75,8 @@ export default function Home({
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
+  const [localUser, setLocalUser] = useState();
+  const [localUserState, setLocalUserState] = useState();
 
   const timelineData = {
     rounds: [
@@ -121,6 +124,17 @@ export default function Home({
     }
   }, [publicKey]);
 
+  console.log(session);
+
+  useEffect(() => {
+    if (!localStorage.getItem("userState-storage")) {
+      localStorage.setItem("userState-storage", anchor.web3.Keypair.generate());
+    }
+    setLocalUserState(localStorage.getItem("userState-storage"));
+  }, []);
+
+  console.log(publicKey);
+  console.log(session);
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
     if (publicKey) {
@@ -137,6 +151,22 @@ export default function Home({
           signature,
           callbackUrl: "/",
         });
+
+        anchor.setProvider(anchor.AnchorProvider.env());
+        const provider = anchor.getProvider();
+        const program = anchor.workspace.DagoatsSweepstake;
+
+        const userMethod = await program.methods
+          .createUser(session?.user?.user?.id)
+          .accounts({
+            userState: localUserState?.publicKey,
+            authority: session?.user?.user?.address,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([localUserState, user])
+          .rpc();
+
+        console.log(userMethod);
       } catch (e) {
         console.log(e);
         return null;
