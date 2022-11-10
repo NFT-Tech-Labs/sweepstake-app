@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition, useCallback } from "react";
-import * as anchor from "@project-serum/anchor";
+import { Program, AnchorProvider, web3 } from "@project-serum/anchor";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
@@ -44,6 +44,8 @@ import SendSolanaSplTokens from "utils/splTransaction";
 import { ToastContainer, toast } from "react-toastify";
 import { useConnection } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
+import { SystemProgram } from "@solana/web3.js";
+import idl from "../utils/idl.json";
 
 export default function Home({
   accountData,
@@ -56,7 +58,7 @@ export default function Home({
   const { connection } = useConnection();
 
   const router = useRouter();
-  const { publicKey, signMessage, disconnect, signTransaction } = useWallet();
+  const wallet = useWallet();
   // const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
@@ -75,7 +77,6 @@ export default function Home({
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
-  const [localUser, setLocalUser] = useState();
   const [localUserState, setLocalUserState] = useState();
 
   const timelineData = {
@@ -112,37 +113,45 @@ export default function Home({
     if (session === null) {
       signCustomMessage();
     }
-  }, [session, publicKey]);
+  }, [session, wallet.publicKey]);
 
   // If user switches wallet address during session, signout and disconnect
   useEffect(() => {
-    if (publicKey && session) {
-      if (publicKey?.toBase58() !== session?.user?.user?.address) {
+    if (wallet.publicKey && session) {
+      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
         signOut();
-        disconnect();
+        wallet.disconnect();
       }
     }
-  }, [publicKey]);
+  }, [wallet.publicKey]);
 
   console.log(session);
 
   useEffect(() => {
     if (!localStorage.getItem("userState-storage")) {
-      localStorage.setItem("userState-storage", anchor.web3.Keypair.generate());
+      localStorage.setItem("userState-storage", web3.Keypair.generate());
     }
     setLocalUserState(localStorage.getItem("userState-storage"));
   }, []);
 
-  console.log(publicKey);
+  const getProvider = () => {
+    if (!wallet) {
+      return;
+    }
+    return new AnchorProvider(connection, wallet, {
+      preflightCommitment: "processed",
+    });
+  };
+
   console.log(session);
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
-    if (publicKey) {
-      const address = publicKey.toBase58();
+    if (wallet.publicKey) {
+      const address = wallet.publicKey.toBase58();
       const message = address;
       const encodedMessage = new TextEncoder().encode(message);
 
-      const signedMessage = await signMessage(encodedMessage, "utf8");
+      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
       const signature = base58.encode(signedMessage);
       console.log(signature);
       try {
@@ -151,24 +160,19 @@ export default function Home({
           signature,
           callbackUrl: "/",
         });
-
-        anchor.setProvider(anchor.AnchorProvider.env());
-        const provider = anchor.getProvider();
-        const program = anchor.workspace.DagoatsSweepstake;
-
-        const userMethod = await program.methods
+        const provider = getProvider();
+        const program = new Program(idl, idl.metadata.address, provider);
+        return program.methods
           .createUser(session?.user?.user?.id)
           .accounts({
             userState: localUserState?.publicKey,
-            authority: session?.user?.user?.address,
+            authority: provider.wallet.publicKey,
             systemProgram: SystemProgram.programId,
           })
-          .signers([localUserState, user])
+          .signers([localUserState, provider.wallet])
           .rpc();
-
-        console.log(userMethod);
       } catch (e) {
-        console.log(e);
+        console.log({ e });
         return null;
       }
     }
@@ -178,9 +182,8 @@ export default function Home({
     return {
       ...item,
       available:
-        Number(
-          tokensBalance?.filter((token) => item.mint === token.mint)[0]?.amount
-        ) || item?.available,
+        Number([]?.filter((token) => item.mint === token.mint)[0]?.amount) ||
+        item?.available,
     };
   });
 
@@ -304,7 +307,7 @@ export default function Home({
 
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
-    if (publicKey && session) {
+    if (wallet.publicKey && session) {
       const paymentAmount = paymentOptions?.filter(
         (item) => item.value === paymentToken
       )[0].amount;
@@ -326,7 +329,7 @@ export default function Home({
       } else {
         console.log("solpayment");
         handleSolanaPayment(
-          publicKey,
+          wallet.publicKey,
           process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
           paymentAmount
         );
@@ -337,7 +340,7 @@ export default function Home({
   // Submit sweepstake function which sends the output to the database based on conditions
   const submitSweepstake = async () => {
     if (
-      publicKey &&
+      wallet.publicKey &&
       session &&
       filledCount === 64 &&
       (confirmation || confirmationSolana)
@@ -383,7 +386,7 @@ export default function Home({
       <Divider height={40} />
       <Profile
         session={session}
-        publicKey={publicKey?.toBase58()}
+        publicKey={wallet.publicKey?.toBase58()}
         nfts={nfts}
         disconnect={handleDisconnect}
         tokens={fetchedTokensBalance}
