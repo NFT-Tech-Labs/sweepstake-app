@@ -14,6 +14,8 @@ import {
   getGreaterTeamGoals,
   totalTiesForGroup,
   getTeamPointsBetween,
+  test,
+  getTiedGroupNames,
 } from "../../utils/helpers";
 import "react-tabs/style/react-tabs.css";
 
@@ -36,8 +38,27 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
 
   // sort group by points
   groupStage?.map((item) => {
-    if ((totalTiesForGroup(item), item.group) > 2) {
-      console.log("triple tie function here");
+    let threeWayTieResult;
+    let totalTies = totalTiesForGroup(item);
+    if (totalTies > 2) {
+      let names = getTiedGroupNames(item);
+      threeWayTieResult = test(data?.slice(0, 48), names);
+
+      item.teams.sort(
+        (a, b) =>
+          b.points - a.points ||
+          b.goalsDifference - a.goalsDifference ||
+          b.goals - a.goals ||
+          threeWayTieResult?.find((team) => team.team === b.name).points -
+            threeWayTieResult?.find((team) => team.team === a.name).points ||
+          threeWayTieResult?.find((team) => team.team === b.name)
+            .goalsDifference -
+            threeWayTieResult?.find((team) => team.team === a.name)
+              .goalsDifference ||
+          threeWayTieResult?.find((team) => team.team === b.name).goals -
+            threeWayTieResult?.find((team) => team.team === a.name).goals ||
+          getTeamPointsBetween(data.slice(0, 48), b.name, a.name)
+      );
     } else {
       item.teams.sort(
         (a, b) =>
@@ -47,6 +68,8 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
           getTeamPointsBetween(data.slice(0, 48), b.name, a.name)
       );
     }
+
+    console.log(threeWayTieResult);
   });
 
   // const groupStageUpdated = groupStage?.map((item) => ({

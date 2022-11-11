@@ -20,6 +20,26 @@ const getTeamPoints = (data, team) => {
   return total;
 };
 
+const test = (data, names) => {
+  let results = [];
+  data.filter((item) => {
+    if (names.includes(item.teamA) && names.includes(item.teamB)) {
+      results.push(item);
+    }
+  });
+
+  const x = names?.map((team) => {
+    return {
+      team: team,
+      points: getTeamPoints(results, team),
+      goalsDifference: getTeamGoalsDifference(results, team),
+      goals: getTeamGoals(results, team),
+    };
+  });
+
+  return x;
+};
+
 const getTeamGoalsDifference = (data, team) => {
   let difference = 0;
 
@@ -70,8 +90,8 @@ const getTeamPointsBetween = (data, teamA, teamB) => {
 };
 
 const totalTiesForGroup = (data) => {
-  let totalTies = 0;
-
+  // let totalTies = [];
+  let total = 0;
   for (let i = 0; i < data?.teams?.length; i++) {
     for (let y = i + 1; y < data?.teams?.length; y++) {
       let teamA = data?.teams[i];
@@ -81,11 +101,41 @@ const totalTiesForGroup = (data) => {
         teamA.goalsDifference === teamB.goalsDifference &&
         teamA.goals === teamB.goals
       ) {
-        totalTies++;
+        total++;
+        // if (!totalTies.includes(teamA.name)) {
+        //   totalTies.push(teamA.name);
+        // }
+
+        // if (!totalTies.includes(teamB.name)) {
+        //   totalTies.push(teamB.name);
+        // }
       }
     }
   }
+  return total;
+};
 
+const getTiedGroupNames = (data) => {
+  let totalTies = [];
+  for (let i = 0; i < data?.teams?.length; i++) {
+    for (let y = i + 1; y < data?.teams?.length; y++) {
+      let teamA = data?.teams[i];
+      let teamB = data?.teams[y];
+      if (
+        teamA.points === teamB.points &&
+        teamA.goalsDifference === teamB.goalsDifference &&
+        teamA.goals === teamB.goals
+      ) {
+        if (!totalTies.includes(teamA.name)) {
+          totalTies.push(teamA.name);
+        }
+
+        if (!totalTies.includes(teamB.name)) {
+          totalTies.push(teamB.name);
+        }
+      }
+    }
+  }
   return totalTies;
 };
 
@@ -204,4 +254,6 @@ export {
   groupWinners,
   getWinners,
   getLosers,
+  test,
+  getTiedGroupNames,
 };
