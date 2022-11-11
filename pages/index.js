@@ -180,8 +180,9 @@ export default function Home({
     return {
       ...item,
       available:
-        Number([]?.filter((token) => item.mint === token.mint)[0]?.amount) ||
-        item?.available,
+        Number(
+          tokensBalance?.filter((token) => item.mint === token.mint)[0]?.amount
+        ) || item?.available,
     };
   });
 
