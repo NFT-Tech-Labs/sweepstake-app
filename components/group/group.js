@@ -57,7 +57,7 @@ const Group = ({ className, teams }) => {
             </div>
           )}
           <div className={styles.score}>
-            {item.goalsGreater !== null && (
+            {/* {item.goalsGreater !== null && (
               <Content
                 size={"xs"}
                 color={"dark"}
@@ -84,7 +84,7 @@ const Group = ({ className, teams }) => {
                 text={item.pointsGreater ? item.pointsGreater : "/"}
                 className={styles.pointsGreater}
               />
-            )}
+            )} */}
             {item.goals !== null && (
               <Content
                 size={"xs"}
