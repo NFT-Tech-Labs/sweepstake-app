@@ -12,6 +12,8 @@ import {
   getGreaterTeamPoints,
   getGreaterTeamGoalsDifference,
   getGreaterTeamGoals,
+  totalTiesForGroup,
+  getTeamPointsBetween,
 } from "../../utils/helpers";
 import "react-tabs/style/react-tabs.css";
 
@@ -33,54 +35,57 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
   });
 
   // sort group by points
-  groupStage?.map((item) =>
-    item.teams.sort(
-      (a, b) =>
-        b.points - a.points ||
-        b.goalsDifference - a.goalsDifference ||
-        b.goals - a.goals
-    )
-  );
+  groupStage?.map((item) => {
+    if ((totalTiesForGroup(item), item.group) > 2) {
+      console.log("triple tie function here");
+    } else {
+      item.teams.sort(
+        (a, b) =>
+          b.points - a.points ||
+          b.goalsDifference - a.goalsDifference ||
+          b.goals - a.goals ||
+          getTeamPointsBetween(data.slice(0, 48), b.name, a.name)
+      );
+    }
+  });
 
-  const groupStageUpdated = groupStage?.map((item) => ({
-    ...item,
-    teams: item?.teams.map((team) => ({
-      ...team,
-      pointsGreater: getGreaterTeamPoints(
-        data.slice(0, 48),
-        item.teams[0]?.name,
-        item.teams[1]?.name
-      )[team.name],
-      goalsDifferenceGreater: getGreaterTeamGoalsDifference(
-        data.slice(0, 48),
-        item.teams[0]?.name,
-        item.teams[1]?.name
-      )[team.name],
-      goalsGreater: getGreaterTeamGoals(
-        data.slice(0, 48),
-        item.teams[0]?.name,
-        item.teams[1]?.name
-      )[team.name],
-    })),
-  }));
+  // const groupStageUpdated = groupStage?.map((item) => ({
+  //   ...item,
+  //   teams: item?.teams.map((team) => ({
+  //     ...team,
+  //     // pointsGreater: getGreaterTeamPoints(
+  //     //   data.slice(0, 48),
+  //     //   item.teams[0]?.name,
+  //     //   item.teams[1]?.name
+  //     // )[team.name],
+  //     // goalsDifferenceGreater: getGreaterTeamGoalsDifference(
+  //     //   data.slice(0, 48),
+  //     //   item.teams[0]?.name,
+  //     //   item.teams[1]?.name
+  //     // )[team.name],
+  //     // goalsGreater: getGreaterTeamGoals(
+  //     //   data.slice(0, 48),
+  //     //   item.teams[0]?.name,
+  //     //   item.teams[1]?.name
+  //     // )[team.name],
+  //   })),
+  // }));
 
-  groupStageUpdated?.map((item) =>
-    item.teams.sort(
-      (a, b) =>
-        b.points - a.points ||
-        b.goalsDifference - a.goalsDifference ||
-        b.goals - a.goals ||
-        b.pointsGreater - a.pointsGreater ||
-        b.goalsDifferenceGreater - a.goalsDifferenceGreater ||
-        b.goalsGreater - a.goalsGreater
-    )
-  );
-
-  console.log(groupStageUpdated);
+  // groupStageUpdated?.map((item) =>
+  //   item.teams.sort(
+  //     (a, b) =>
+  //       b.points - a.points ||
+  //       b.goalsDifference - a.goalsDifference ||
+  //       b.goals - a.goals
+  //     // b.pointsGreater - a.pointsGreater ||
+  //     // b.goalsDifferenceGreater - a.goalsDifferenceGreater ||
+  //     // b.goalsGreater - a.goalsGreater
+  //   )
+  // );
 
   useEffect(() => {
     if (onChange) {
-      onChange(groupStageUpdated);
+      onChange(groupStage);
     }
   }, [data]);
 
@@ -88,7 +93,7 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
     <div className={classes}>
       <Tabs className={styles.tabs} onSelect={onSelect} selectedIndex={count}>
         <TabList className={styles.tablist}>
-          {groupStageUpdated?.map((item, index) => {
+          {groupStage?.map((item, index) => {
             return (
               item?.group && (
                 <Tab key={index} tabIndex={"tabindex"}>
@@ -98,7 +103,7 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
             );
           })}
         </TabList>
-        {groupStageUpdated?.map((item, index) => (
+        {groupStage?.map((item, index) => (
           <TabPanel key={index}>
             <>{item?.teams && <Group key={index} teams={item.teams} />}</>
           </TabPanel>

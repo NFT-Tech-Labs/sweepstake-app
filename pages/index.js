@@ -53,7 +53,6 @@ export default function Home({
   sweepstakes,
 }) {
   const { connection } = useConnection();
-
   const router = useRouter();
   const { publicKey, signMessage, disconnect } = useWallet();
   // const { data: session, status } = useSession();
@@ -130,7 +129,6 @@ export default function Home({
 
       const signedMessage = await signMessage(encodedMessage, "utf8");
       const signature = base58.encode(signedMessage);
-      console.log(signature);
       try {
         await signIn("authCredentials", {
           address,
@@ -155,6 +153,7 @@ export default function Home({
   });
 
   // Fetched sweepstake predictions from API
+
   let predictions;
   let predictionsTransformed;
   let worldChampion;
@@ -283,8 +282,8 @@ export default function Home({
         (item) => item.value === paymentToken
       )[0].decimals;
 
-      console.log(paymentAmount, "amount");
-      console.log(paymentDecimals, "decimals");
+      // console.log(paymentAmount, "amount");
+      // console.log(paymentDecimals, "decimals");
       if (paymentToken !== "sol") {
         console.log(paymentToken);
         handlePayment(
@@ -536,35 +535,45 @@ export async function getServerSideProps(context) {
   const filteredNfts = nfts?.filter((item) => item?.symbol === "DIP");
 
   let user;
-  let tokensBalance;
-  let solanaBalance;
+  let tokensBalanceData;
+  let solanaBalanceData;
 
   if (session) {
     user = await getData(
       `https://backend-x7q2esrofa-no.a.run.app/api/v1/users/${session?.user?.user?.id}`
     );
 
-    tokensBalance = await fetchData(
+    const tokensBalance = await fetchData(
       "account",
       session?.user?.user?.address,
       "tokens"
     );
 
-    solanaBalance = await fetchData(
+    if (tokensBalance?.statusCode !== 400) {
+      tokensBalanceData = tokensBalance;
+    } else {
+      tokensBalanceData = [];
+    }
+
+    const solanaBalance = await fetchData(
       "account",
       session?.user?.user?.address,
       "balance"
     );
-  }
 
-  console.log(tokensBalance);
+    if (tokensBalance?.statusCode !== 400) {
+      solanaBalanceData = solanaBalance;
+    } else {
+      solanaBalanceData = null;
+    }
+  }
 
   return {
     props: {
       accountData: accountData || null,
       nfts: filteredNfts || null,
-      tokensBalance: tokensBalance || null,
-      solanaBalance: solanaBalance || null,
+      tokensBalance: tokensBalanceData || null,
+      solanaBalance: solanaBalanceData || null,
       session: session || null,
       sweepstakes: user?.sweepstakes || null,
     },

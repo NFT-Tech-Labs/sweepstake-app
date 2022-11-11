@@ -52,6 +52,43 @@ const getTeamGoals = (data, team) => {
   return goals;
 };
 
+const getTeamPointsBetween = (data, teamA, teamB) => {
+  let x = 0;
+  data?.filter((item) => {
+    if (
+      (item.teamA === teamA || item.teamA === teamB) &&
+      (item.teamB === teamA || item.teamB === teamB)
+    ) {
+      if (item.teamA === teamA) {
+        x = Number(item.scoreA) - Number(item.scoreB);
+      } else {
+        x = Number(item.scoreB) - Number(item.scoreA);
+      }
+    }
+  });
+  return x;
+};
+
+const totalTiesForGroup = (data) => {
+  let totalTies = 0;
+
+  for (let i = 0; i < data?.teams?.length; i++) {
+    for (let y = i + 1; y < data?.teams?.length; y++) {
+      let teamA = data?.teams[i];
+      let teamB = data?.teams[y];
+      if (
+        teamA.points === teamB.points &&
+        teamA.goalsDifference === teamB.goalsDifference &&
+        teamA.goals === teamB.goals
+      ) {
+        totalTies++;
+      }
+    }
+  }
+
+  return totalTies;
+};
+
 const getGreaterTeamPoints = (data, teamA, teamB) => {
   let tiedMatch;
   tiedMatch = data?.filter((item) => {
@@ -162,6 +199,8 @@ export {
   getGreaterTeamPoints,
   getGreaterTeamGoalsDifference,
   getGreaterTeamGoals,
+  getTeamPointsBetween,
+  totalTiesForGroup,
   groupWinners,
   getWinners,
   getLosers,
