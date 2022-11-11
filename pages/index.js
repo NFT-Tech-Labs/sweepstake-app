@@ -158,7 +158,7 @@ export default function Home({
   };
 
   const getProvider = () => {
-    if (!anchorWallet) {
+    if (!wallet) {
       return;
     }
 
@@ -167,7 +167,6 @@ export default function Home({
     });
   };
 
-  //works only without localstorage because of string issue?
   const base = web3.Keypair.generate();
 
   const createUser = async () => {
@@ -176,13 +175,12 @@ export default function Home({
     // needs to be a big number like this
     const id = new BN(session?.user?.user?.id);
 
-    //works only with 1 signer, otherwise .split error
     try {
       await program.methods
         .createUser(id)
         .accounts({
           userState: base?.publicKey,
-          authority: provider.wallet.publicKey,
+          authority: provider?.wallet?.publicKey,
           systemProgram: SystemProgram.programId,
         })
         .signers([base])
