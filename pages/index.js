@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition, useCallback } from "react";
-import { Program, AnchorProvider, web3 } from "@project-serum/anchor";
+import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
@@ -34,7 +34,7 @@ import {
   teams,
   profileData,
 } from "utils/data";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
@@ -58,6 +58,7 @@ export default function Home({
   const { connection } = useConnection();
   const router = useRouter();
   const wallet = useWallet();
+  const anchorWallet = useAnchorWallet();
   // const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
   const {
@@ -133,15 +134,6 @@ export default function Home({
     setLocalUserState(localStorage.getItem("userState-storage"));
   }, []);
 
-  const getProvider = () => {
-    if (!wallet) {
-      return;
-    }
-    return new AnchorProvider(connection, wallet, {
-      preflightCommitment: "processed",
-    });
-  };
-
   console.log(session);
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
@@ -158,21 +150,45 @@ export default function Home({
           signature,
           callbackUrl: "/",
         });
-        const provider = getProvider();
-        const program = new Program(idl, idl.metadata.address, provider);
-        return program.methods
-          .createUser(session?.user?.user?.id)
-          .accounts({
-            userState: localUserState?.publicKey,
-            authority: provider.wallet.publicKey,
-            systemProgram: SystemProgram.programId,
-          })
-          .signers([localUserState, provider.wallet])
-          .rpc();
       } catch (e) {
         console.log({ e });
         return null;
       }
+    }
+  };
+
+  const getProvider = () => {
+    if (!anchorWallet) {
+      return;
+    }
+
+    return new AnchorProvider(connection, wallet, {
+      preflightCommitment: "processed",
+    });
+  };
+
+  //works only without localstorage because of string issue?
+  const base = web3.Keypair.generate();
+
+  const createUser = async () => {
+    const provider = getProvider();
+    const program = new Program(idl, idl.metadata.address, provider);
+    // needs to be a big number like this
+    const id = new BN(session?.user?.user?.id);
+
+    //works only with 1 signer, otherwise .split error
+    try {
+      await program.methods
+        .createUser(id)
+        .accounts({
+          userState: base?.publicKey,
+          authority: provider.wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([base])
+        .rpc();
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -307,7 +323,7 @@ export default function Home({
 
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
-    if (wallet.publicKey && session) {
+    if (wallet?.publicKey && session) {
       const paymentAmount = paymentOptions?.filter(
         (item) => item.value === paymentToken
       )[0].amount;
@@ -371,6 +387,7 @@ export default function Home({
   // console.log(finalOutput);
   return (
     <div className={styles.home}>
+      <button onClick={createUser}>CreateUser</button>
       <ToastContainer
         position="top-center"
         autoClose={5000}
