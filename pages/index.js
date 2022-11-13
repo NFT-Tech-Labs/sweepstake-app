@@ -84,7 +84,6 @@ export default function Home({
   const [localUserStateSweepstake, setLocalUserStateSweepstake] = useState(
     web3.Keypair.generate()
   );
-  console.log(localUserState, "localUserState");
 
   // Smart contract communication
   const getProvider = () => {
@@ -130,6 +129,7 @@ export default function Home({
       },
     ],
   };
+
   useEffect(() => {
     // Triggers a signature request if session (user) is not yet authenticated
     if (session === null) {
@@ -586,17 +586,19 @@ export default function Home({
                 </div>
               )}
             </div>
-            <div className={styles.legal}>
-              <input type={"checkbox"} value={"yes"} />
-              <label>
-                I confirm that I am in the{" "}
-                <Link href={"https://discord.gg/dagoats"}>
-                  <a target={"_blank"} rel="noreferrer">
-                    DaGoats Discord
-                  </a>
-                </Link>
-              </label>
-            </div>
+            {!sweepstakeDisabled && !predictionsTransformed && (
+              <div className={styles.legal}>
+                <input type={"checkbox"} value={"yes"} />
+                <label>
+                  I confirm that I am in the{" "}
+                  <Link href={"https://discord.gg/dagoats"}>
+                    <a target={"_blank"} rel="noreferrer">
+                      DaGoats Discord
+                    </a>
+                  </Link>
+                </label>
+              </div>
+            )}
           </div>
         </div>
       </div>
