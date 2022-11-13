@@ -68,3 +68,14 @@
   padding: var(--spacing-xs);
   border-radius: 100%;
 }
+
+.legal {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--spacing-m);
+
+  input {
+    margin-right: var(--spacing-s);
+  }
+}

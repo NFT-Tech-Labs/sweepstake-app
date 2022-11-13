@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useTransition, useCallback } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
+import Link from "next/link";
 import {
   Title,
   Content,
@@ -485,6 +486,17 @@ export default function Home({
                   )}
                 </div>
               )}
+            </div>
+            <div className={styles.legal}>
+              <input type={"checkbox"} value={"yes"} />
+              <label>
+                I confirm that I am in the{" "}
+                <Link href={"https://discord.gg/dagoats"}>
+                  <a target={"_blank"} rel="noreferrer">
+                    DaGoats Discord
+                  </a>
+                </Link>
+              </label>
             </div>
           </div>
         </div>
