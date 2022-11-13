@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition, useCallback } from "react";
+import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
+import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import Link from "next/link";
 import {
-  Title,
-  Content,
   Table,
   Heading,
   Divider,
@@ -19,6 +19,7 @@ import {
   Groups,
   TeamSelect,
   Icon,
+  Instructions,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -33,17 +34,23 @@ import {
   paymentOptions,
   teams,
   profileData,
+  instructionsData,
 } from "utils/data";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
-import SendSolanaTokens from "utils/sendTransaction";
-import SendSolanaSplTokens from "utils/splTransaction";
+// import SendSolanaTokens from "utils/sendTransaction";
+import SendSolanaTokens from "utils/createSweepstakeSolana";
+import SendSplTokens from "utils/createSweepstakeSpl";
+// import SendSolanaSplTokens from "utils/splTransaction";
+import SendUser from "utils/createUser";
 import { ToastContainer, toast } from "react-toastify";
 import { useConnection } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
+import { SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import idl from "../utils/idl.json";
 
 export default function Home({
   accountData,
@@ -54,18 +61,17 @@ export default function Home({
   sweepstakes,
 }) {
   const { connection } = useConnection();
-  const router = useRouter();
-  const { publicKey, signMessage, disconnect } = useWallet();
-  // const { data: session, status } = useSession();
-  const [isPending, startTransition] = useTransition();
+  const wallet = useWallet();
+  const anchorWallet = useAnchorWallet();
+  const { handleUser, confirmationUser, processingUser, errorUser } =
+    SendUser();
   const {
     handleSolanaPayment,
     confirmationSolana,
     processingSolana,
     errorSolana,
   } = SendSolanaTokens();
-  const { handlePayment, confirmation, processing, error } =
-    SendSolanaSplTokens();
+  const { handlePayment, confirmation, processing, error } = SendSplTokens();
 
   const [count, setCount] = useState(0);
   const [groupStage, setGroupStage] = useState([]);
@@ -74,6 +80,26 @@ export default function Home({
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
+  const [localUserState, setLocalUserState] = useState(web3.Keypair.generate());
+  const [localUserStateSweepstake, setLocalUserStateSweepstake] = useState(
+    web3.Keypair.generate()
+  );
+
+  // Smart contract communication
+  const getProvider = () => {
+    if (!anchorWallet) {
+      return null;
+    }
+
+    const provider = new AnchorProvider(connection, anchorWallet, {
+      preflightCommitment: "processed",
+    });
+
+    return provider;
+  };
+
+  const provider = getProvider();
+  const id = new BN(session?.user?.user?.id);
 
   const timelineData = {
     rounds: [
@@ -104,31 +130,36 @@ export default function Home({
     ],
   };
 
-  // Triggers a signature request if session (user) is not yet authenticated
   useEffect(() => {
+    // Triggers a signature request if session (user) is not yet authenticated
     if (session === null) {
       signCustomMessage();
     }
-  }, [session, publicKey]);
+
+    // Triggers a user initialization method request for the smart contract
+    if (session !== null && provider && !predictionsTransformed) {
+      handleUser(id, localUserState?.publicKey, localUserState);
+    }
+  }, [session, wallet.publicKey]);
 
   // If user switches wallet address during session, signout and disconnect
   useEffect(() => {
-    if (publicKey && session) {
-      if (publicKey?.toBase58() !== session?.user?.user?.address) {
+    if (wallet.publicKey && session) {
+      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
         signOut();
-        disconnect();
+        wallet.disconnect();
       }
     }
-  }, [publicKey]);
+  }, [wallet.publicKey]);
 
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
-    if (publicKey) {
-      const address = publicKey.toBase58();
+    if (wallet.publicKey) {
+      const address = wallet.publicKey.toBase58();
       const message = address;
       const encodedMessage = new TextEncoder().encode(message);
 
-      const signedMessage = await signMessage(encodedMessage, "utf8");
+      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
       const signature = base58.encode(signedMessage);
       try {
         await signIn("authCredentials", {
@@ -137,12 +168,13 @@ export default function Home({
           callbackUrl: "/",
         });
       } catch (e) {
-        console.log(e);
+        console.log({ e });
         return null;
       }
     }
   };
 
+  // Fetched tokenBalances from API
   const fetchedTokensBalance = profileData?.tokens.map((item) => {
     return {
       ...item,
@@ -154,7 +186,6 @@ export default function Home({
   });
 
   // Fetched sweepstake predictions from API
-
   let predictions;
   let predictionsTransformed;
   let worldChampion;
@@ -234,6 +265,18 @@ export default function Home({
 
   // Status notifications based on the payment/transaction responses
   useEffect(() => {
+    processingUser && toast("Initializing user...");
+  }, [processingUser]);
+
+  useEffect(() => {
+    confirmationUser && toast.success("User initialized!");
+  }, [confirmationUser]);
+
+  useEffect(() => {
+    errorUser && toast.error("Something went wrong!");
+  }, [errorUser]);
+
+  useEffect(() => {
     processingSolana && toast("Processing...");
   }, [processingSolana]);
 
@@ -272,9 +315,18 @@ export default function Home({
     predictions: transformOutputTypes,
   };
 
+  const shaInput = {
+    id,
+    ...finalOutput,
+  };
+
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
-    if (publicKey && session) {
+    if (wallet?.publicKey && session) {
+      const shaInput = {
+        id,
+        ...finalOutput,
+      };
       const paymentAmount = paymentOptions?.filter(
         (item) => item.value === paymentToken
       )[0].amount;
@@ -283,23 +335,36 @@ export default function Home({
         (item) => item.value === paymentToken
       )[0].decimals;
 
-      // console.log(paymentAmount, "amount");
-      // console.log(paymentDecimals, "decimals");
       if (paymentToken !== "sol") {
         console.log(paymentToken);
         handlePayment(
+          shaInput,
           paymentToken,
-          process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
-          paymentAmount,
-          paymentDecimals
+          localUserState?.publicKey,
+          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
+          localUserStateSweepstake?.publicKey,
+          localUserStateSweepstake
         );
+        // handlePayment(
+        //   paymentToken,
+        //   process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
+        //   paymentAmount,
+        //   paymentDecimals
+        // );
       } else {
         console.log("solpayment");
         handleSolanaPayment(
-          publicKey,
-          process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
-          paymentAmount
+          shaInput,
+          localUserState?.publicKey,
+          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
+          localUserStateSweepstake?.publicKey,
+          localUserStateSweepstake
         );
+        // handleSolanaPayment(
+        //   wallet.publicKey,
+        //   process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
+        //   paymentAmount
+        // );
       }
     }
   };
@@ -307,7 +372,7 @@ export default function Home({
   // Submit sweepstake function which sends the output to the database based on conditions
   const submitSweepstake = async () => {
     if (
-      publicKey &&
+      wallet.publicKey &&
       session &&
       filledCount === 64 &&
       (confirmation || confirmationSolana)
@@ -338,6 +403,40 @@ export default function Home({
   // console.log(finalOutput);
   return (
     <div className={styles.home}>
+      {/* <button
+        onClick={() =>
+          handleUser(id, localUserState?.publicKey, localUserState)
+        }
+      >
+        CreateUser
+      </button>
+      <button
+        onClick={() =>
+          handleSolanaPayment(
+            shaInput,
+            localUserState?.publicKey,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
+            localUserStateSweepstake?.publicKey,
+            localUserStateSweepstake
+          )
+        }
+      >
+        SOL
+      </button>
+      <button
+        onClick={() =>
+          handlePayment(
+            shaInput,
+            "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+            localUserState?.publicKey,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
+            localUserStateSweepstake?.publicKey,
+            localUserStateSweepstake
+          )
+        }
+      >
+        SPL
+      </button> */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -353,7 +452,7 @@ export default function Home({
       <Divider height={40} />
       <Profile
         session={session}
-        publicKey={publicKey?.toBase58()}
+        publicKey={wallet.publicKey?.toBase58()}
         nfts={nfts}
         disconnect={handleDisconnect}
         tokens={fetchedTokensBalance}
@@ -511,6 +610,7 @@ export default function Home({
         ))}
       </div>
       <Divider height={80} />
+      <Instructions items={instructionsData} />
       {/* TO-DO: Create a separate grid component for the table and timeline */}
     </div>
   );

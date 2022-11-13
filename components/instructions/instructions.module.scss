@@ -1,0 +1,43 @@
+// .instructions {
+//   display: flex;
+//   align-content: center;
+//   justify-content: center;
+// }
+
+.index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  border: solid 2px rgba(var(--color-energized), 1);
+  background: rgba(var(--color-light), 1);
+  width: 40px;
+  height: 40px;
+  margin-right: var(--spacing-m);
+  z-index: 2;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  padding-bottom: var(--spacing-xl);
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    height: 100%;
+    border-right: 2px dashed rgba(var(--color-energized), 1);
+    z-index: 1;
+  }
+
+  &:last-child {
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.title {
+  margin: var(--spacing-s) 0 var(--spacing-l);
+}

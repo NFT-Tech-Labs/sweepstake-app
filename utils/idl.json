@@ -1,0 +1,283 @@
+{
+  "version": "0.1.0",
+  "name": "dagoats_sweepstake",
+  "instructions": [
+    {
+      "name": "createUser",
+      "docs": [
+        "Initialize user state",
+        "- A user can be created before the start of the World Cup",
+        "- All the input data must be valid",
+        "Input data:",
+        "- `user_id`: User ID from the database (reference ID)"
+      ],
+      "accounts": [
+        {
+          "name": "userState",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "userId",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "createSweepstakeSol",
+      "docs": [
+        "Create sweepstake and pay in $SOL for it",
+        "- A sweepstake can be created before the start of the World Cup",
+        "- All the input data must be valid",
+        "- User cannot exceed a number of sweepstakes per wallet",
+        "- Sweepstake must be paid in $SOL"
+      ],
+      "accounts": [
+        {
+          "name": "userState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sweepstakeState",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "dagoatsWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "SweepstakeData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createSweepstakeSpl",
+      "docs": [
+        "Create sweepstake and pay in supported SPL token for it",
+        "- A sweepstake can be created before the start of the World Cup",
+        "- All the input data must be valid",
+        "- User cannot exceed a number of sweepstakes per wallet",
+        "- Sweepstake must be paid in supported SPL token"
+      ],
+      "accounts": [
+        {
+          "name": "userState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sweepstakeState",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "dagoatsWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "SweepstakeData"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "User",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Account owner and payer"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "currentSweepstakeKey",
+            "docs": [
+              "Latest created sweepstake"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "sweepstakesSubmitted",
+            "docs": [
+              "Number of sweepstakes created"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "id",
+            "docs": [
+              "User ID from the database (reference ID)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sweepstake",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Sweepstake ID from the database (reference ID)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Creator and payer of the sweepstake"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "predictions",
+            "docs": [
+              "Hashed (sha1) JSON object of the sweepstake"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "submittedAt",
+            "docs": [
+              "A `solana_program::clock::UnixTimestamp` timestamp of the time the sweepstake was submitted"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "preSweepstakeKey",
+            "docs": [
+              "Reference to a previously created sweepstake"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "SweepstakeData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Sweepstake ID from the database (reference ID)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "predictions",
+            "docs": [
+              "Hashed (sha1) JSON object of the sweepstake"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidInputLength",
+      "msg": "Sweepstake data has invalid length!"
+    },
+    {
+      "code": 6001,
+      "name": "SweepstakeLimitExceeded",
+      "msg": "Exceeded number of sweepstakes per wallet!"
+    },
+    {
+      "code": 6002,
+      "name": "SweepstakeDisabled",
+      "msg": "Sweepstake create period has ended!"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidInputData",
+      "msg": "Sweepstake input data are not valid!"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidAccount",
+      "msg": "Submitted account is not supported!"
+    }
+  ],
+  "metadata": {
+    "address": "BQoZJCb4arM2NypHHVHejAgs7VD31qcWsc1KGwqKexH3"
+  }
+}

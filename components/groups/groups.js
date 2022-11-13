@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./groups.module.scss";
 import PropTypes from "prop-types";
@@ -22,7 +22,8 @@ import "react-tabs/style/react-tabs.css";
 const cx = classNames.bind(styles);
 
 const Groups = ({ className, data, onSelect, onChange, count }) => {
-  let classes = cx({ groups: true }, className);
+  const [indicator, setIndicator] = useState(true);
+  let classes = cx({ groups: true, indicator }, className);
 
   const groupStage = groupsScheme?.map((item) => {
     return {
@@ -113,7 +114,7 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
   }, [data]);
 
   return (
-    <div className={classes}>
+    <div className={classes} onMouseOver={() => setIndicator(false)}>
       <Tabs className={styles.tabs} onSelect={onSelect} selectedIndex={count}>
         <TabList className={styles.tablist}>
           {groupStage?.map((item, index) => {
