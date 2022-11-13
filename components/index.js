@@ -21,6 +21,7 @@ import TeamSelect from "./teamSelect/teamSelect";
 import Snackbar from "./snackbar/snackbar";
 import Token from "./token/token";
 import Tokens from "./tokens/tokens";
+import Instructions from "./instructions/instructions";
 
 export {
   Layout,
@@ -48,4 +49,5 @@ export {
   Snackbar,
   Token,
   Tokens,
+  Instructions,
 };

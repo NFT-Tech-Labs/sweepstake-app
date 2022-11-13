@@ -2,17 +2,10 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect, useTransition, useCallback } from "react";
 import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
-import {
-  createMint,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
+import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import { useRouter } from "next/router";
 import styles from "../styles/home.module.scss";
 import {
-  Title,
-  Content,
   Table,
   Heading,
   Divider,
@@ -25,6 +18,7 @@ import {
   Groups,
   TeamSelect,
   Icon,
+  Instructions,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -39,6 +33,7 @@ import {
   paymentOptions,
   teams,
   profileData,
+  instructionsData,
 } from "utils/data";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
@@ -49,6 +44,7 @@ import { signIn } from "next-auth/react";
 import SendSolanaTokens from "utils/createSweepstakeSolana";
 import SendSplTokens from "utils/createSweepstakeSpl";
 // import SendSolanaSplTokens from "utils/splTransaction";
+import SendUser from "utils/createUser";
 import { ToastContainer, toast } from "react-toastify";
 import { useConnection } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
@@ -64,11 +60,10 @@ export default function Home({
   sweepstakes,
 }) {
   const { connection } = useConnection();
-  const router = useRouter();
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet();
-  // const { data: session, status } = useSession();
-  const [isPending, startTransition] = useTransition();
+  const { handleUser, confirmationUser, processingUser, errorUser } =
+    SendUser();
   const {
     handleSolanaPayment,
     confirmationSolana,
@@ -104,26 +99,7 @@ export default function Home({
   };
 
   const provider = getProvider();
-
-  // The generated account address (localUserState) is the only signer, do we also need to put the active provider.wallet as signer?
-  const createUser = async () => {
-    const program = new Program(idl, idl.metadata.address, provider);
-    const id = new BN(session?.user?.user?.id);
-
-    try {
-      await program.methods
-        .createUser(id)
-        .accounts({
-          userState: localUserState?.publicKey,
-          authority: provider?.wallet?.publicKey,
-          systemProgram: SystemProgram.programId,
-        })
-        .signers([localUserState])
-        .rpc();
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const id = new BN(session?.user?.user?.id);
 
   const timelineData = {
     rounds: [
@@ -153,17 +129,16 @@ export default function Home({
       },
     ],
   };
-
   useEffect(() => {
     // Triggers a signature request if session (user) is not yet authenticated
     if (session === null) {
       signCustomMessage();
     }
 
-    // // Triggers a user initialization method request for the smart contract
-    // if (session !== null && provider) {
-    //   createUser();
-    // }
+    // Triggers a user initialization method request for the smart contract
+    if (session !== null && provider && !predictionsTransformed) {
+      handleUser(id, localUserState?.publicKey, localUserState);
+    }
   }, [session, wallet.publicKey]);
 
   // If user switches wallet address during session, signout and disconnect
@@ -175,13 +150,6 @@ export default function Home({
       }
     }
   }, [wallet.publicKey]);
-
-  // useEffect(() => {
-  //   if (!localStorage.getItem("userState-storage")) {
-  //     localStorage.setItem("userState-storage", web3.Keypair.generate());
-  //   }
-  //   setLocalUserState(localStorage.getItem("userState-storage"));
-  // }, []);
 
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
@@ -296,6 +264,18 @@ export default function Home({
 
   // Status notifications based on the payment/transaction responses
   useEffect(() => {
+    processingUser && toast("Initializing user...");
+  }, [processingUser]);
+
+  useEffect(() => {
+    confirmationUser && toast.success("User initialized!");
+  }, [confirmationUser]);
+
+  useEffect(() => {
+    errorUser && toast.error("Something went wrong!");
+  }, [errorUser]);
+
+  useEffect(() => {
     processingSolana && toast("Processing...");
   }, [processingSolana]);
 
@@ -334,18 +314,14 @@ export default function Home({
     predictions: transformOutputTypes,
   };
 
-  const id = new BN(session?.user?.user?.id);
   const shaInput = {
     id,
     ...finalOutput,
   };
 
   // Submit transaction function which creates a payment/transaction
-  console.log(paymentToken);
-
   const handleSubmit = () => {
     if (wallet?.publicKey && session) {
-      const id = new BN(session?.user?.user?.id);
       const shaInput = {
         id,
         ...finalOutput,
@@ -364,7 +340,7 @@ export default function Home({
           shaInput,
           paymentToken,
           localUserState?.publicKey,
-          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS,
+          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
           localUserStateSweepstake?.publicKey,
           localUserStateSweepstake
         );
@@ -379,7 +355,7 @@ export default function Home({
         handleSolanaPayment(
           shaInput,
           localUserState?.publicKey,
-          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS,
+          process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
           localUserStateSweepstake?.publicKey,
           localUserStateSweepstake
         );
@@ -426,13 +402,19 @@ export default function Home({
   // console.log(finalOutput);
   return (
     <div className={styles.home}>
-      <button onClick={createUser}>CreateUser</button>
+      {/* <button
+        onClick={() =>
+          handleUser(id, localUserState?.publicKey, localUserState)
+        }
+      >
+        CreateUser
+      </button>
       <button
         onClick={() =>
           handleSolanaPayment(
             shaInput,
             localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
             localUserStateSweepstake?.publicKey,
             localUserStateSweepstake
           )
@@ -440,22 +422,20 @@ export default function Home({
       >
         SOL
       </button>
-      {/* <button onClick={test}>createSweepstakeSOl</button> */}
       <button
         onClick={() =>
           handlePayment(
             shaInput,
-            "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
+            "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
             localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
             localUserStateSweepstake?.publicKey,
             localUserStateSweepstake
           )
         }
       >
         SPL
-      </button>
-      {/* <button onClick={createSweepstakeSpl}>testSpl</button> */}
+      </button> */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -616,6 +596,7 @@ export default function Home({
         ))}
       </div>
       <Divider height={80} />
+      <Instructions items={instructionsData} />
       {/* TO-DO: Create a separate grid component for the table and timeline */}
     </div>
   );

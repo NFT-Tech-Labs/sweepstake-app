@@ -35,7 +35,7 @@ const Token = ({ className, title, content, available, required }) => {
         <Content
           size={"xs"}
           color={"stable-500"}
-          text={`${available}/${required}`}
+          text={`${Number(available).toFixed(2)}/${required}`}
         />
         <div className={styles.progress}>
           <div

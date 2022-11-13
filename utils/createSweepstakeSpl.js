@@ -61,6 +61,13 @@ const SendSplTokens = () => {
           new web3.PublicKey(dagoatsWallet)
         );
 
+      console.log(
+        "associted:" + associatedTokenAccount?.address?.toBase58(),
+        "associtedDagoats:" +
+          dagoatsAssociatedTokenAccount?.address?.toBase58(),
+        "providerWallet:" + provider?.wallet?.publicKey.toBase58()
+      );
+
       try {
         if (!publicKey) throw new WalletNotConnectedError();
         await program.methods
