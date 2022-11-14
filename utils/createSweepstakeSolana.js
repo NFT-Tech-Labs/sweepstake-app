@@ -23,8 +23,6 @@ const getProvider = () => {
   return provider;
 };
 
-console.log("dev");
-
 const SendSolanaTokens = () => {
   const provider = getProvider();
   const { connection } = useConnection();
