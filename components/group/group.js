@@ -57,57 +57,59 @@ const Group = ({ className, teams }) => {
             </div>
           )}
           <div className={styles.score}>
-            {/* {item.goalsGreater !== null && (
-              <Content
-                size={"xs"}
-                color={"dark"}
-                text={item.goalsGreater ? item.goalsGreater : "/"}
-                className={styles.goalsGreater}
-              />
-            )}
-            {item.goalsDifferenceGreater !== null && (
-              <Content
-                size={"xs"}
-                color={"dark"}
-                text={
-                  item.goalsDifferenceGreater
-                    ? item.goalsDifferenceGreater
-                    : "/"
-                }
-                className={styles.goalsDifferenceGreater}
-              />
-            )}
-            {item.pointsGreater !== null && (
-              <Content
-                size={"xs"}
-                color={"dark"}
-                text={item.pointsGreater ? item.pointsGreater : "/"}
-                className={styles.pointsGreater}
-              />
-            )} */}
             {item.goals !== null && (
-              <Content
-                size={"xs"}
-                color={"dark"}
-                text={item.goals}
-                className={styles.goals}
-              />
+              <div className={styles.itemWrapper}>
+                {index === teams.length - 1 && (
+                  <Content
+                    size={"xxs"}
+                    color={"stable-500"}
+                    text={"G"}
+                    className={styles.goalsLabel}
+                  />
+                )}
+                <Content
+                  size={"xs"}
+                  color={"dark"}
+                  text={item.goals}
+                  className={styles.goals}
+                />
+              </div>
             )}
             {item.goalsDifference !== null && (
-              <Content
-                size={"xs"}
-                color={"dark"}
-                text={item.goalsDifference}
-                className={styles.goalsDifference}
-              />
+              <div className={styles.itemWrapper}>
+                {index === teams.length - 1 && (
+                  <Content
+                    size={"xxs"}
+                    color={"stable-500"}
+                    text={"GD"}
+                    className={styles.goalsDifferenceLabel}
+                  />
+                )}
+                <Content
+                  size={"xs"}
+                  color={"dark"}
+                  text={item.goalsDifference}
+                  className={styles.goalsDifference}
+                />
+              </div>
             )}
             {item.points !== null && (
-              <Title
-                tag={"h6"}
-                color={"positive"}
-                text={item.points}
-                className={styles.points}
-              />
+              <div className={styles.itemWrapper}>
+                {index === teams.length - 1 && (
+                  <Content
+                    size={"xxs"}
+                    color={"positive"}
+                    text={"PT"}
+                    className={styles.pointsLabel}
+                  />
+                )}
+                <Title
+                  tag={"h6"}
+                  color={"positive"}
+                  text={item.points}
+                  className={styles.points}
+                />
+              </div>
             )}
           </div>
         </div>

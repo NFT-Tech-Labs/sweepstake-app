@@ -71,72 +71,31 @@
   margin-left: var(--spacing-l);
 }
 
-// .goalsDifference,
-// .goals,
-// .pointsGreater,
-// .goalsDifferenceGreater,
-// .goalsGreater {
-//   position: relative;
-// }
+.itemWrapper {
+  position: relative;
+}
 
-// .teamLast {
-//   .goalsDifference,
-//   .goals,
-//   .pointsGreater,
-//   .goalsDifferenceGreater,
-//   .goalsGreater {
-//     &:after {
-//       content: "";
-//       font-size: 12px;
-//       position: absolute;
-//       bottom: -44px;
-//       display: flex;
-//       color: black;
-//       background: white;
-//       justify-content: center;
-//       align-items: center;
-//       width: 100%;
-//       left: 0;
-//       width: 25px;
-//       right: 0;
-//       height: 19px;
-//     }
-//   }
+.goalsLabel,
+.goalsDifferenceLabel {
+  position: absolute;
+  top: 41px;
+  right: -5px;
+  border-top: solid 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  padding-top: 2px;
+}
 
-//   .goalsDifference {
-//     &:after {
-//       content: 'GD';
-//       border-right: solid 1px rgba(var(--color-stable), 1);
-//       border-bottom: solid 1px rgba(var(--color-stable), 1);
-//     }
-//   }
-
-//   .goals {
-//     &:after {
-//       content: 'GS';
-//       border-bottom: solid 1px rgba(var(--color-stable), 1);
-//     }
-//   }
-
-//   .pointsGreater {
-//     &:after {
-//       content: 'PG';
-//       border-bottom: solid 1px rgba(var(--color-stable), 1);
-//     }
-//   }
-
-//   .goalsDifferenceGreater {
-//     &:after {
-//       content: 'V';
-//       border-bottom: solid 1px rgba(var(--color-stable), 1);
-//     }
-//   }
-
-//   .goalsGreater {
-//     &:after {
-//       content: 'GG';
-//       border-left: solid 1px rgba(var(--color-stable), 1);
-//       border-bottom: solid 1px rgba(var(--color-stable), 1);
-//     }
-//   }
-// }
+.pointsLabel {
+  position: absolute;
+  top: 43px;
+  right: -5px;
+  border-top: solid 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  padding-top: 2px;
+}
