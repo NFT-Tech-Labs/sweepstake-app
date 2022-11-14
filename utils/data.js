@@ -1041,44 +1041,6 @@ const ctaData = {
   image: "https://dagoats.io/wp-content/uploads/2022/06/maradona.png",
 };
 
-const profileData = {
-  tokens: [
-    {
-      title: {
-        text: "USDC",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0,
-      required: 10,
-      mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    },
-    {
-      title: {
-        text: "DUST",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0,
-      required: 10,
-      mint: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
-    },
-    {
-      title: {
-        text: "DGOAT",
-      },
-      content: {
-        text: "token",
-      },
-      available: 0,
-      required: 500,
-      mint: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
-    },
-  ],
-};
-
 const instructionsData = [
   {
     title: {
@@ -1144,6 +1106,5 @@ export {
   rulesData,
   examplesData,
   ctaData,
-  profileData,
   instructionsData,
 };

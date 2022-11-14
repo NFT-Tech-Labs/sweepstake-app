@@ -32,7 +32,6 @@ import {
   ctaData,
   examplesData,
   teams,
-  profileData,
   instructionsData,
 } from "utils/data";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
@@ -100,6 +99,44 @@ export default function Home({
 
   const provider = getProvider();
   const id = new BN(session?.user?.user?.id);
+
+  const profileData = {
+    tokens: [
+      {
+        title: {
+          text: "USDC",
+        },
+        content: {
+          text: "token",
+        },
+        available: 0,
+        required: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT,
+        mint: process.env.NEXT_PUBLIC_USDC_MINT,
+      },
+      {
+        title: {
+          text: "DUST",
+        },
+        content: {
+          text: "token",
+        },
+        available: 0,
+        required: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT,
+        mint: process.env.NEXT_PUBLIC_DUST_MINT,
+      },
+      {
+        title: {
+          text: "FORGE",
+        },
+        content: {
+          text: "token",
+        },
+        available: 0,
+        required: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT,
+        mint: process.env.NEXT_PUBLIC_FORGE_MINT,
+      },
+    ],
+  };
 
   const timelineData = {
     rounds: [
