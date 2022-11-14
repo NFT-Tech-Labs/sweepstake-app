@@ -31,7 +31,6 @@ import {
   rulesData,
   ctaData,
   examplesData,
-  paymentOptions,
   teams,
   profileData,
   instructionsData,
@@ -80,6 +79,7 @@ export default function Home({
   const [paymentToken, setPaymentToken] = useState("");
   const [groupsFilled, setGroupsFilled] = useState(false);
   const [sweepstakeDisabled, setSweepstakeDisabled] = useState(false);
+  const [confirmDiscord, setConfirmDiscord] = useState(false);
   const [localUserState, setLocalUserState] = useState(web3.Keypair.generate());
   const [localUserStateSweepstake, setLocalUserStateSweepstake] = useState(
     web3.Keypair.generate()
@@ -327,13 +327,6 @@ export default function Home({
         id,
         ...finalOutput,
       };
-      const paymentAmount = paymentOptions?.filter(
-        (item) => item.value === paymentToken
-      )[0].amount;
-
-      const paymentDecimals = paymentOptions?.filter(
-        (item) => item.value === paymentToken
-      )[0].decimals;
 
       if (paymentToken !== "sol") {
         console.log(paymentToken);
@@ -345,12 +338,6 @@ export default function Home({
           localUserStateSweepstake?.publicKey,
           localUserStateSweepstake
         );
-        // handlePayment(
-        //   paymentToken,
-        //   process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
-        //   paymentAmount,
-        //   paymentDecimals
-        // );
       } else {
         console.log("solpayment");
         handleSolanaPayment(
@@ -360,11 +347,6 @@ export default function Home({
           localUserStateSweepstake?.publicKey,
           localUserStateSweepstake
         );
-        // handleSolanaPayment(
-        //   wallet.publicKey,
-        //   process.env.NEXT_PUBLIC_SMART_CONTRACT_ADDRESS,
-        //   paymentAmount
-        // );
       }
     }
   };
@@ -393,14 +375,30 @@ export default function Home({
   useEffect(() => {
     submitSweepstake();
   }, [confirmation, confirmationSolana]);
-  // console.log("pk", publicKey);
-  // console.log("sess", session);
 
   const handleDisconnect = () => {
     signOut({ redirect: "/" });
   };
 
-  // console.log(finalOutput);
+  const paymentOptions = [
+    {
+      label: process.env.NEXT_PUBLIC_SOL_AMOUNT + " SOL",
+      value: "sol",
+    },
+    {
+      label: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT + " USDC",
+      value: process.env.NEXT_PUBLIC_USDC_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT + " DUST",
+      value: process.env.NEXT_PUBLIC_DUST_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT + " FORGE",
+      value: process.env.NEXT_PUBLIC_FORGE_MINT,
+    },
+  ];
+
   return (
     <div className={styles.home}>
       {/* <button
@@ -578,7 +576,8 @@ export default function Home({
                       disabled={
                         filledCount !== 64 ||
                         paymentToken === "" ||
-                        !finalOutput.worldChampion
+                        !finalOutput.worldChampion ||
+                        !confirmDiscord
                       }
                       onClick={handleSubmit}
                     />
@@ -586,9 +585,19 @@ export default function Home({
                 </div>
               )}
             </div>
-            {session && !sweepstakeDisabled && !predictionsTransformed && (
+            {session && (
               <div className={styles.legal}>
-                <input type={"checkbox"} value={"yes"} />
+                <input
+                  type={"checkbox"}
+                  value={"yes"}
+                  checked={
+                    confirmDiscord ||
+                    sweepstakeDisabled ||
+                    predictionsTransformed
+                  }
+                  onChange={() => setConfirmDiscord(!confirmDiscord)}
+                  disabled={sweepstakeDisabled || predictionsTransformed}
+                />
                 <label>
                   I confirm that I am in the{" "}
                   <Link href={"https://discord.gg/dagoats"}>

@@ -1079,32 +1079,6 @@ const profileData = {
   ],
 };
 
-const paymentOptions = [
-  {
-    label: "0.25 SOL",
-    value: "sol",
-    amount: 0.25,
-  },
-  {
-    label: "10 USDC",
-    value: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    amount: 10,
-    decimals: 1000000,
-  },
-  {
-    label: "10 DUST",
-    value: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
-    amount: 10,
-    decimals: 1000000000,
-  },
-  {
-    label: "1 DGOAT",
-    value: "ChhPHqxm9RLXybxFS8k1bCFb8FjziDGfQ9G2am1YKqeC",
-    amount: 1,
-    decimals: 1000000000,
-  },
-];
-
 const instructionsData = [
   {
     title: {
@@ -1171,6 +1145,5 @@ export {
   examplesData,
   ctaData,
   profileData,
-  paymentOptions,
   instructionsData,
 };
