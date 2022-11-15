@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
+import { useState } from "react";
+import { Program, AnchorProvider } from "@project-serum/anchor";
 import {
   useConnection,
   useWallet,
@@ -36,49 +36,51 @@ const SendSolanaTokens = () => {
     program = new Program(idl, idl.metadata.address, provider);
   }
 
-  const handleSolanaPayment = useCallback(
-    async (input, userState, dagoatsWallet, sweepstakeState, signers) => {
-      setErrorSolana(false);
+  const handleSolanaPayment = async (
+    input,
+    userState,
+    dagoatsWallet,
+    sweepstakeState,
+    signers
+  ) => {
+    setErrorSolana(false);
+    setConfirmationSolana(false);
+    setProcessingSolana(true);
+
+    try {
+      if (!publicKey) throw new WalletNotConnectedError();
+
+      const {
+        value: { blockhash, lastValidBlockHeight },
+      } = await connection.getLatestBlockhashAndContext();
+
+      const signature = await program.methods
+        .createSweepstakeSol(input)
+        .accounts({
+          userState: userState,
+          authority: provider?.wallet?.publicKey,
+          dagoatsWallet: dagoatsWallet,
+          systemProgram: SystemProgram.programId,
+          sweepstakeState: sweepstakeState,
+        })
+        .signers([signers])
+        .rpc();
+
+      await connection.confirmTransaction({
+        blockhash,
+        lastValidBlockHeight,
+        signature,
+      });
+
+      setConfirmationSolana(true);
+    } catch (error) {
+      console.warn(error);
       setConfirmationSolana(false);
-      setProcessingSolana(true);
+      setErrorSolana(true);
+    }
 
-      try {
-        if (!publicKey) throw new WalletNotConnectedError();
-
-        const {
-          value: { blockhash, lastValidBlockHeight },
-        } = await connection.getLatestBlockhashAndContext();
-
-        const signature = await program.methods
-          .createSweepstakeSol(input)
-          .accounts({
-            userState: userState,
-            authority: provider?.wallet?.publicKey,
-            dagoatsWallet: dagoatsWallet,
-            systemProgram: SystemProgram.programId,
-            sweepstakeState: sweepstakeState,
-          })
-          .signers([signers])
-          .rpc();
-
-        await connection.confirmTransaction({
-          blockhash,
-          lastValidBlockHeight,
-          signature,
-        });
-
-        setConfirmationSolana(true);
-      } catch (error) {
-        console.warn(error);
-        setConfirmationSolana(false);
-        setErrorSolana(true);
-      }
-
-      setProcessingSolana(false);
-    },
-    [publicKey, connection]
-  );
-
+    setProcessingSolana(false);
+  };
   return {
     processingSolana,
     confirmationSolana,

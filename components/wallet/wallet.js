@@ -39,7 +39,10 @@ const Wallet = ({ children }) => {
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider
+      config={{ confirmTransactionInitialTimeout: 120000 }}
+      endpoint={endpoint}
+    >
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {/* <WalletMultiButton /> */}
