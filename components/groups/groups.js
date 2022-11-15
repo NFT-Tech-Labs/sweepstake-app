@@ -69,8 +69,6 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
           getTeamPointsBetween(data.slice(0, 48), b.name, a.name)
       );
     }
-
-    console.log(threeWayTieResult);
   });
 
   // const groupStageUpdated = groupStage?.map((item) => ({
