@@ -30,7 +30,11 @@ const Wallet = ({ children }) => {
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider
+      endpoint={
+        "https://nameless-compatible-arm.solana-mainnet.discover.quiknode.pro/ebe4f856a5a58e2ecac44cefad9cf52383ff56ad/"
+      }
+    >
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {/* <WalletMultiButton /> */}
