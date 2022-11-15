@@ -30,7 +30,7 @@ const getProvider = () => {
 const SendSplTokens = () => {
   const provider = getProvider();
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey } = useWallet();
   const [processing, setProcessing] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [error, setError] = useState(false);
@@ -70,7 +70,12 @@ const SendSplTokens = () => {
 
       try {
         if (!publicKey) throw new WalletNotConnectedError();
-        await program.methods
+
+        const {
+          value: { blockhash, lastValidBlockHeight },
+        } = await connection.getLatestBlockhashAndContext();
+
+        const signature = await program.methods
           .createSweepstakeSpl(input)
           .accounts({
             mint: new web3.PublicKey(mint),
@@ -84,6 +89,13 @@ const SendSplTokens = () => {
           })
           .signers([signers])
           .rpc();
+
+        await connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        });
+
         setConfirmation(true);
       } catch (error) {
         console.warn(error);
@@ -93,7 +105,7 @@ const SendSplTokens = () => {
 
       setProcessing(false);
     },
-    [publicKey, sendTransaction, connection]
+    [publicKey, connection]
   );
 
   return {
