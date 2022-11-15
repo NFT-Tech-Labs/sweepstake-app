@@ -10,11 +10,17 @@ const getTeamPoints = (data, team) => {
         ? Number(item.scoreB)
         : Number(item.scoreA);
 
+    const chosenTeamValueEqual =
+      (item.teamA === team && "0") || (item.teamB === team && "0");
+    const againstTeamValueEqual = (item.teamA === team) === true ? "0" : "0";
+
     chosenTeamValue > againstTeamValue
       ? (total += 3)
       : item.scoreA !== null &&
         item.scoreB !== null &&
-        chosenTeamValue === againstTeamValue
+        (item.scoreA === "0" && item.scoreB === "0"
+          ? chosenTeamValueEqual === againstTeamValueEqual
+          : chosenTeamValue === againstTeamValue)
       ? (total += 1)
       : (total += 0);
   });

@@ -237,9 +237,10 @@ export default function Home({
     predictions = sweepstakes[0]?.predictions;
     worldChampion = sweepstakes[0]?.worldChampion;
 
-    // TO-DO: points should be number
     predictionsTransformed = predictions?.map((item) => ({
       ...item,
+      scoreA: item?.scoreA.toString(),
+      scoreB: item?.scoreB.toString(),
       points: item?.points.toString(),
     }));
 
