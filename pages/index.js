@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect, useTransition, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
 import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import { useRouter } from "next/router";
@@ -58,6 +58,7 @@ export default function Home({
   solanaBalance,
   sweepstakes,
 }) {
+  const ref = useRef(null);
   const { connection } = useConnection();
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet();
@@ -83,6 +84,10 @@ export default function Home({
   const [localUserStateSweepstake, setLocalUserStateSweepstake] = useState(
     web3.Keypair.generate()
   );
+
+  const handleScroll = () => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Smart contract communication
   const getProvider = () => {
@@ -496,7 +501,7 @@ export default function Home({
       <Divider height={100} />
       <Heading {...headingData} />
       <Divider height={20} />
-      <Cta {...ctaData} />
+      <Cta {...ctaData} onClick={handleScroll} />
       <Divider height={80} />
       <div className={styles.examples}>
         {examplesData?.map((example, index) => (
@@ -649,7 +654,9 @@ export default function Home({
         </div>
       </div>
       <Divider height={80} />
-      <Heading {...headingRulesData} />
+      <div ref={ref}>
+        <Heading {...headingRulesData} />
+      </div>
       <div className={styles.rulesWrapper}>
         {rulesData?.map((item, index) => (
           <Rules key={index} {...item} />

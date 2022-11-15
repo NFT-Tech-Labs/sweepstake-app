@@ -8,7 +8,7 @@ import { Title, Content, Divider, Card, Button } from "@components";
 const cx = classNames.bind(styles);
 
 // eslint-disable-next-line react/prop-types
-const Cta = ({ className, title, content, button, image }) => {
+const Cta = ({ className, title, content, button, image, onClick }) => {
   let classes = cx({ cta: true }, className);
 
   return (
@@ -19,7 +19,7 @@ const Cta = ({ className, title, content, button, image }) => {
           {title && content && <Divider height={10} />}
           {content && <Content color={"light"} size={"m"} {...content} />}
           {content && button && <Divider height={40} />}
-          {button && <Button size={"xxs"} {...button} />}
+          {button && <Button size={"xxs"} {...button} onClick={onClick} />}
         </div>
       )}
       {image && (
@@ -43,6 +43,7 @@ Cta.propTypes = {
   content: PropTypes.shape(Content.propTypes),
   // button: PropTypes.shape(Button.propTypes),
   image: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 Cta.defaultProps = {
@@ -51,6 +52,7 @@ Cta.defaultProps = {
   content: null,
   // button: null,
   image: "",
+  onClick: null,
 };
 
 export default Cta;

@@ -872,10 +872,10 @@ const finalScheme = [
 
 const headingData = {
   title: {
-    text: "Sweepstakes",
+    text: "Oracle World Cup Sweepstake",
   },
   content: {
-    text: "Try to predict the world cup matches and win grand prizes!",
+    text: "Predict the world cup matches and scores and win great prizes!",
     color: "stable-700",
   },
 };
@@ -908,10 +908,10 @@ const rulesData = [
           name: "checkmark-double",
         },
         content: {
-          text: "3 points: Predict match score and winner/draw",
+          text: "3 points: Predict exact match score and winner/draw",
         },
         subtext: {
-          text: "5 points: If the match includes your seleceted team",
+          text: "5 points: If the match includes your preferred team",
         },
       },
       {
@@ -922,7 +922,7 @@ const rulesData = [
           text: "1 points: Predict winner/draw",
         },
         subtext: {
-          text: "3 points: if the match includes your selected team",
+          text: "3 points: if the match includes your preferred team",
         },
       },
       {
@@ -941,7 +941,7 @@ const rulesData = [
       name: "info",
     },
     title: {
-      text: "Ro16, Quarters & Semi Rules",
+      text: "Ro16, Quarters, Semi, 3rd place & Final Rules",
     },
     content: {
       text: "Make sure to fill in all rounds before submitting",
@@ -953,32 +953,43 @@ const rulesData = [
           name: "checkmark-double",
         },
         content: {
-          text: "1 points: Team predicted reaches the rounds in different positions",
+          text: "3 points: If positions are exactly placed. You predicted position 1 (P1) and team is in (P1)",
         },
         subtext: {
-          text: "3 points: If positions are exactly placed",
+          text: "5 points: If preferred team reaches the rounds in exact position",
         },
       },
-    ],
-  },
-  {
-    icon: {
-      name: "info",
-    },
-    title: {
-      text: "Final & 3rd place Rules",
-    },
-    content: {
-      text: "Make sure to fill in all rounds before submitting",
-      color: "stable-700",
-    },
-    rules: [
+      {
+        icon: {
+          name: "checkmark",
+        },
+        content: {
+          text: "1 points: Team predicted reaches the rounds in different positions. You predicted position 1 (P1), but team is in (P2)",
+        },
+        subtext: {
+          text: "3 points: If preferred team reaches the rounds in different position",
+        },
+      },
       {
         icon: {
           name: "checkmark-double",
         },
         content: {
-          text: "3 points: Team predicted reaches the Final or 3rd place",
+          text: "3 points: Predict exact match score and winner/draw",
+        },
+        subtext: {
+          text: "5 points: If the match includes your preferred team",
+        },
+      },
+      {
+        icon: {
+          name: "checkmark",
+        },
+        content: {
+          text: "1 points: Predict winner/draw",
+        },
+        subtext: {
+          text: "3 points: if the match includes your preferred team",
         },
       },
     ],
@@ -1032,7 +1043,7 @@ const ctaData = {
     text: "Be the next DaGoats champion",
   },
   content: {
-    text: "Predict all matches and win $GOAT tokens!",
+    text: "Predict all matches and win the Jackpot!",
   },
   button: {
     text: "Read more",
@@ -1080,6 +1091,14 @@ const instructionsData = [
     },
     content: {
       text: "Review all your predictions",
+    },
+  },
+  {
+    title: {
+      text: "Join Discord",
+    },
+    content: {
+      text: "Be part of DaGOATs Discord",
     },
   },
   {

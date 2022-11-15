@@ -41,7 +41,7 @@ const Profile = ({
     <Card overflow padding className={styles.notConnected}>
       <Icon name={"logo"} size={"m"} color={"dark"} />
       <Divider height={20} />
-      <Title tag={"h6"} text={"Want to participate?"} />
+      <Title tag={"h6"} text={"Oracle WC Sweepstake – Want to participate?"} />
       <Divider height={5} />
       <Content
         text={
