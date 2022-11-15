@@ -22,19 +22,24 @@ require("@solana/wallet-adapter-react-ui/styles.css");
 
 const Wallet = ({ children }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  // const network = WalletAdapterNetwork.Mainnet;
+  const network = WalletAdapterNetwork.Devnet;
 
   // // You can also provide a custom RPC endpoint.
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
+  let endpoint;
+  if (process.env.NEXT_PUBLIC_DEV === "true") {
+    endpoint = useMemo(() => clusterApiUrl(network), [network]);
+    console.log("dev");
+  } else {
+    endpoint = process.env.NEXT_PUBLIC_CUSTOM_RPC;
+    console.log("prod");
+  }
+
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <ConnectionProvider
-      endpoint={
-        "https://nameless-compatible-arm.solana-mainnet.discover.quiknode.pro/ebe4f856a5a58e2ecac44cefad9cf52383ff56ad/"
-      }
-    >
+    <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {/* <WalletMultiButton /> */}
