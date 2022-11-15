@@ -289,8 +289,11 @@ export default function Home({
     checkFilled(12).length === 1 && checkFilledDraw(12).length === 0;
 
   // Keeps track of how many matches are filled in
-  const filledCount =
-    output.filter((item) => item.scoreA && item.scoreB).length + 1;
+  const filledCount = output.filter(
+    (item) => item.scoreA && item.scoreB
+  ).length;
+
+  console.log(output);
 
   const disabledCheck =
     (!groupsFilled && count === 7) ||

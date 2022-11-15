@@ -12,7 +12,9 @@ const getTeamPoints = (data, team) => {
 
     chosenTeamValue > againstTeamValue
       ? (total += 3)
-      : chosenTeamValue === againstTeamValue
+      : item.scoreA !== null &&
+        item.scoreB !== null &&
+        chosenTeamValue === againstTeamValue
       ? (total += 1)
       : (total += 0);
   });
