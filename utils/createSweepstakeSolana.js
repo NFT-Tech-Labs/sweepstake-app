@@ -26,13 +26,12 @@ const getProvider = () => {
 const SendSolanaTokens = () => {
   const provider = getProvider();
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey } = useWallet();
   const [processingSolana, setProcessingSolana] = useState(false);
   const [confirmationSolana, setConfirmationSolana] = useState(false);
   const [errorSolana, setErrorSolana] = useState(false);
 
   let program;
-
   if (provider) {
     program = new Program(idl, idl.metadata.address, provider);
   }
@@ -45,7 +44,12 @@ const SendSolanaTokens = () => {
 
       try {
         if (!publicKey) throw new WalletNotConnectedError();
-        await program.methods
+
+        const {
+          value: { blockhash, lastValidBlockHeight },
+        } = await connection.getLatestBlockhashAndContext();
+
+        const signature = await program.methods
           .createSweepstakeSol(input)
           .accounts({
             userState: userState,
@@ -57,6 +61,12 @@ const SendSolanaTokens = () => {
           .signers([signers])
           .rpc();
 
+        await connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        });
+
         setConfirmationSolana(true);
       } catch (error) {
         console.warn(error);
@@ -66,7 +76,7 @@ const SendSolanaTokens = () => {
 
       setProcessingSolana(false);
     },
-    [publicKey, sendTransaction, connection]
+    [publicKey, connection]
   );
 
   return {

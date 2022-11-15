@@ -44,7 +44,14 @@ const SendUser = () => {
 
       try {
         if (!publicKey) throw new WalletNotConnectedError();
-        await program.methods
+
+        // get latest block height
+        const {
+          value: { blockhash, lastValidBlockHeight },
+        } = await connection.getLatestBlockhashAndContext();
+
+        // get transaction signature
+        const signature = await program.methods
           .createUser(id)
           .accounts({
             userState: userState,
@@ -54,6 +61,14 @@ const SendUser = () => {
           .signers([signers])
           .rpc();
 
+        // we confirm the transaction using the latest blockheight
+        await connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        });
+
+        // update confirmation state
         setConfirmationUser(true);
       } catch (error) {
         console.warn(error);
@@ -65,6 +80,8 @@ const SendUser = () => {
     },
     [publicKey, connection]
   );
+
+  console.log(confirmationUser);
 
   return {
     processingUser,

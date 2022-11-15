@@ -131,7 +131,7 @@ const teams = [
 
 const tableData = [
   {
-    matchId: 1,
+    matchId: 0,
     type: 0,
     playDate: "20 nov",
     playTime: "17:00",
@@ -143,7 +143,7 @@ const tableData = [
     scoreB: null,
   },
   {
-    matchId: 0,
+    matchId: 1,
     type: 0,
     playDate: "21 nov",
     playTime: "17:00",
