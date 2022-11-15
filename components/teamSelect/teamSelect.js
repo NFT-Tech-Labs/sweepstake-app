@@ -92,7 +92,7 @@ const TeamSelect = ({
 
   return (
     <div className={classes}>
-      <Title tag={"h5"} color={"light"} text={"Select your team"} />
+      <Title tag={"h5"} color={"light"} text={"Select your preferred team"} />
       {teams && (
         <Select
           onChange={(e) => setSelectedTeam(e)}
