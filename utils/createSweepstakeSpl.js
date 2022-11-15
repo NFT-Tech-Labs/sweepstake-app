@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Program, AnchorProvider, web3, BN } from "@project-serum/anchor";
+import { useState } from "react";
+import { Program, AnchorProvider, web3 } from "@project-serum/anchor";
 import {
   useConnection,
   useWallet,
@@ -40,73 +40,70 @@ const SendSplTokens = () => {
     program = new Program(idl, idl.metadata.address, provider);
   }
 
-  const handlePayment = useCallback(
-    async (input, mint, userState, dagoatsWallet, sweepstakeState, signers) => {
-      setError(false);
-      setConfirmation(false);
-      setProcessing(true);
+  const handlePayment = async (
+    input,
+    mint,
+    userState,
+    dagoatsWallet,
+    sweepstakeState,
+    signers
+  ) => {
+    setError(false);
+    setConfirmation(false);
+    setProcessing(true);
 
-      const associatedTokenAccount = await getOrCreateAssociatedTokenAccount(
+    const associatedTokenAccount = await getOrCreateAssociatedTokenAccount(
+      provider?.connection,
+      provider?.wallet,
+      new web3.PublicKey(mint),
+      provider?.wallet?.publicKey
+    );
+
+    const dagoatsAssociatedTokenAccount =
+      await getOrCreateAssociatedTokenAccount(
         provider?.connection,
         provider?.wallet,
         new web3.PublicKey(mint),
-        provider?.wallet?.publicKey
+        new web3.PublicKey(dagoatsWallet)
       );
 
-      const dagoatsAssociatedTokenAccount =
-        await getOrCreateAssociatedTokenAccount(
-          provider?.connection,
-          provider?.wallet,
-          new web3.PublicKey(mint),
-          new web3.PublicKey(dagoatsWallet)
-        );
+    try {
+      if (!publicKey) throw new WalletNotConnectedError();
 
-      console.log(
-        "associted:" + associatedTokenAccount?.address?.toBase58(),
-        "associtedDagoats:" +
-          dagoatsAssociatedTokenAccount?.address?.toBase58(),
-        "providerWallet:" + provider?.wallet?.publicKey.toBase58()
-      );
+      const {
+        value: { blockhash, lastValidBlockHeight },
+      } = await connection.getLatestBlockhashAndContext();
 
-      try {
-        if (!publicKey) throw new WalletNotConnectedError();
+      const signature = await program.methods
+        .createSweepstakeSpl(input)
+        .accounts({
+          mint: new web3.PublicKey(mint),
+          userState: userState,
+          authority: provider?.wallet?.publicKey,
+          dagoatsWallet: dagoatsAssociatedTokenAccount?.address,
+          systemProgram: SystemProgram.programId,
+          sweepstakeState: sweepstakeState,
+          userWallet: associatedTokenAccount?.address,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([signers])
+        .rpc();
 
-        const {
-          value: { blockhash, lastValidBlockHeight },
-        } = await connection.getLatestBlockhashAndContext();
+      await connection.confirmTransaction({
+        blockhash,
+        lastValidBlockHeight,
+        signature,
+      });
 
-        const signature = await program.methods
-          .createSweepstakeSpl(input)
-          .accounts({
-            mint: new web3.PublicKey(mint),
-            userState: userState,
-            authority: provider?.wallet?.publicKey,
-            dagoatsWallet: dagoatsAssociatedTokenAccount?.address,
-            systemProgram: SystemProgram.programId,
-            sweepstakeState: sweepstakeState,
-            userWallet: associatedTokenAccount?.address,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          })
-          .signers([signers])
-          .rpc();
+      setConfirmation(true);
+    } catch (error) {
+      console.warn(error);
+      setConfirmation(false);
+      setError(true);
+    }
 
-        await connection.confirmTransaction({
-          blockhash,
-          lastValidBlockHeight,
-          signature,
-        });
-
-        setConfirmation(true);
-      } catch (error) {
-        console.warn(error);
-        setConfirmation(false);
-        setError(true);
-      }
-
-      setProcessing(false);
-    },
-    [publicKey, connection]
-  );
+    setProcessing(false);
+  };
 
   return {
     processing,
