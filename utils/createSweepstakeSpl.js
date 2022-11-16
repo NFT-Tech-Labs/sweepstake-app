@@ -12,6 +12,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import idl from "utils/idl.json";
+import { toast } from "react-toastify";
 
 const getProvider = () => {
   const { connection } = useConnection();
@@ -74,26 +75,38 @@ const SendSplTokens = () => {
         value: { blockhash, lastValidBlockHeight },
       } = await connection.getLatestBlockhashAndContext();
 
-      const signature = await program.methods
-        .createSweepstakeSpl(input)
-        .accounts({
-          mint: new web3.PublicKey(mint),
-          userState: userState,
-          authority: provider?.wallet?.publicKey,
-          dagoatsWallet: dagoatsAssociatedTokenAccount?.address,
-          systemProgram: SystemProgram.programId,
-          sweepstakeState: sweepstakeState,
-          userWallet: associatedTokenAccount?.address,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .signers([signers])
-        .rpc();
+      const signature = await toast.promise(
+        program.methods
+          .createSweepstakeSpl(input)
+          .accounts({
+            mint: new web3.PublicKey(mint),
+            userState: userState,
+            authority: provider?.wallet?.publicKey,
+            dagoatsWallet: dagoatsAssociatedTokenAccount?.address,
+            systemProgram: SystemProgram.programId,
+            sweepstakeState: sweepstakeState,
+            userWallet: associatedTokenAccount?.address,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .signers([signers])
+          .rpc(),
+        {
+          pending: "Processing...might take some time",
+          error: "Something went wrong!",
+        }
+      );
 
-      await connection.confirmTransaction({
-        blockhash,
-        lastValidBlockHeight,
-        signature,
-      });
+      await toast.promise(
+        connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        }),
+        {
+          success: "Submitted!",
+          error: "Something went wrong!",
+        }
+      );
 
       setConfirmation(true);
     } catch (error) {

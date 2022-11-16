@@ -8,6 +8,7 @@ import {
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { SystemProgram } from "@solana/web3.js";
 import idl from "utils/idl.json";
+import { toast } from "react-toastify";
 
 const getProvider = () => {
   const { connection } = useConnection();
@@ -54,23 +55,35 @@ const SendSolanaTokens = () => {
         value: { blockhash, lastValidBlockHeight },
       } = await connection.getLatestBlockhashAndContext();
 
-      const signature = await program.methods
-        .createSweepstakeSol(input)
-        .accounts({
-          userState: userState,
-          authority: provider?.wallet?.publicKey,
-          dagoatsWallet: dagoatsWallet,
-          systemProgram: SystemProgram.programId,
-          sweepstakeState: sweepstakeState,
-        })
-        .signers([signers])
-        .rpc();
+      const signature = await toast.promise(
+        program.methods
+          .createSweepstakeSol(input)
+          .accounts({
+            userState: userState,
+            authority: provider?.wallet?.publicKey,
+            dagoatsWallet: dagoatsWallet,
+            systemProgram: SystemProgram.programId,
+            sweepstakeState: sweepstakeState,
+          })
+          .signers([signers])
+          .rpc(),
+        {
+          pending: "Processing...might take some time",
+          error: "Something went wrong!",
+        }
+      );
 
-      await connection.confirmTransaction({
-        blockhash,
-        lastValidBlockHeight,
-        signature,
-      });
+      await toast.promise(
+        connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        }),
+        {
+          success: "Submitted!",
+          error: "Something went wrong!",
+        }
+      );
 
       setConfirmationSolana(true);
     } catch (error) {

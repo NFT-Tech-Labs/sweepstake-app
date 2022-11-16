@@ -18,7 +18,6 @@ import {
   Profile,
   Groups,
   TeamSelect,
-  Icon,
   Instructions,
 } from "@components";
 import Select from "react-select";
@@ -44,11 +43,9 @@ import SendSolanaTokens from "utils/createSweepstakeSolana";
 import SendSplTokens from "utils/createSweepstakeSpl";
 // import SendSolanaSplTokens from "utils/splTransaction";
 import SendUser from "utils/createUser";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useConnection } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
-import { SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import idl from "../utils/idl.json";
 
 export default function Home({
   accountData,
@@ -311,43 +308,6 @@ export default function Home({
       !semiFilled ||
       !thirdFilled) &&
       count === 11);
-
-  // Status notifications based on the payment/transaction responses
-  useEffect(() => {
-    processingUser && toast("Initializing user...");
-  }, [processingUser]);
-
-  useEffect(() => {
-    confirmationUser && toast.success("User initialized!");
-  }, [confirmationUser]);
-
-  useEffect(() => {
-    errorUser && toast.error("Something went wrong!");
-  }, [errorUser]);
-
-  useEffect(() => {
-    processingSolana && toast("Processing...");
-  }, [processingSolana]);
-
-  useEffect(() => {
-    processing && toast("Processing...");
-  }, [processing]);
-
-  useEffect(() => {
-    confirmationSolana && toast.success("Transaction completed!");
-  }, [confirmationSolana]);
-
-  useEffect(() => {
-    confirmation && toast.success("Transaction completed!");
-  }, [confirmation]);
-
-  useEffect(() => {
-    errorSolana && toast.error("Something went wrong!");
-  }, [errorSolana]);
-
-  useEffect(() => {
-    error && toast.error("Something went wrong!");
-  }, [error]);
 
   // Transforms the predictions output to correct format which is accepted by the API
   // TO-DO: scoreA and scoreB should be numbers

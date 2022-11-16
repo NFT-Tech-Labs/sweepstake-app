@@ -40,7 +40,7 @@ const Wallet = ({ children }) => {
 
   return (
     <ConnectionProvider
-      config={{ confirmTransactionInitialTimeout: 120000 }}
+      config={{ confirmTransactionInitialTimeout: 180000 }}
       endpoint={endpoint}
     >
       <WalletProvider wallets={wallets} autoConnect>

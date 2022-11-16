@@ -8,6 +8,7 @@ import {
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { SystemProgram } from "@solana/web3.js";
 import idl from "utils/idl.json";
+import { toast } from "react-toastify";
 
 const getProvider = () => {
   const { connection } = useConnection();
@@ -50,22 +51,34 @@ const SendUser = () => {
       } = await connection.getLatestBlockhashAndContext();
 
       // get transaction signature
-      const signature = await program.methods
-        .createUser(id)
-        .accounts({
-          userState: userState,
-          authority: provider?.wallet?.publicKey,
-          systemProgram: SystemProgram.programId,
-        })
-        .signers([signers])
-        .rpc();
+      const signature = await toast.promise(
+        program.methods
+          .createUser(id)
+          .accounts({
+            userState: userState,
+            authority: provider?.wallet?.publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([signers])
+          .rpc(),
+        {
+          pending: "Initializing user...",
+          error: "Something went wrong!",
+        }
+      );
 
       // we confirm the transaction using the latest blockheight
-      await connection.confirmTransaction({
-        blockhash,
-        lastValidBlockHeight,
-        signature,
-      });
+      await toast.promise(
+        connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        }),
+        {
+          success: "User initialized!",
+          error: "Something went wrong!",
+        }
+      );
 
       // update confirmation state
       setConfirmationUser(true);

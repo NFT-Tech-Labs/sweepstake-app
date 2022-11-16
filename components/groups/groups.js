@@ -2,16 +2,13 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./groups.module.scss";
 import PropTypes from "prop-types";
-import { Group, Content, TeamSelect } from "@components";
+import { Group, Content } from "@components";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { groupsScheme } from "../../utils/data";
 import {
   getTeamPoints,
   getTeamGoals,
   getTeamGoalsDifference,
-  getGreaterTeamPoints,
-  getGreaterTeamGoalsDifference,
-  getGreaterTeamGoals,
   totalTiesForGroup,
   getTeamPointsBetween,
   test,
@@ -70,40 +67,6 @@ const Groups = ({ className, data, onSelect, onChange, count }) => {
       );
     }
   });
-
-  // const groupStageUpdated = groupStage?.map((item) => ({
-  //   ...item,
-  //   teams: item?.teams.map((team) => ({
-  //     ...team,
-  //     // pointsGreater: getGreaterTeamPoints(
-  //     //   data.slice(0, 48),
-  //     //   item.teams[0]?.name,
-  //     //   item.teams[1]?.name
-  //     // )[team.name],
-  //     // goalsDifferenceGreater: getGreaterTeamGoalsDifference(
-  //     //   data.slice(0, 48),
-  //     //   item.teams[0]?.name,
-  //     //   item.teams[1]?.name
-  //     // )[team.name],
-  //     // goalsGreater: getGreaterTeamGoals(
-  //     //   data.slice(0, 48),
-  //     //   item.teams[0]?.name,
-  //     //   item.teams[1]?.name
-  //     // )[team.name],
-  //   })),
-  // }));
-
-  // groupStageUpdated?.map((item) =>
-  //   item.teams.sort(
-  //     (a, b) =>
-  //       b.points - a.points ||
-  //       b.goalsDifference - a.goalsDifference ||
-  //       b.goals - a.goals
-  //     // b.pointsGreater - a.pointsGreater ||
-  //     // b.goalsDifferenceGreater - a.goalsDifferenceGreater ||
-  //     // b.goalsGreater - a.goalsGreater
-  //   )
-  // );
 
   useEffect(() => {
     if (onChange) {
