@@ -237,8 +237,9 @@ export default function Home({
     predictions = sweepstakes[0]?.predictions;
     worldChampion = sweepstakes[0]?.worldChampion;
 
-    predictionsTransformed = predictions?.map((item) => ({
+    predictionsTransformed = predictions?.map((item, index) => ({
       ...item,
+      rowId: index,
       scoreA: item?.scoreA.toString(),
       scoreB: item?.scoreB.toString(),
       points: item?.points.toString(),
@@ -250,6 +251,8 @@ export default function Home({
       value: worldChampion,
     };
   }
+
+  console.log(predictionsTransformed);
 
   // Check if groupstage (48 matches) is filled (types 0-7)
   useEffect(() => {
@@ -365,7 +368,7 @@ export default function Home({
     id,
     ...finalOutput,
   };
-
+  console.log(finalOutput);
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
     if (wallet?.publicKey && session) {
