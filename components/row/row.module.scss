@@ -1,13 +1,33 @@
+@import '../../styles/mixins.scss';
+
 .row {
+  display: inline-flex;
+  flex-direction: column;
+  border-bottom: solid 4px rgba(var(--color-positive), 1);
+  width: 100%;
+
+  @include medium {
+    display: table-row;
+    border-bottom: none;
+
+    &:last-child {
+      td {
+        border-bottom: none;
+      }
+    }
+  }
+
   td {
     padding: var(--spacing-l);
     border-bottom: solid 1px rgba(var(--color-stable), 1);
-  }
-
-  &:last-child {
-    td {
-      border-bottom: none;
-    }
+     display: flex;
+    justify-content: center;
+    width: 100%;
+      
+    @include medium {
+      display: table-cell;
+      width: auto;
+    }   
   }
 }
 
@@ -137,6 +157,11 @@
       border: dashed 1px rgba(var(--color-dark), 1);
     }
   }
+}
+
+.flagWrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .groupWrapper {

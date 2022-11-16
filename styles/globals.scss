@@ -41,6 +41,7 @@
 
 html, body {
   background-color: #fcfbfe;
+  overflow-x: hidden;
 }
 
 body {
@@ -282,6 +283,8 @@ input[type=number] {
   border-bottom: none !important;
   border-spacing: var(--spacing-m) !important;
   opacity: 0.5;
+  width: 100% !important;
+  text-align: center;
 
   &:hover {
     opacity: 1;
