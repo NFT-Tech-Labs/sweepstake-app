@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from "react";
 import classNames from "classnames/bind";
 import styles from "./tokens.module.scss";
@@ -21,7 +22,7 @@ const Tokens = ({ className, data, solanaData }) => {
     title: {
       text: "SOL",
     },
-    required: 0.25,
+    required: process.env.NEXT_PUBLIC_SOL_AMOUNT,
     available: solanaData?.solana || 0,
   };
 
