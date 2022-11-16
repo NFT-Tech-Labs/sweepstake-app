@@ -1,13 +1,33 @@
+@import '../../styles/mixins.scss';
+
 .timeline {
   width: 100%;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-l);
+
+  @include xlarge {
+    margin-top: 0;
+    margin-bottom: var(--spacing-l);
+  }
+
   ul {
     display: flex;
-    justify-content: space-evenly;
+    flex-wrap: wrap;
     list-style: none;
-  }
-  margin-bottom: var(--spacing-l);
+
+    @include medium {
+      justify-content: space-evenly;
+    }
+  } 
 }
 
 .item {
   display: flex;
+  margin-right: var(--spacing-s);
+  margin-bottom: var(--spacing-s);
+
+  @include medium {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
 }

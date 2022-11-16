@@ -17,24 +17,7 @@
 
   tbody {
     box-shadow: 0 0 0 1px rgba(var(--color-stable), 1);
-    // border-radius: var(--radius-m);
     background-color: rgba(var(--color-light), 1);
-  }
-
-  td {
-    width: 100%;
-    @include medium {
-      width: auto;
-    }
-  }
-
-  tr {
-    display: flex;
-    flex-direction: column;
-
-    @include medium {
-      display: table-row;
-    }
   }
 }
 

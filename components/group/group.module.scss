@@ -1,7 +1,11 @@
+@import '../../styles/mixins.scss';
+
 .group {
-  max-width: 600px;
   border: solid 1px rgba(var(--color-stable), 1);
   background-color: rgba(var(--color-light), 1);
+  @include xlarge {
+    max-width: 600px;
+  }
 }
 
 .team {

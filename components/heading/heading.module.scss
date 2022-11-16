@@ -2,3 +2,20 @@
   border-bottom: solid 1px rgba(var(--color-stable), 1);
   padding-bottom: var(--spacing-xxl);
 }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing-s) + 2px) var(--spacing-xl);
+  // padding: calc(var(--spacing-s) + 2px) calc(var(--spacing-xxl) + 10px);
+  border-radius: var(--spacing-xs);
+  border: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  background-color: rgba(var(--color-positive), 1);
+  color: rgba(var(--color-light), 1);
+  font-size: 12px;
+  margin-top: var(--spacing-m);
+}

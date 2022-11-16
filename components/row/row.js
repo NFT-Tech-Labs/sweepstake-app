@@ -91,7 +91,7 @@ const Row = ({
               ].join(" ")}
               emphasize
             />
-            <div>
+            <div className={styles.flagWrapper}>
               {teamA === "EN" && teamA !== "WL" && (
                 <Icon name={"EN"} className={styles.customIconEN} />
               )}
@@ -146,7 +146,7 @@ const Row = ({
                 />
               </div>
             </div>
-            <div>
+            <div className={styles.flagWrapper}>
               {teamB === "EN" && teamB !== "WL" && (
                 <Icon name={"EN"} className={styles.customIconEN} />
               )}

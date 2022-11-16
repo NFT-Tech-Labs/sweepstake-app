@@ -22,7 +22,7 @@ const Instructions = ({ className, items }) => {
             <div className={styles.index}>
               <Title text={index + 1} tag={"h6"} />
             </div>
-            <div>
+            <div className={styles.content}>
               {item?.title && (
                 <Title tag={"h6"} className={styles.title} {...item.title} />
               )}

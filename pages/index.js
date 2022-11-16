@@ -328,6 +328,7 @@ export default function Home({
     id,
     ...finalOutput,
   };
+
   console.log(finalOutput);
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
@@ -622,7 +623,7 @@ export default function Home({
       </div>
       <Divider height={80} />
       <div ref={ref}>
-        <Heading {...headingRulesData} />
+        <Heading download {...headingRulesData} />
       </div>
       <div className={styles.rulesWrapper}>
         {rulesData?.map((item, index) => (
