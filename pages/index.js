@@ -249,8 +249,6 @@ export default function Home({
     };
   }
 
-  console.log(predictionsTransformed);
-
   // Check if groupstage (48 matches) is filled (types 0-7)
   useEffect(() => {
     output
@@ -294,8 +292,6 @@ export default function Home({
     (item) => item.scoreA && item.scoreB
   ).length;
 
-  console.log(output);
-
   const disabledCheck =
     (!groupsFilled && count === 7) ||
     ((!groupsFilled || !ro16Filled) && count === 8) ||
@@ -329,7 +325,6 @@ export default function Home({
     ...finalOutput,
   };
 
-  console.log(finalOutput);
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
     if (wallet?.publicKey && session) {
@@ -411,40 +406,6 @@ export default function Home({
 
   return (
     <div className={styles.home}>
-      {/* <button
-        onClick={() =>
-          handleUser(id, localUserState?.publicKey, localUserState)
-        }
-      >
-        CreateUser
-      </button>
-      <button
-        onClick={() =>
-          handleSolanaPayment(
-            shaInput,
-            localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
-            localUserStateSweepstake?.publicKey,
-            localUserStateSweepstake
-          )
-        }
-      >
-        SOL
-      </button>
-      <button
-        onClick={() =>
-          handlePayment(
-            shaInput,
-            "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
-            localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
-            localUserStateSweepstake?.publicKey,
-            localUserStateSweepstake
-          )
-        }
-      >
-        SPL
-      </button> */}
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -639,7 +600,6 @@ export default function Home({
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  // Hk6pt29VWbTfFn9kfS58jhPhQA8qUesEBcq9pzJjeXW4
 
   let accountData;
   let accountMetadata;
