@@ -25,7 +25,7 @@ const Row = ({
   onChangeB,
   onChangeExtensionA,
   onChangeExtensionB,
-  matchId,
+  rowId,
   disabled,
   index,
   count,
@@ -111,7 +111,7 @@ const Row = ({
               )}
               {draw && count > 7 && (
                 <input
-                  id={matchId}
+                  id={rowId}
                   name={`extensionWinner_${index}`}
                   type={"radio"}
                   value={teamA}
@@ -125,7 +125,7 @@ const Row = ({
             <div className={styles.matchInput}>
               <div className={styles.matchPrediction}>
                 <input
-                  id={matchId}
+                  id={rowId}
                   type={"number"}
                   value={scoreA}
                   min={"0"}
@@ -135,7 +135,7 @@ const Row = ({
                   className={styles.inputMatch}
                 />
                 <input
-                  id={matchId}
+                  id={rowId}
                   type={"number"}
                   value={scoreB === 0 ? 0 : scoreB}
                   min={"0"}
@@ -166,7 +166,7 @@ const Row = ({
               )}
               {draw && count > 7 && (
                 <input
-                  id={matchId}
+                  id={rowId}
                   name={`extensionWinner_${index}`}
                   type={"radio"}
                   value={teamB}
@@ -197,7 +197,7 @@ const Row = ({
         <div className={styles.statusWrapper}>
           <div className={styles.matchResult}>
             <input
-              id={matchId}
+              id={rowId}
               type={"text"}
               value={resultA?.toString() || "-"}
               maxLength={"2"}
@@ -205,7 +205,7 @@ const Row = ({
               className={resultA > resultB ? styles.win : styles.lose}
             />
             <input
-              id={matchId}
+              id={rowId}
               type={"text"}
               value={resultB?.toString() || "-"}
               maxLength={"2"}
@@ -262,7 +262,7 @@ Row.propTypes = {
   onChangeB: PropTypes.func,
   onChangeExtensionA: PropTypes.func,
   onChangeExtensionB: PropTypes.func,
-  matchId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  rowId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   disabled: PropTypes.bool,
   index: PropTypes.number,
   count: PropTypes.number,
@@ -287,7 +287,7 @@ Row.defaultProps = {
   onChangeB: () => null,
   onChangeC: () => null,
   onChangeD: () => null,
-  matchId: "",
+  rowId: "",
   disabled: false,
   index: 0,
   count: 0,

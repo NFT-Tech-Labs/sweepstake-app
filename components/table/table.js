@@ -44,6 +44,7 @@ const Table = ({
     const placementY = item.teamB.split("")[1] - 1;
 
     return {
+      rowId: 48 + index,
       matchId: 48 + index,
       type: 8,
       playDate: item?.playDate,
@@ -62,6 +63,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
+      rowId: 56 + index,
       matchId: 56 + index,
       type: 9,
       playDate: item?.playDate,
@@ -80,6 +82,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
+      rowId: 60 + index,
       matchId: 60 + index,
       type: 10,
       playDate: item?.playDate,
@@ -98,6 +101,7 @@ const Table = ({
     const teamY = item.teamB.split("LG")[1] - 1;
 
     return {
+      rowId: 62 + index,
       matchId: 62 + index,
       type: 11,
       playDate: item?.playDate,
@@ -116,6 +120,7 @@ const Table = ({
     const teamY = item.teamB.split("WG")[1] - 1;
 
     return {
+      rowId: 63 + index,
       matchId: 63 + index,
       type: 12,
       playDate: item?.playDate,
@@ -135,7 +140,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.matchId === Number(id)
+          item.rowId === Number(id)
             ? {
                 ...item,
                 scoreA: newVal || null,
@@ -153,7 +158,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.matchId === Number(id)
+          item.rowId === Number(id)
             ? {
                 ...item,
                 scoreB: newVal || null,
@@ -170,7 +175,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.matchId === Number(id)
+          item.rowId === Number(id)
             ? {
                 ...item,
                 extensionA: true,
@@ -189,7 +194,7 @@ const Table = ({
       const id = e?.target?.id;
       setData((prev) =>
         prev?.map((item) =>
-          item.matchId === Number(id)
+          item.rowId === Number(id)
             ? {
                 ...item,
                 extensionA: false,
@@ -240,7 +245,7 @@ const Table = ({
     }
 
     const filteredData = arrType.reduce((result, obj) => {
-      let row = result.find((x) => x.matchId === obj.matchId);
+      let row = result.find((x) => x.rowId === obj.rowId);
       if (!row) result.push({ ...obj });
       else if (row.timestamp < obj.timestamp) Object.assign(row, obj);
       return result;
