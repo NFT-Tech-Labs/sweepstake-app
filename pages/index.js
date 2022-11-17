@@ -102,6 +102,69 @@ export default function Home({
   const provider = getProvider();
   const id = new BN(session?.user?.user?.id);
 
+  useEffect(() => {
+    // Triggers a signature request if session (user) is not yet authenticated
+    if (session === null) {
+      signCustomMessage();
+    }
+
+    // Triggers a user initialization method request for the smart contract
+    if (session !== null && provider && !predictionsTransformed) {
+      handleUser(id, localUserState?.publicKey, localUserState);
+    }
+  }, [session, wallet.publicKey]);
+
+  // If user switches wallet address during session, signout and disconnect
+  useEffect(() => {
+    if (wallet.publicKey && session) {
+      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
+        signOut();
+        wallet.disconnect();
+      }
+    }
+  }, [wallet.publicKey]);
+
+  // Signature function for signing messages with the user address.
+  const signCustomMessage = async () => {
+    if (wallet.publicKey) {
+      const address = wallet.publicKey.toBase58();
+      const message = address;
+      const encodedMessage = new TextEncoder().encode(message);
+
+      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
+      const signature = base58.encode(signedMessage);
+      try {
+        await signIn("authCredentials", {
+          address,
+          signature,
+          callbackUrl: "/",
+        });
+      } catch (e) {
+        console.log({ e });
+        return null;
+      }
+    }
+  };
+
+  const paymentOptions = [
+    {
+      label: process.env.NEXT_PUBLIC_SOL_AMOUNT + " SOL",
+      value: "sol",
+    },
+    {
+      label: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT + " USDC",
+      value: process.env.NEXT_PUBLIC_USDC_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT + " DUST",
+      value: process.env.NEXT_PUBLIC_DUST_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT + " FORGE",
+      value: process.env.NEXT_PUBLIC_FORGE_MINT,
+    },
+  ];
+
   const profileData = {
     tokens: [
       {
@@ -167,50 +230,6 @@ export default function Home({
         onClick: () => setCount(12),
       },
     ],
-  };
-
-  useEffect(() => {
-    // Triggers a signature request if session (user) is not yet authenticated
-    if (session === null) {
-      signCustomMessage();
-    }
-
-    // Triggers a user initialization method request for the smart contract
-    if (session !== null && provider && !predictionsTransformed) {
-      handleUser(id, localUserState?.publicKey, localUserState);
-    }
-  }, [session, wallet.publicKey]);
-
-  // If user switches wallet address during session, signout and disconnect
-  useEffect(() => {
-    if (wallet.publicKey && session) {
-      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
-        signOut();
-        wallet.disconnect();
-      }
-    }
-  }, [wallet.publicKey]);
-
-  // Signature function for signing messages with the user address.
-  const signCustomMessage = async () => {
-    if (wallet.publicKey) {
-      const address = wallet.publicKey.toBase58();
-      const message = address;
-      const encodedMessage = new TextEncoder().encode(message);
-
-      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
-      const signature = base58.encode(signedMessage);
-      try {
-        await signIn("authCredentials", {
-          address,
-          signature,
-          callbackUrl: "/",
-        });
-      } catch (e) {
-        console.log({ e });
-        return null;
-      }
-    }
   };
 
   // Fetched tokenBalances from API
@@ -384,25 +403,6 @@ export default function Home({
   const handleDisconnect = () => {
     signOut({ redirect: "/" });
   };
-
-  const paymentOptions = [
-    {
-      label: process.env.NEXT_PUBLIC_SOL_AMOUNT + " SOL",
-      value: "sol",
-    },
-    {
-      label: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT + " USDC",
-      value: process.env.NEXT_PUBLIC_USDC_MINT,
-    },
-    {
-      label: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT + " DUST",
-      value: process.env.NEXT_PUBLIC_DUST_MINT,
-    },
-    {
-      label: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT + " FORGE",
-      value: process.env.NEXT_PUBLIC_FORGE_MINT,
-    },
-  ];
 
   return (
     <div className={styles.home}>
