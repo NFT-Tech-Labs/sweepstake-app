@@ -13,6 +13,7 @@ import {
 } from "@solana/spl-token";
 import idl from "utils/idl.json";
 import { toast } from "react-toastify";
+import { postData } from "./api";
 
 const getProvider = () => {
   const { connection } = useConnection();
@@ -47,7 +48,9 @@ const SendSplTokens = () => {
     userState,
     dagoatsWallet,
     sweepstakeState,
-    signers
+    signers,
+    accessToken,
+    data
   ) => {
     setError(false);
     setConfirmation(false);
@@ -107,6 +110,14 @@ const SendSplTokens = () => {
           error: "Something went wrong!",
         }
       );
+
+      await postData(
+        "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
+        accessToken,
+        data
+      );
+
+      console.log("postSpl");
 
       setConfirmation(true);
     } catch (error) {

@@ -61,10 +61,15 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
 
   @include medium {
-    flex-direction: row;
+
   }
+}
+
+.selectWrapper {
+  display: flex;
 }
 
 .select {
@@ -98,4 +103,19 @@
   input {
     margin-right: var(--spacing-s);
   }
+}
+
+.helioButton {
+  display: flex;
+  align-items: baseline;
+  margin-top: var(--spacing-m);
+  button {  
+    padding: calc(var(--spacing-s) + 2px) var(--spacing-xl) !important;
+    font-size: var(--font-xxs) !important;
+    max-height: 36px !important;   
+  }
+}
+
+.or {
+  margin: 0 var(--spacing-m)
 }
