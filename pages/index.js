@@ -595,7 +595,7 @@ export default function Home({
                           size={"xs"}
                         />
                         <HelioPay
-                          cluster="devnet"
+                          cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
                           payButtonTitle="SUBMIT (SOL)"
                           paymentRequestId={
                             process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID
