@@ -23,16 +23,16 @@ export default function Admin({ session, resultsData }) {
     points: item?.points.toString(),
   }));
 
-  const outputStructure = latestResultsStructure?.map((item) => ({
+  const outputStructure = output?.map((item) => ({
     ...item,
     scoreA: Number(item?.scoreA),
     scoreB: Number(item?.scoreB),
   }));
 
-  console.log(outputStructure);
+  // console.log(latestResultsStructure);
 
   const handleSubmit = async () => {
-    Promise.all(
+    return Promise.all(
       outputStructure?.map((result) =>
         postData(
           "https://backend-x7q2esrofa-no.a.run.app/api/v1/results",
@@ -42,6 +42,8 @@ export default function Admin({ session, resultsData }) {
       )
     );
   };
+
+  console.log(output);
 
   return (
     <div className={styles.admin}>
