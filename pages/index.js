@@ -195,12 +195,6 @@ export default function Home({
     }
   }, [wallet.publicKey]);
 
-  useEffect(() => {
-    if (confirmationHelio) {
-      signOut();
-    }
-  }, [confirmationHelio]);
-
   // Signature function for signing messages with the user address.
   const signCustomMessage = async () => {
     if (wallet.publicKey) {
@@ -373,6 +367,7 @@ export default function Home({
     if (confirmation || confirmationSolana || confirmationHelio) {
       setSweepstakeDisabled(true);
       setCount(0);
+      signOut();
     }
   }, [confirmation, confirmationSolana, confirmationHelio]);
 
@@ -590,7 +585,6 @@ export default function Home({
                     )}
                   </div>
                   {session &&
-                    helio &&
                     filledCount === 64 &&
                     paymentToken !== "" &&
                     confirmDiscord && (
@@ -617,7 +611,6 @@ export default function Home({
                               finalOutput
                             )
                           }
-                          onError={() => setHelio(false)}
                         />
                       </div>
                     )}
