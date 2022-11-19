@@ -1,0 +1,19 @@
+@import '../styles/mixins.scss';
+
+.leaderboard {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.winners {
+  display: flex;
+  justify-content: space-around;
+  margin: var(--spacing-xl) 0;
+}
+
+
+.winner {
+  &:nth-child(2) {
+    order: -1;
+  }
+}

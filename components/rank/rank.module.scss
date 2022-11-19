@@ -1,0 +1,86 @@
+.rank {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-m);
+  // background: linear-gradient(90deg, rgba(5, 15, 59, 0.9178046218) 0%, rgba(3, 3, 36, 0.7105435924) 100%);
+  padding: var(--spacing-m) var(--spacing-xl);
+  box-shadow: rgb(204 219 232) 3px 3px 6px 0px inset, rgb(235 235 235 / 50%) -3px -3px 6px 1px inset;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.address {
+  padding: 0 var(--spacing-m);
+}
+
+.winner {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.winnerPoints {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--color-positive), 1);
+  border-radius: 100%;
+  color: white;
+  bottom: 50px;
+  border: solid;
+  width: 50px;
+  height: 50px;
+  top: 80px;
+  
+  .first & {
+    top: 135px; 
+    width: 60px;
+    height: 60px;
+    background-color: rgba(var(--color-energized), 1);
+  }
+}
+
+.winnerPosition {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background-color: rgba(var(--color-positive), 1);
+  border-radius: 100%;
+  margin-bottom: var(--spacing-s);
+  margin-bottom: 40px;
+
+  .first & {
+    width: 180px;
+    height: 180px;
+    background: rgb(255,215,0);
+    background: linear-gradient(90deg, rgba(255,215,0,1) 0%, rgba(255,238,148,1) 100%);
+    background-image: url('../../public/icons/logo.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 20px;
+    animation: rotate 3s infinite alternate;
+  }
+}
+
+.addressWinner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 10ch;
+}
+
+
+/* The animation code */
+@keyframes rotate {
+  from {transform: rotate3d(1, 1, 1, 336deg);}
+  to {transform: rotate3d(1, 1, 1, 380deg);}
+}
