@@ -367,7 +367,6 @@ export default function Home({
     if (confirmation || confirmationSolana || confirmationHelio) {
       setSweepstakeDisabled(true);
       setCount(0);
-      signOut();
     }
   }, [confirmation, confirmationSolana, confirmationHelio]);
 
@@ -508,7 +507,10 @@ export default function Home({
               matches={predictionsTransformed ? predictionsTransformed : output}
               count={count}
               disabled={
-                predictionsTransformed || confirmation || confirmationSolana
+                predictionsTransformed ||
+                confirmation ||
+                confirmationSolana ||
+                confirmationHelio
               }
               onChange={(e) => setOutput(e)}
               worldChampion={finalOutput?.worldChampion}
@@ -584,50 +586,58 @@ export default function Home({
                       />
                     )}
                   </div>
-                  {session && (
-                    <div
-                      className={styles.helioButton}
-                      style={{
-                        opacity:
-                          filledCount !== 64 ||
-                          paymentToken === "" ||
-                          !finalOutput.worldChampion ||
-                          !confirmDiscord
-                            ? 0.5
-                            : 1,
-                        pointerEvents:
-                          filledCount !== 64 ||
-                          paymentToken === "" ||
-                          !finalOutput.worldChampion ||
-                          !confirmDiscord
-                            ? "none"
-                            : "auto",
-                      }}
-                    >
-                      <Content className={styles.or} text={"Or"} size={"xs"} />
-                      <HelioPay
-                        cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
-                        payButtonTitle="SUBMIT (SOL)"
-                        paymentRequestId={
-                          process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID
-                        }
-                        theme={{
-                          colors: {
-                            primary: "#F76C1B",
-                          },
-                        }}
-                        onSuccess={() =>
-                          handleHelioPayment(
-                            session?.user?.credentials?.accessToken,
-                            finalOutput
-                          )
-                        }
-                      />
-                    </div>
-                  )}
                 </div>
               )}
             </div>
+            {session && (
+              <div
+                className={styles.helioButton}
+                style={{
+                  opacity:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? "none"
+                      : "auto",
+                }}
+              >
+                {!sweepstakeDisabled && !predictionsTransformed && (
+                  <Content className={styles.or} text={"Or"} size={"xs"} />
+                )}
+                <HelioPay
+                  cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
+                  payButtonTitle={
+                    sweepstakeDisabled || predictionsTransformed
+                      ? "SUBMITTED"
+                      : "SUBMIT (SOL)"
+                  }
+                  paymentRequestId={process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID}
+                  theme={{
+                    colors: {
+                      primary: "#F76C1B",
+                    },
+                  }}
+                  onSuccess={() =>
+                    handleHelioPayment(
+                      session?.user?.credentials?.accessToken,
+                      finalOutput
+                    )
+                  }
+                />
+              </div>
+            )}
             {session && (
               <div className={styles.legal}>
                 <input
