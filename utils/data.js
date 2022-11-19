@@ -127,6 +127,10 @@ const teams = [
     countryName: "Uruguay",
     countryShortCode: "UY",
   },
+  {
+    countryName: "Netherlands",
+    countryShortCode: "NL",
+  },
 ];
 
 const tableData = [
