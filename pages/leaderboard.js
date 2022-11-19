@@ -1,6 +1,8 @@
 import styles from "../styles/leaderboard.module.scss";
 import React, { useState, useEffect, useRef } from "react";
 import { Heading, Rank, Divider } from "@components";
+import { getData } from "../utils/api";
+
 export default function Leaderboard() {
   const rankingsData = [
     {
@@ -78,6 +80,11 @@ export default function Leaderboard() {
   );
 }
 export async function getStaticProps() {
+  const rankings = await getData(
+    "https://backend-x7q2esrofa-no.a.run.app/api/v1/users"
+  );
+
+  console.log(rankings);
   return {
     props: {},
   };

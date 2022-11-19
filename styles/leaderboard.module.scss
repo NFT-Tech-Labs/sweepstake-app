@@ -9,11 +9,20 @@
   display: flex;
   justify-content: space-around;
   margin: var(--spacing-xl) 0;
+  flex-direction: column;
+  @include small {
+    flex-direction: row;
+  }
 }
 
 
 .winner {
-  &:nth-child(2) {
-    order: -1;
-  }
+  margin-bottom: var(--spacing-l);
+  @include small {
+    margin-bottom: 0; 
+    
+    &:nth-child(2) {
+      order: -1;
+    }
+  } 
 }

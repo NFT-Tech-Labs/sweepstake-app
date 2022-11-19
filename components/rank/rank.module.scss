@@ -1,3 +1,5 @@
+@import '../../styles/mixins.scss';
+
 .rank {
   display: flex;
   align-items: center;
@@ -13,8 +15,19 @@
   align-items: center;
 }
 
-.address {
+.addressWrapper {
   padding: 0 var(--spacing-m);
+}
+
+.address {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 10ch;
+
+  @include small {
+    max-width: 100ch;
+  }
 }
 
 .winner {
@@ -43,6 +56,14 @@
     width: 60px;
     height: 60px;
     background-color: rgba(var(--color-energized), 1);
+  }
+
+  .second & {
+    background-color: #c0c0c0;
+  }
+
+  .third & {
+    background-color: #CD7F32;
   }
 }
 

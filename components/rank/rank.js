@@ -8,7 +8,15 @@ const cx = classNames.bind(styles);
 
 const Rank = ({ className, position, address, label, points, winner }) => {
   let classes = cx({ rank: true }, className);
-  let classesWinner = cx({ winner: true, first: position === "1" }, className);
+  let classesWinner = cx(
+    {
+      winner: true,
+      first: position === "1",
+      second: position === "2",
+      third: position === "3",
+    },
+    className
+  );
 
   const Winner = () => (
     <div className={classesWinner}>
@@ -46,12 +54,19 @@ const Rank = ({ className, position, address, label, points, winner }) => {
   return (
     <Card borderRadius className={classes}>
       <div className={styles.wrapper}>
-        {position && <Title tag={"h4"} text={position} />}
-        <div className={styles.address}>
+        {position && <Title tag={"h5"} text={position} />}
+        <div className={styles.addressWrapper}>
           {label && (
             <Content text={label} size={"xxs"} color={"stable-500"} emphasize />
           )}
-          {address && <Content text={address} size={"s"} emphasize />}
+          {address && (
+            <Content
+              text={address}
+              size={"xs"}
+              className={styles.address}
+              emphasize
+            />
+          )}
         </div>
       </div>
       {points && <Title tag={"h5"} text={points} color={"energized"} />}
