@@ -15,7 +15,6 @@
   }
 }
 
-
 .winner {
   margin-bottom: var(--spacing-l);
   @include small {
@@ -25,4 +24,14 @@
       order: -1;
     }
   } 
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  button {
+    margin: 0 var(--spacing-xs);
+  }
 }
