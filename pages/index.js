@@ -19,6 +19,7 @@ import {
   Groups,
   TeamSelect,
   Instructions,
+  Content,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -33,15 +34,15 @@ import {
   teams,
   instructionsData,
 } from "utils/data";
+import { HelioPay } from "@heliofi/react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
 import { apiPost } from "../utils/apiPost";
 import { signIn } from "next-auth/react";
-// import SendSolanaTokens from "utils/sendTransaction";
+import SendHelio from "utils/createSweepstakeHelio";
 import SendSolanaTokens from "utils/createSweepstakeSolana";
 import SendSplTokens from "utils/createSweepstakeSpl";
-// import SendSolanaSplTokens from "utils/splTransaction";
 import SendUser from "utils/createUser";
 import { ToastContainer } from "react-toastify";
 import { useConnection } from "@solana/wallet-adapter-react";
@@ -68,6 +69,8 @@ export default function Home({
     errorSolana,
   } = SendSolanaTokens();
   const { handlePayment, confirmation, processing, error } = SendSplTokens();
+  const { handleHelioPayment, confirmationHelio, processingHelio, errorHelio } =
+    SendHelio();
 
   const [count, setCount] = useState(0);
   const [groupStage, setGroupStage] = useState([]);
@@ -81,6 +84,7 @@ export default function Home({
   const [localUserStateSweepstake, setLocalUserStateSweepstake] = useState(
     web3.Keypair.generate()
   );
+  const [helio, setHelio] = useState(true);
 
   const handleScroll = () => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
@@ -145,25 +149,6 @@ export default function Home({
       }
     }
   };
-
-  const paymentOptions = [
-    {
-      label: process.env.NEXT_PUBLIC_SOL_AMOUNT + " SOL",
-      value: "sol",
-    },
-    {
-      label: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT + " USDC",
-      value: process.env.NEXT_PUBLIC_USDC_MINT,
-    },
-    {
-      label: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT + " DUST",
-      value: process.env.NEXT_PUBLIC_DUST_MINT,
-    },
-    {
-      label: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT + " FORGE",
-      value: process.env.NEXT_PUBLIC_FORGE_MINT,
-    },
-  ];
 
   const profileData = {
     tokens: [
@@ -343,7 +328,6 @@ export default function Home({
     id,
     ...finalOutput,
   };
-
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
     if (wallet?.publicKey && session) {
@@ -360,7 +344,9 @@ export default function Home({
           localUserState?.publicKey,
           process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
           localUserStateSweepstake?.publicKey,
-          localUserStateSweepstake
+          localUserStateSweepstake,
+          session?.user?.credentials?.accessToken,
+          finalOutput
         );
       } else {
         console.log("solpayment");
@@ -369,43 +355,89 @@ export default function Home({
           localUserState?.publicKey,
           process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
           localUserStateSweepstake?.publicKey,
-          localUserStateSweepstake
+          localUserStateSweepstake,
+          session?.user?.credentials?.accessToken,
+          finalOutput
         );
       }
     }
   };
 
-  // Submit sweepstake function which sends the output to the database based on conditions
-  const submitSweepstake = async () => {
-    if (
-      wallet.publicKey &&
-      session &&
-      filledCount === 64 &&
-      (confirmation || confirmationSolana)
-    ) {
-      const sweepstake = await postData(
-        "https://backend-x7q2esrofa-no.a.run.app/api/v1/sweepstakes",
-        session?.user?.credentials?.accessToken,
-        finalOutput
-      );
-      console.log("confirmed");
+  useEffect(() => {
+    if (confirmation || confirmationSolana || confirmationHelio) {
       setSweepstakeDisabled(true);
       setCount(0);
-      return sweepstake;
     }
-  };
-
-  // Triggers the submitSweepstake function based on conditions (confirmation)
-  useEffect(() => {
-    submitSweepstake();
-  }, [confirmation, confirmationSolana]);
+  }, [confirmation, confirmationSolana, confirmationHelio]);
 
   const handleDisconnect = () => {
     signOut({ redirect: "/" });
   };
 
+  const paymentOptions = [
+    {
+      label: process.env.NEXT_PUBLIC_SOL_AMOUNT + " SOL",
+      value: "sol",
+    },
+    {
+      label: process.env.NEXT_PUBLIC_USDC_MINT_AMOUNT + " USDC",
+      value: process.env.NEXT_PUBLIC_USDC_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_DUST_MINT_AMOUNT + " DUST",
+      value: process.env.NEXT_PUBLIC_DUST_MINT,
+    },
+    {
+      label: process.env.NEXT_PUBLIC_FORGE_MINT_AMOUNT + " FORGE",
+      value: process.env.NEXT_PUBLIC_FORGE_MINT,
+    },
+  ];
+  // sort by value
+  const sortedPredictionsTransformed = predictionsTransformed?.sort(
+    (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
+  );
+
   return (
     <div className={styles.home}>
+      {/* <button
+        onClick={() =>
+          handleUser(id, localUserState?.publicKey, localUserState)
+        }
+      >
+        CreateUser
+      </button>
+      <button
+        onClick={() =>
+          handleSolanaPayment(
+            shaInput,
+            localUserState?.publicKey,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
+            localUserStateSweepstake?.publicKey,
+            localUserStateSweepstake,
+            session?.user?.credentials?.accessToken,
+            finalOutput
+          )
+        }
+      >
+        SOL
+      </button>
+      <button
+        onClick={() =>
+          handlePayment(
+            shaInput,
+            "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+            localUserState?.publicKey,
+            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
+            localUserStateSweepstake?.publicKey,
+            localUserStateSweepstake,
+            session?.user?.credentials?.accessToken,
+            finalOutput
+          )
+        }
+      >
+        SPL
+      </button> */}
+
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -445,7 +477,11 @@ export default function Home({
             : { label: "Argentina", value: "AR" }
         }
         disabled={
-          worldChampionTransformed?.value || confirmation || confirmationSolana
+          (session && wallet?.publicKey) ||
+          worldChampionTransformed?.value ||
+          confirmation ||
+          confirmationSolana ||
+          confirmationHelio
         }
         onChange={(e) => setTeam(e)}
       />
@@ -476,13 +512,19 @@ export default function Home({
             </div>
             <Table
               groupStage={groupStage}
-              matches={predictionsTransformed ? predictionsTransformed : output}
+              matches={
+                predictionsTransformed ? sortedPredictionsTransformed : output
+              }
               count={count}
               disabled={
-                predictionsTransformed || confirmation || confirmationSolana
+                (session && wallet?.publicKey) || predictionsTransformed
               }
               onChange={(e) => setOutput(e)}
-              worldChampion={finalOutput?.worldChampion}
+              worldChampion={
+                worldChampionTransformed?.value
+                  ? worldChampionTransformed?.value
+                  : finalOutput?.worldChampion
+              }
             />
             <Divider height={20} />
             <div className={styles.actions}>
@@ -524,39 +566,93 @@ export default function Home({
                   size={"xxs"}
                 />
               )}
-              {!sweepstakeDisabled && !predictionsTransformed && (
-                <div className={styles.submitWrapper}>
-                  {filledCount === 64 && (
-                    <Select
-                      placeholder={"Choose token"}
-                      options={paymentOptions}
-                      onChange={(e) => setPaymentToken(e?.value)}
-                      className={styles.select}
-                    />
-                  )}
-                  {session && (
-                    <Button
-                      text={
-                        filledCount !== 64 && paymentToken === ""
-                          ? `${filledCount}/64`
-                          : "Submit"
-                      }
-                      color={"positive"}
-                      textColor={"light"}
-                      size={"xxs"}
-                      disabled={
-                        filledCount !== 64 ||
-                        paymentToken === "" ||
-                        !finalOutput.worldChampion ||
-                        !confirmDiscord
-                      }
-                      onClick={handleSubmit}
-                    />
-                  )}
-                </div>
+              {!predictionsTransformed && (
+                <Content color={"assertive"} text={"Entries are closed"} />
               )}
+              {/* {!sweepstakeDisabled && !predictionsTransformed && (
+                <div className={styles.submitWrapper}>
+                  <div className={styles.selectWrapper}>
+                    {filledCount === 64 && (
+                      <Select
+                        placeholder={"Choose token"}
+                        options={paymentOptions}
+                        onChange={(e) => setPaymentToken(e?.value)}
+                        className={styles.select}
+                      />
+                    )}
+                    {session && wallet?.publicKey && (
+                      <Button
+                        text={
+                          filledCount !== 64 && paymentToken === ""
+                            ? `${filledCount}/64`
+                            : "Submit"
+                        }
+                        color={"positive"}
+                        textColor={"light"}
+                        size={"xxs"}
+                        disabled={
+                          filledCount !== 64 ||
+                          paymentToken === "" ||
+                          !finalOutput.worldChampion ||
+                          !confirmDiscord
+                        }
+                        onClick={handleSubmit}
+                      />
+                    )}
+                  </div>
+                </div>
+              )} */}
             </div>
-            {session && (
+            {/* {session && wallet?.publicKey && (
+              <div
+                className={styles.helioButton}
+                style={{
+                  opacity:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? "none"
+                      : "auto",
+                }}
+              >
+                {!sweepstakeDisabled && !predictionsTransformed && (
+                  <Content className={styles.or} text={"Or"} size={"xs"} />
+                )}
+                <HelioPay
+                  cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
+                  payButtonTitle={
+                    sweepstakeDisabled || predictionsTransformed
+                      ? "SUBMITTED"
+                      : "SUBMIT (SOL)"
+                  }
+                  paymentRequestId={process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID}
+                  theme={{
+                    colors: {
+                      primary: "#F76C1B",
+                    },
+                  }}
+                  onSuccess={() =>
+                    handleHelioPayment(
+                      session?.user?.credentials?.accessToken,
+                      finalOutput
+                    )
+                  }
+                />
+              </div>
+            )} */}
+            {/* {session && wallet?.publicKey && (
               <div className={styles.legal}>
                 <input
                   type={"checkbox"}
@@ -578,7 +674,7 @@ export default function Home({
                   </Link>
                 </label>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
