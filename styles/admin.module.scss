@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  gap: var(--spacing-l);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-l);
+}

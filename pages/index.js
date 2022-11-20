@@ -106,6 +106,50 @@ export default function Home({
   const provider = getProvider();
   const id = new BN(session?.user?.user?.id);
 
+  useEffect(() => {
+    // Triggers a signature request if session (user) is not yet authenticated
+    if (session === null) {
+      signCustomMessage();
+    }
+
+    // Triggers a user initialization method request for the smart contract
+    if (session !== null && provider && !predictionsTransformed) {
+      handleUser(id, localUserState?.publicKey, localUserState);
+    }
+  }, [session, wallet.publicKey]);
+
+  // If user switches wallet address during session, signout and disconnect
+  useEffect(() => {
+    if (wallet.publicKey && session) {
+      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
+        signOut();
+        wallet.disconnect();
+      }
+    }
+  }, [wallet.publicKey]);
+
+  // Signature function for signing messages with the user address.
+  const signCustomMessage = async () => {
+    if (wallet.publicKey) {
+      const address = wallet.publicKey.toBase58();
+      const message = address;
+      const encodedMessage = new TextEncoder().encode(message);
+
+      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
+      const signature = base58.encode(signedMessage);
+      try {
+        await signIn("authCredentials", {
+          address,
+          signature,
+          callbackUrl: "/",
+        });
+      } catch (e) {
+        console.log({ e });
+        return null;
+      }
+    }
+  };
+
   const profileData = {
     tokens: [
       {
@@ -171,50 +215,6 @@ export default function Home({
         onClick: () => setCount(12),
       },
     ],
-  };
-
-  useEffect(() => {
-    // Triggers a signature request if session (user) is not yet authenticated
-    if (session === null) {
-      signCustomMessage();
-    }
-
-    // Triggers a user initialization method request for the smart contract
-    if (session !== null && provider && !predictionsTransformed) {
-      handleUser(id, localUserState?.publicKey, localUserState);
-    }
-  }, [session, wallet.publicKey]);
-
-  // If user switches wallet address during session, signout and disconnect
-  useEffect(() => {
-    if (wallet.publicKey && session) {
-      if (wallet.publicKey?.toBase58() !== session?.user?.user?.address) {
-        signOut();
-        wallet.disconnect();
-      }
-    }
-  }, [wallet.publicKey]);
-
-  // Signature function for signing messages with the user address.
-  const signCustomMessage = async () => {
-    if (wallet.publicKey) {
-      const address = wallet.publicKey.toBase58();
-      const message = address;
-      const encodedMessage = new TextEncoder().encode(message);
-
-      const signedMessage = await wallet.signMessage(encodedMessage, "utf8");
-      const signature = base58.encode(signedMessage);
-      try {
-        await signIn("authCredentials", {
-          address,
-          signature,
-          callbackUrl: "/",
-        });
-      } catch (e) {
-        console.log({ e });
-        return null;
-      }
-    }
   };
 
   // Fetched tokenBalances from API
@@ -367,7 +367,6 @@ export default function Home({
     if (confirmation || confirmationSolana || confirmationHelio) {
       setSweepstakeDisabled(true);
       setCount(0);
-      signOut();
     }
   }, [confirmation, confirmationSolana, confirmationHelio]);
 
@@ -393,6 +392,10 @@ export default function Home({
       value: process.env.NEXT_PUBLIC_FORGE_MINT,
     },
   ];
+  // sort by value
+  const sortedPredictionsTransformed = predictionsTransformed?.sort(
+    (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
+  );
 
   return (
     <div className={styles.home}>
@@ -474,7 +477,11 @@ export default function Home({
             : { label: "Argentina", value: "AR" }
         }
         disabled={
-          worldChampionTransformed?.value || confirmation || confirmationSolana
+          (session && wallet?.publicKey) ||
+          worldChampionTransformed?.value ||
+          confirmation ||
+          confirmationSolana ||
+          confirmationHelio
         }
         onChange={(e) => setTeam(e)}
       />
@@ -505,13 +512,19 @@ export default function Home({
             </div>
             <Table
               groupStage={groupStage}
-              matches={predictionsTransformed ? predictionsTransformed : output}
+              matches={
+                predictionsTransformed ? sortedPredictionsTransformed : output
+              }
               count={count}
               disabled={
-                predictionsTransformed || confirmation || confirmationSolana
+                (session && wallet?.publicKey) || predictionsTransformed
               }
               onChange={(e) => setOutput(e)}
-              worldChampion={finalOutput?.worldChampion}
+              worldChampion={
+                worldChampionTransformed?.value
+                  ? worldChampionTransformed?.value
+                  : finalOutput?.worldChampion
+              }
             />
             <Divider height={20} />
             <div className={styles.actions}>
@@ -553,7 +566,10 @@ export default function Home({
                   size={"xxs"}
                 />
               )}
-              {!sweepstakeDisabled && !predictionsTransformed && (
+              {!predictionsTransformed && (
+                <Content color={"assertive"} text={"Entries are closed"} />
+              )}
+              {/* {!sweepstakeDisabled && !predictionsTransformed && (
                 <div className={styles.submitWrapper}>
                   <div className={styles.selectWrapper}>
                     {filledCount === 64 && (
@@ -564,7 +580,7 @@ export default function Home({
                         className={styles.select}
                       />
                     )}
-                    {session && (
+                    {session && wallet?.publicKey && (
                       <Button
                         text={
                           filledCount !== 64 && paymentToken === ""
@@ -584,51 +600,59 @@ export default function Home({
                       />
                     )}
                   </div>
-                  {session && (
-                    <div
-                      className={styles.helioButton}
-                      style={{
-                        opacity:
-                          filledCount !== 64 ||
-                          paymentToken === "" ||
-                          !finalOutput.worldChampion ||
-                          !confirmDiscord
-                            ? 0.5
-                            : 1,
-                        pointerEvents:
-                          filledCount !== 64 ||
-                          paymentToken === "" ||
-                          !finalOutput.worldChampion ||
-                          !confirmDiscord
-                            ? "none"
-                            : "auto",
-                      }}
-                    >
-                      <Content className={styles.or} text={"Or"} size={"xs"} />
-                      <HelioPay
-                        cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
-                        payButtonTitle="SUBMIT (SOL)"
-                        paymentRequestId={
-                          process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID
-                        }
-                        theme={{
-                          colors: {
-                            primary: "#F76C1B",
-                          },
-                        }}
-                        onSuccess={() =>
-                          handleHelioPayment(
-                            session?.user?.credentials?.accessToken,
-                            finalOutput
-                          )
-                        }
-                      />
-                    </div>
-                  )}
                 </div>
-              )}
+              )} */}
             </div>
-            {session && (
+            {/* {session && wallet?.publicKey && (
+              <div
+                className={styles.helioButton}
+                style={{
+                  opacity:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    sweepstakeDisabled ||
+                    predictionsTransformed ||
+                    filledCount !== 64 ||
+                    paymentToken === "" ||
+                    !finalOutput.worldChampion ||
+                    !confirmDiscord
+                      ? "none"
+                      : "auto",
+                }}
+              >
+                {!sweepstakeDisabled && !predictionsTransformed && (
+                  <Content className={styles.or} text={"Or"} size={"xs"} />
+                )}
+                <HelioPay
+                  cluster={process.env.NEXT_PUBLIC_HELIO_NETWORK}
+                  payButtonTitle={
+                    sweepstakeDisabled || predictionsTransformed
+                      ? "SUBMITTED"
+                      : "SUBMIT (SOL)"
+                  }
+                  paymentRequestId={process.env.NEXT_PUBLIC_HELIO_PAYMENT_ID}
+                  theme={{
+                    colors: {
+                      primary: "#F76C1B",
+                    },
+                  }}
+                  onSuccess={() =>
+                    handleHelioPayment(
+                      session?.user?.credentials?.accessToken,
+                      finalOutput
+                    )
+                  }
+                />
+              </div>
+            )} */}
+            {/* {session && wallet?.publicKey && (
               <div className={styles.legal}>
                 <input
                   type={"checkbox"}
@@ -650,7 +674,7 @@ export default function Home({
                   </Link>
                 </label>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
