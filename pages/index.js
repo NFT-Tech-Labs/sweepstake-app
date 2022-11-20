@@ -330,7 +330,7 @@ export default function Home({
   };
   // Submit transaction function which creates a payment/transaction
   const handleSubmit = () => {
-    if (wallet?.publicKey && session) {
+    if (wallet?.publicKey && session && confirmationUser) {
       const shaInput = {
         id,
         ...finalOutput,

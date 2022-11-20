@@ -22,6 +22,7 @@ import Snackbar from "./snackbar/snackbar";
 import Token from "./token/token";
 import Tokens from "./tokens/tokens";
 import Instructions from "./instructions/instructions";
+import Rank from "./rank/rank";
 
 export {
   Layout,
@@ -50,4 +51,5 @@ export {
   Token,
   Tokens,
   Instructions,
+  Rank,
 };
