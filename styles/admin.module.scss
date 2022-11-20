@@ -1,5 +1,6 @@
 .wrapper {
   display: flex;
+  justify-content: space-evenly;
   gap: var(--spacing-l);
 }
 
@@ -7,4 +8,9 @@
   display: flex;
   justify-content: space-between;
   margin-top: var(--spacing-l);
+}
+
+.groups {
+  display: flex;
+  flex-basis: 40%;
 }

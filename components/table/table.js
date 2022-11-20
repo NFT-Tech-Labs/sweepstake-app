@@ -26,6 +26,8 @@ const Table = ({
   confirmation,
   disabled,
   worldChampion,
+  points,
+  result,
 }) => {
   const [data, setData] = useState(matches);
 
@@ -316,14 +318,16 @@ const Table = ({
             <th>
               <Content text={"Match"} color={"stable-500"} size={"s"} />
             </th>
-            {/* {resultsCheck.length > 0 && ( */}
-            <th>
-              <Content text={"Result"} color={"stable-500"} size={"s"} />
-            </th>
-            {/* )} */}
-            <th width={"10%"}>
-              <Content text={"Points"} color={"stable-500"} size={"s"} />
-            </th>
+            {result && (
+              <th>
+                <Content text={"Result"} color={"stable-500"} size={"s"} />
+              </th>
+            )}
+            {points && (
+              <th width={"10%"}>
+                <Content text={"Points"} color={"stable-500"} size={"s"} />
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -341,6 +345,8 @@ const Table = ({
                     worldChampion={worldChampion}
                     index={index}
                     {...item}
+                    points={points}
+                    result={result}
                   />
                 )}
               </React.Fragment>
@@ -368,6 +374,8 @@ Table.defaultProps = {
   processing: false,
   confirmation: false,
   worldChampion: "",
+  points: true,
+  result: true,
 };
 
 export default Table;

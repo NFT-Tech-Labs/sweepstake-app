@@ -12,6 +12,7 @@ const Row = ({
   playDate,
   playTime,
   group,
+  result,
   points,
   teamA,
   teamB,
@@ -193,44 +194,47 @@ const Row = ({
           </div>
         </td>
       )}
-      <td className={styles.status}>
-        <div className={styles.statusWrapper}>
-          <div className={styles.matchResult}>
-            <input
-              id={rowId}
-              type={"text"}
-              value={resultA?.toString() || "-"}
-              maxLength={"2"}
-              disabled
-              className={resultA > resultB ? styles.win : styles.lose}
-            />
-            <input
-              id={rowId}
-              type={"text"}
-              value={resultB?.toString() || "-"}
-              maxLength={"2"}
-              disabled
-              className={resultA < resultB ? styles.win : styles.lose}
-            />
+      {result && (
+        <td className={styles.status}>
+          <div className={styles.statusWrapper}>
+            <div className={styles.matchResult}>
+              <input
+                id={rowId}
+                type={"text"}
+                value={resultA?.toString() || "-"}
+                maxLength={"2"}
+                disabled
+                className={resultA > resultB ? styles.win : styles.lose}
+              />
+              <input
+                id={rowId}
+                type={"text"}
+                value={resultB?.toString() || "-"}
+                maxLength={"2"}
+                disabled
+                className={resultA < resultB ? styles.win : styles.lose}
+              />
+            </div>
+            <div>
+              <Icon
+                name={
+                  perfect
+                    ? "checkmark-double"
+                    : correct
+                    ? "checkmark"
+                    : blank
+                    ? "blank"
+                    : "cross"
+                }
+                color={"dark"}
+                size={"xxs"}
+                className={styles.icon}
+              />
+            </div>
           </div>
-          <div>
-            <Icon
-              name={
-                perfect
-                  ? "checkmark-double"
-                  : correct
-                  ? "checkmark"
-                  : blank
-                  ? "blank"
-                  : "cross"
-              }
-              color={"dark"}
-              size={"xxs"}
-              className={styles.icon}
-            />
-          </div>
-        </div>
-      </td>
+        </td>
+      )}
+
       {points && (
         <td className={styles.points}>
           <Content
@@ -249,6 +253,7 @@ Row.propTypes = {
   playDate: PropTypes.string,
   playTime: PropTypes.string,
   group: PropTypes.string,
+  result: PropTypes.bool,
   points: PropTypes.string,
   teamA: PropTypes.string,
   teamB: PropTypes.string,
@@ -274,6 +279,7 @@ Row.defaultProps = {
   playDate: "",
   playTime: "",
   group: "",
+  result: true,
   points: "",
   teamA: "",
   teamB: "",

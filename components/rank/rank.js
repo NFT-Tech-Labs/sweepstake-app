@@ -22,7 +22,7 @@ const Rank = ({ className, position, address, label, points, winner }) => {
     <div className={classesWinner}>
       <div className={styles.winnerPosition}>
         {position !== "1" && (
-          <Title text={position} tag={"h4"} color={"light"} />
+          <Title text={position} tag={"h2"} color={"light"} />
         )}
       </div>
       {points && (

@@ -5,7 +5,8 @@ import { tableData } from "utils/data";
 import { postData, getData } from "utils/api";
 import { getSession, useSession, signOut } from "next-auth/react";
 import styles from "../styles/admin.module.scss";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function Admin({ session, resultsData }) {
   const [count, setCount] = useState(0);
   const [groupStage, setGroupStage] = useState([]);
@@ -23,26 +24,35 @@ export default function Admin({ session, resultsData }) {
     points: item?.points.toString(),
   }));
 
+  // convert score to numbers so the API accepts it.
+  // makes also sure null values of the original 'output' will stay null and not become a '0'
   const outputStructure = output?.map((item) => ({
     ...item,
-    scoreA: Number(item?.scoreA),
-    scoreB: Number(item?.scoreB),
+    scoreA: item?.scoreA !== null ? Number(item?.scoreA) : null,
+    scoreB: item?.scoreB !== null ? Number(item?.scoreB) : null,
   }));
 
+  console.log(outputStructure);
+
   const handleSubmit = async () => {
+    toast("Submitted, please refresh");
     return Promise.all(
-      outputStructure?.map((result) =>
-        postData(
-          "https://backend-x7q2esrofa-no.a.run.app/api/v1/results",
-          session?.user?.credentials?.accessToken,
-          result
-        )
+      outputStructure?.map(
+        (result) =>
+          result.scoreA !== null &&
+          result.scoreB !== null &&
+          postData(
+            "https://backend-x7q2esrofa-no.a.run.app/api/v1/results",
+            session?.user?.credentials?.accessToken,
+            result
+          )
       )
     );
   };
 
   return (
     <div className={styles.admin}>
+      <ToastContainer theme={"dark"} />
       <Heading
         title={{ text: "Admin" }}
         content={{
@@ -51,12 +61,14 @@ export default function Admin({ session, resultsData }) {
         }}
       />
       <div className={styles.wrapper}>
-        <Groups
-          data={output}
-          count={count < 8 ? count : 7}
-          onChange={(e) => setGroupStage(e)}
-          onSelect={(e) => setCount(e)}
-        />
+        <div className={styles.groups}>
+          <Groups
+            data={output}
+            count={count < 8 ? count : 7}
+            onChange={(e) => setGroupStage(e)}
+            onSelect={(e) => setCount(e)}
+          />
+        </div>
         <div>
           <Table
             groupStage={groupStage}
@@ -64,6 +76,8 @@ export default function Admin({ session, resultsData }) {
             count={count}
             onChange={(e) => setOutput(e)}
             worldChampion={"HR"}
+            points={false}
+            result={false}
           />
           <div className={styles.actions}>
             <div>
@@ -102,17 +116,17 @@ export async function getServerSideProps(context) {
     "https://backend-x7q2esrofa-no.a.run.app/api/v1/results"
   );
 
-  if (
-    !session ||
-    session?.user?.user?.address !==
-      "2Bzon1sDooUatNhvpvBYDG89QzFMwr3bkGMxCCdsd9Lo"
-  ) {
+  const admin = [
+    "EY7NL9j4CtXLw9BP3VNGCzQhmkkgb6fBWTsBQ9AsEuLg",
+    "2Bzon1sDooUatNhvpvBYDG89QzFMwr3bkGMxCCdsd9Lo",
+  ];
+
+  if (!session || !admin.includes(session?.user?.user?.address)) {
     return {
       notFound: true,
     };
   }
 
-  console.log(session?.user?.user?.address);
   return {
     props: {
       session: session || null,
