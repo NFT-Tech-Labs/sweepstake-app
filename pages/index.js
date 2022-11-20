@@ -392,6 +392,10 @@ export default function Home({
       value: process.env.NEXT_PUBLIC_FORGE_MINT,
     },
   ];
+  // sort by value
+  const sortedPredictionsTransformed = predictionsTransformed?.sort(
+    (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
+  );
 
   return (
     <div className={styles.home}>
@@ -472,9 +476,7 @@ export default function Home({
             ? worldChampionTransformed
             : { label: "Argentina", value: "AR" }
         }
-        disabled={
-          worldChampionTransformed?.value || confirmation || confirmationSolana
-        }
+        disabled={true}
         onChange={(e) => setTeam(e)}
       />
       <Divider height={80} />
@@ -504,16 +506,17 @@ export default function Home({
             </div>
             <Table
               groupStage={groupStage}
-              matches={predictionsTransformed ? predictionsTransformed : output}
-              count={count}
-              disabled={
-                predictionsTransformed ||
-                confirmation ||
-                confirmationSolana ||
-                confirmationHelio
+              matches={
+                predictionsTransformed ? sortedPredictionsTransformed : output
               }
+              count={count}
+              disabled={true}
               onChange={(e) => setOutput(e)}
-              worldChampion={finalOutput?.worldChampion}
+              worldChampion={
+                worldChampionTransformed?.value
+                  ? worldChampionTransformed?.value
+                  : finalOutput?.worldChampion
+              }
             />
             <Divider height={20} />
             <div className={styles.actions}>
@@ -555,7 +558,7 @@ export default function Home({
                   size={"xxs"}
                 />
               )}
-              {!sweepstakeDisabled && !predictionsTransformed && (
+              {/* {!sweepstakeDisabled && !predictionsTransformed && (
                 <div className={styles.submitWrapper}>
                   <div className={styles.selectWrapper}>
                     {filledCount === 64 && (
@@ -587,9 +590,9 @@ export default function Home({
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
-            {session && wallet?.publicKey && (
+            {/* {session && wallet?.publicKey && (
               <div
                 className={styles.helioButton}
                 style={{
@@ -637,8 +640,8 @@ export default function Home({
                   }
                 />
               </div>
-            )}
-            {session && wallet?.publicKey && (
+            )} */}
+            {/* {session && wallet?.publicKey && (
               <div className={styles.legal}>
                 <input
                   type={"checkbox"}
@@ -660,7 +663,7 @@ export default function Home({
                   </Link>
                 </label>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
