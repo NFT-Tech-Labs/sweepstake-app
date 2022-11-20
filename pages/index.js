@@ -55,6 +55,7 @@ export default function Home({
   tokensBalance,
   solanaBalance,
   sweepstakes,
+  results,
 }) {
   const ref = useRef(null);
   const { connection } = useConnection();
@@ -112,10 +113,10 @@ export default function Home({
       signCustomMessage();
     }
 
-    // Triggers a user initialization method request for the smart contract
-    if (session !== null && provider && !predictionsTransformed) {
-      handleUser(id, localUserState?.publicKey, localUserState);
-    }
+    // // Triggers a user initialization method request for the smart contract
+    // if (session !== null && provider && !predictionsTransformed) {
+    //   handleUser(id, localUserState?.publicKey, localUserState);
+    // }
   }, [session, wallet.publicKey]);
 
   // If user switches wallet address during session, signout and disconnect
@@ -231,6 +232,7 @@ export default function Home({
   // Fetched sweepstake predictions from API
   let predictions;
   let predictionsTransformed;
+  let predictionsTransformedResults;
   let worldChampion;
   let worldChampionTransformed;
 
@@ -244,6 +246,16 @@ export default function Home({
       scoreA: item?.scoreA.toString(),
       scoreB: item?.scoreB.toString(),
       points: item?.points.toString(),
+    }));
+
+    predictionsTransformedResults = predictionsTransformed?.map((item) => ({
+      ...item,
+      resultA: results
+        ?.find((result) => result.matchId === item.matchId)
+        ?.scoreA?.toString(),
+      resultB: results
+        ?.find((result) => result.matchId === item.matchId)
+        ?.scoreB?.toString(),
     }));
 
     worldChampionTransformed = {
@@ -393,51 +405,19 @@ export default function Home({
     },
   ];
   // sort by value
-  const sortedPredictionsTransformed = predictionsTransformed?.sort(
-    (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
-  );
 
+  let sortedPredictions;
+  if (results) {
+    sortedPredictions = predictionsTransformedResults?.sort(
+      (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
+    );
+  } else {
+    sortedPredictions = predictionsTransformed?.sort(
+      (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
+    );
+  }
   return (
     <div className={styles.home}>
-      {/* <button
-        onClick={() =>
-          handleUser(id, localUserState?.publicKey, localUserState)
-        }
-      >
-        CreateUser
-      </button>
-      <button
-        onClick={() =>
-          handleSolanaPayment(
-            shaInput,
-            localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SOL,
-            localUserStateSweepstake?.publicKey,
-            localUserStateSweepstake,
-            session?.user?.credentials?.accessToken,
-            finalOutput
-          )
-        }
-      >
-        SOL
-      </button>
-      <button
-        onClick={() =>
-          handlePayment(
-            shaInput,
-            "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
-            localUserState?.publicKey,
-            process.env.NEXT_PUBLIC_DAGOATS_ADDRESS_SPL,
-            localUserStateSweepstake?.publicKey,
-            localUserStateSweepstake,
-            session?.user?.credentials?.accessToken,
-            finalOutput
-          )
-        }
-      >
-        SPL
-      </button> */}
-
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -512,9 +492,7 @@ export default function Home({
             </div>
             <Table
               groupStage={groupStage}
-              matches={
-                predictionsTransformed ? sortedPredictionsTransformed : output
-              }
+              matches={predictionsTransformed ? sortedPredictions : output}
               count={count}
               disabled={
                 (session && wallet?.publicKey) || predictionsTransformed
@@ -759,6 +737,12 @@ export async function getServerSideProps(context) {
     }
   }
 
+  const results = await getData(
+    "https://backend-x7q2esrofa-no.a.run.app/api/v1/results"
+  );
+
+  console.log(results);
+
   return {
     props: {
       accountData: accountData || null,
@@ -767,6 +751,7 @@ export async function getServerSideProps(context) {
       solanaBalance: solanaBalanceData || null,
       session: session || null,
       sweepstakes: user?.sweepstakes || null,
+      results: results || null,
     },
   };
 }

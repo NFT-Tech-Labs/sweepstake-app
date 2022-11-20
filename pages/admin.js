@@ -76,7 +76,7 @@ export default function Admin({ session, resultsData }) {
             count={count}
             onChange={(e) => setOutput(e)}
             worldChampion={"HR"}
-            points={false}
+            pointsVisible={false}
             result={false}
           />
           <div className={styles.actions}>
