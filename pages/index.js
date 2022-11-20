@@ -476,7 +476,13 @@ export default function Home({
             ? worldChampionTransformed
             : { label: "Argentina", value: "AR" }
         }
-        disabled={true}
+        disabled={
+          (session && wallet?.publicKey) ||
+          worldChampionTransformed?.value ||
+          confirmation ||
+          confirmationSolana ||
+          confirmationHelio
+        }
         onChange={(e) => setTeam(e)}
       />
       <Divider height={80} />
@@ -510,7 +516,9 @@ export default function Home({
                 predictionsTransformed ? sortedPredictionsTransformed : output
               }
               count={count}
-              disabled={true}
+              disabled={
+                (session && wallet?.publicKey) || predictionsTransformed
+              }
               onChange={(e) => setOutput(e)}
               worldChampion={
                 worldChampionTransformed?.value
@@ -557,6 +565,9 @@ export default function Home({
                   textColor={"light"}
                   size={"xxs"}
                 />
+              )}
+              {!predictionsTransformed && (
+                <Content color={"assertive"} text={"Entries are closed"} />
               )}
               {/* {!sweepstakeDisabled && !predictionsTransformed && (
                 <div className={styles.submitWrapper}>
