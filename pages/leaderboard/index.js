@@ -17,7 +17,7 @@ export default function Leaderboard({ rankings, page, offset }) {
         }}
       />
       <Divider height={20} />
-      {rankings && page === 0 && (
+      {page === 0 && rankings && (
         <div className={styles.winners}>
           {rankings?.slice(0, 3)?.map((item, index) => (
             <Rank
@@ -87,7 +87,7 @@ export async function getServerSideProps({ query: { page = 0 } }) {
       notFound: true,
     };
   }
-  console.log(rankings);
+
   return {
     props: {
       rankings: rankings || null,

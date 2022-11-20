@@ -13,6 +13,7 @@ const Row = ({
   playTime,
   group,
   result,
+  pointsVisible,
   points,
   teamA,
   teamB,
@@ -234,14 +235,9 @@ const Row = ({
           </div>
         </td>
       )}
-
-      {points && (
+      {points && pointsVisible && (
         <td className={styles.points}>
-          <Content
-            text={perfect ? "5" : correct ? "3" : "0"}
-            color={"positive"}
-            size={"m"}
-          />
+          <Content text={points} color={"positive"} size={"m"} />
         </td>
       )}
     </tr>
@@ -255,6 +251,7 @@ Row.propTypes = {
   group: PropTypes.string,
   result: PropTypes.bool,
   points: PropTypes.string,
+  pointsVisible: PropTypes.bool,
   teamA: PropTypes.string,
   teamB: PropTypes.string,
   scoreA: PropTypes.number,
@@ -280,6 +277,7 @@ Row.defaultProps = {
   playTime: "",
   group: "",
   result: true,
+  pointsVisible: true,
   points: "",
   teamA: "",
   teamB: "",

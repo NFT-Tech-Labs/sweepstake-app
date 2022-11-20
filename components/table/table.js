@@ -26,7 +26,7 @@ const Table = ({
   confirmation,
   disabled,
   worldChampion,
-  points,
+  pointsVisible,
   result,
 }) => {
   const [data, setData] = useState(matches);
@@ -263,11 +263,6 @@ const Table = ({
       setData(filteredData);
     }
   }, [count]);
-
-  // const resultsCheck = data?.filter(
-  //   (item) => item.resultA && item?.type === count
-  // );
-
   const Loader = () => {
     return (
       <Vortex
@@ -323,7 +318,7 @@ const Table = ({
                 <Content text={"Result"} color={"stable-500"} size={"s"} />
               </th>
             )}
-            {points && (
+            {pointsVisible && (
               <th width={"10%"}>
                 <Content text={"Points"} color={"stable-500"} size={"s"} />
               </th>
@@ -344,8 +339,8 @@ const Table = ({
                     disabled={disabled}
                     worldChampion={worldChampion}
                     index={index}
+                    pointsVisible={pointsVisible}
                     {...item}
-                    points={points}
                     result={result}
                   />
                 )}
@@ -365,6 +360,8 @@ Table.propTypes = {
   processing: PropTypes.bool,
   confirmation: PropTypes.bool,
   worldChampion: PropTypes.string,
+  pointsVisible: PropTypes.bool,
+  result: PropTypes.bool,
 };
 
 Table.defaultProps = {
@@ -374,7 +371,7 @@ Table.defaultProps = {
   processing: false,
   confirmation: false,
   worldChampion: "",
-  points: true,
+  pointsVisible: true,
   result: true,
 };
 
