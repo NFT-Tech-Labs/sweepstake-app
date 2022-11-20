@@ -566,7 +566,7 @@ export default function Home({
                         className={styles.select}
                       />
                     )}
-                    {session && (
+                    {session && wallet?.publicKey && (
                       <Button
                         text={
                           filledCount !== 64 && paymentToken === ""
@@ -589,7 +589,7 @@ export default function Home({
                 </div>
               )}
             </div>
-            {session && (
+            {session && wallet?.publicKey && (
               <div
                 className={styles.helioButton}
                 style={{
@@ -638,7 +638,7 @@ export default function Home({
                 />
               </div>
             )}
-            {session && (
+            {session && wallet?.publicKey && (
               <div className={styles.legal}>
                 <input
                   type={"checkbox"}
