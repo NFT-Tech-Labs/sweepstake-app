@@ -29,8 +29,6 @@ export default function Admin({ session, resultsData }) {
     scoreB: Number(item?.scoreB),
   }));
 
-  // console.log(latestResultsStructure);
-
   const handleSubmit = async () => {
     return Promise.all(
       outputStructure?.map((result) =>
@@ -42,8 +40,6 @@ export default function Admin({ session, resultsData }) {
       )
     );
   };
-
-  console.log(output);
 
   return (
     <div className={styles.admin}>
@@ -109,7 +105,7 @@ export async function getServerSideProps(context) {
   if (
     !session ||
     session?.user?.user?.address !==
-      "GTS3fh69678oAwaSS6U3qwDAeFKLi8EaFgcodpLbCKfA"
+      "2Bzon1sDooUatNhvpvBYDG89QzFMwr3bkGMxCCdsd9Lo"
   ) {
     return {
       notFound: true,
