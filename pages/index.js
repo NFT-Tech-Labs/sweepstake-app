@@ -20,6 +20,7 @@ import {
   TeamSelect,
   Instructions,
   Content,
+  Rank,
 } from "@components";
 import Select from "react-select";
 import { getData, postData } from "utils/api";
@@ -34,7 +35,7 @@ import {
   teams,
   instructionsData,
 } from "utils/data";
-import { HelioPay } from "@heliofi/react";
+// import { HelioPay } from "@heliofi/react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { getSession, useSession, signOut } from "next-auth/react";
 import base58 from "bs58";
@@ -56,8 +57,10 @@ export default function Home({
   solanaBalance,
   sweepstakes,
   results,
+  rankings,
 }) {
   const ref = useRef(null);
+  const router = useRouter();
   const { connection } = useConnection();
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet();
@@ -416,6 +419,8 @@ export default function Home({
       (a, b) => a.type - b.type || a.id - b.id || a.rowId - b.rowId
     );
   }
+
+  console.log(finalOutput);
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -465,7 +470,33 @@ export default function Home({
         }
         onChange={(e) => setTeam(e)}
       />
-      <Divider height={80} />
+      <Divider height={60} />
+      {rankings && session && wallet?.publicKey && (
+        <div className={styles.leaderboard}>
+          <Divider height={60} />
+          <Button
+            text={"Leaderboard"}
+            textColor={"light"}
+            size={"xxs"}
+            onClick={() => router.push("/leaderboard")}
+          />
+          <div className={styles.winners}>
+            {rankings?.slice(0, 3)?.map((item, index) => (
+              <Rank
+                key={index}
+                position={`${index + 1}`}
+                points={item?.totalPoints.toString()}
+                label={"address"}
+                winner
+                className={styles.winner}
+                session={session}
+                {...item}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+      <Divider height={40} />
       <div className={styles.grid}>
         <div className={styles.gridWrapper}>
           <div className={styles.groupsWrapper}>
@@ -741,6 +772,10 @@ export async function getServerSideProps(context) {
     "https://backend-x7q2esrofa-no.a.run.app/api/v1/results"
   );
 
+  const rankings = await getData(
+    `https://backend-x7q2esrofa-no.a.run.app/api/v1/users?orderBy=totalPoints&order=DESC&limit=${3}`
+  );
+
   console.log(results);
 
   return {
@@ -752,6 +787,7 @@ export async function getServerSideProps(context) {
       session: session || null,
       sweepstakes: user?.sweepstakes || null,
       results: results || null,
+      rankings: rankings || null,
     },
   };
 }

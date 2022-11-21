@@ -120,3 +120,36 @@
 .or {
   margin: 0 var(--spacing-m)
 }
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.winners {
+  display: flex;
+  margin: var(--spacing-xl) 0;
+  flex-direction: column;
+  @include small {
+    flex-direction: row;
+  }
+}
+
+.winner {
+  margin-bottom: var(--spacing-l);
+  @include small {
+    margin-bottom: 0; 
+
+    &:first-child {
+      padding: 0 var(--spacing-m);
+    }
+    
+    &:nth-child(2) {
+      order: -1;
+    }
+  } 
+}
