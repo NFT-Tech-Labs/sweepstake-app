@@ -4,14 +4,12 @@ import { Heading, Rank, Divider, Button } from "@components";
 import { getData } from "../../utils/api";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-
-export default function Leaderboard({ rankings, page, offset }) {
+export default function Leaderboard({ rankings, page, offset, session }) {
   const router = useRouter();
-
   return (
     <div className={styles.leaderboard}>
       <Heading
-        title={{ text: "Leaderboard" }}
+        title={{ text: "DaGOATs WC Leaderboard" }}
         content={{
           text: "The top predictions of all sweepstake participants!",
         }}
@@ -27,6 +25,7 @@ export default function Leaderboard({ rankings, page, offset }) {
               label={"address"}
               winner
               className={styles.winner}
+              session={session}
               {...item}
             />
           ))}
@@ -42,6 +41,7 @@ export default function Leaderboard({ rankings, page, offset }) {
               points={item?.totalPoints.toString()}
               position={`${offset + index + 4}`}
               label={"address"}
+              session={session}
               {...item}
             />
           ))}
@@ -52,6 +52,7 @@ export default function Leaderboard({ rankings, page, offset }) {
             points={item?.totalPoints.toString()}
             position={`${offset + index + 1}`}
             label={"address"}
+            session={session}
             {...item}
           />
         ))}
@@ -76,7 +77,12 @@ export default function Leaderboard({ rankings, page, offset }) {
     </div>
   );
 }
-export async function getServerSideProps({ query: { page = 0 } }) {
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  const {
+    query: { page = 0 },
+  } = context;
+
   const offset = page * 10;
   const rankings = await getData(
     `https://backend-x7q2esrofa-no.a.run.app/api/v1/users?orderBy=totalPoints&order=DESC&limit=${10}&offset=${offset}`
@@ -87,12 +93,14 @@ export async function getServerSideProps({ query: { page = 0 } }) {
       notFound: true,
     };
   }
+  console.log(session);
 
   return {
     props: {
       rankings: rankings || null,
       page: +page,
       offset: offset,
+      session: session || null,
     },
   };
 }

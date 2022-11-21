@@ -41,6 +41,7 @@
     "react-svg": "^15.1.8",
     "react-tabs": "^5.1.0",
     "react-toastify": "^9.0.8",
+    "react-use-clipboard": "^1.0.9",
     "sass": "^1.54.9",
     "tweetnacl": "^1.0.3"
   },

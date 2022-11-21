@@ -2,18 +2,34 @@ import React from "react";
 import classNames from "classnames/bind";
 import styles from "./rank.module.scss";
 import PropTypes from "prop-types";
-import { Title, Content, Card } from "@components";
+import { Title, Content, Card, Button } from "@components";
+import useClipboard from "react-use-clipboard";
 
 const cx = classNames.bind(styles);
 
-const Rank = ({ className, position, address, label, points, winner }) => {
-  let classes = cx({ rank: true }, className);
+const Rank = ({
+  className,
+  position,
+  address,
+  label,
+  points,
+  winner,
+  session,
+}) => {
+  const [copied, setCopied] = useClipboard(address, {
+    successDuration: 1000,
+  });
+  let classes = cx(
+    { rank: true, active: session?.user?.user?.address === address },
+    className
+  );
   let classesWinner = cx(
     {
       winner: true,
       first: position === "1",
       second: position === "2",
       third: position === "3",
+      active: session?.user?.user?.address === address,
     },
     className
   );
@@ -25,6 +41,7 @@ const Rank = ({ className, position, address, label, points, winner }) => {
           <Title text={position} tag={"h2"} color={"light"} />
         )}
       </div>
+
       {points && (
         <Title
           tag={"h6"}
@@ -37,12 +54,27 @@ const Rank = ({ className, position, address, label, points, winner }) => {
         <Content text={label} size={"xxs"} color={"stable-500"} emphasize />
       )}
       {address && (
-        <Title
-          text={address}
-          tag={"h5"}
-          className={styles.addressWinner}
-          emphasize
-        />
+        <div className={styles.winnerAddressWrapper}>
+          <Title
+            text={address}
+            tag={"h5"}
+            className={styles.winnerAddress}
+            emphasize
+          />
+          <Button
+            icon={{ name: "clipboard", color: "dark", size: "xxs" }}
+            color={"transparent"}
+            size={"xs"}
+            onClick={() => setCopied(true)}
+          />
+          {copied && (
+            <Content
+              className={styles.clipboardWinner}
+              text={"Copied!"}
+              size={"xs"}
+            />
+          )}
+        </div>
       )}
     </div>
   );
@@ -56,15 +88,36 @@ const Rank = ({ className, position, address, label, points, winner }) => {
       <div className={styles.wrapper}>
         {position && <Title tag={"h5"} text={position} />}
         <div className={styles.addressWrapper}>
-          {label && (
-            <Content text={label} size={"xxs"} color={"stable-500"} emphasize />
-          )}
-          {address && (
+          <div>
+            {label && (
+              <Content
+                text={label}
+                size={"xxs"}
+                color={"stable-500"}
+                emphasize
+              />
+            )}
+            {address && (
+              <Content
+                text={address}
+                size={"xs"}
+                className={styles.address}
+                emphasize
+              />
+            )}
+          </div>
+          <Button
+            className={styles.clipboard}
+            icon={{ name: "clipboard", color: "dark", size: "xxxs" }}
+            color={"transparent"}
+            size={"xxs"}
+            onClick={() => setCopied(true)}
+          />
+          {copied && (
             <Content
-              text={address}
+              className={styles.clipboard}
+              text={"Copied!"}
               size={"xs"}
-              className={styles.address}
-              emphasize
             />
           )}
         </div>
@@ -81,6 +134,7 @@ Rank.propTypes = {
   label: PropTypes.string,
   points: PropTypes.string,
   winner: PropTypes.bool,
+  session: PropTypes.bool,
 };
 
 Rank.defaultProps = {
@@ -90,6 +144,7 @@ Rank.defaultProps = {
   label: "",
   points: "",
   winner: false,
+  session: false,
 };
 
 export default Rank;

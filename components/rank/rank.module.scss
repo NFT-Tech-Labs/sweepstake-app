@@ -5,9 +5,12 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--spacing-m);
-  // background: linear-gradient(90deg, rgba(5, 15, 59, 0.9178046218) 0%, rgba(3, 3, 36, 0.7105435924) 100%);
   padding: var(--spacing-m) var(--spacing-xl);
   box-shadow: rgb(204 219 232) 3px 3px 6px 0px inset, rgb(235 235 235 / 50%) -3px -3px 6px 1px inset;
+
+  &.active {
+    border: dashed 2px rgba(var(--color-positive, 1));
+  }
 }
 
 .wrapper {
@@ -16,6 +19,9 @@
 }
 
 .addressWrapper {
+  display: flex;
+  align-items: end;
+  justify-content: center;
   padding: 0 var(--spacing-m);
 }
 
@@ -90,18 +96,42 @@
     margin-bottom: 20px;
     animation: rotate 3s infinite alternate;
   }
+
+  .active & {
+    border: solid 3px rgba(var(--color-energized, 1));
+  }
 }
 
-.addressWinner {
+.winnerAddress {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 10ch;
 }
 
+.winnerAddressWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
 /* The animation code */
 @keyframes rotate {
   from {transform: rotate3d(1, 1, 1, 336deg);}
   to {transform: rotate3d(1, 1, 1, 380deg);}
+}
+
+.clipboardWinner {
+  position: absolute;
+  right: -50px;
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.clipboard {
+  display: flex;
+  @include small {
+    display: none;
+  }
 }
