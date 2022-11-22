@@ -38,7 +38,8 @@ const Row = ({
   const correct =
     resultA || resultB
       ? (scoreA > scoreB && resultA > resultB) ||
-        (scoreA < scoreB && resultA < resultB)
+        (scoreA < scoreB && resultA < resultB) ||
+        (scoreA === scoreB && resultA === resultB)
       : false;
   const filledA = scoreA !== null;
   const filledB = scoreB !== null;
