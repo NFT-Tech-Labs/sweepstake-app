@@ -12,11 +12,7 @@ export default function Admin({ session, resultsData }) {
   const [groupStage, setGroupStage] = useState([]);
   const [output, setOutput] = useState(tableData);
 
-  const comparedResults = output.map(
-    (x) => resultsData.find((y) => y.matchId === x.matchId) || x
-  );
-
-  const latestResultsStructure = comparedResults?.map((item, index) => ({
+  const resultsStructure = resultsData?.map((item, index) => ({
     ...item,
     scoreA: item?.scoreA?.toString() || null,
     scoreB: item?.scoreB?.toString() || null,
@@ -31,8 +27,6 @@ export default function Admin({ session, resultsData }) {
     scoreA: item?.scoreA !== null ? Number(item?.scoreA) : null,
     scoreB: item?.scoreB !== null ? Number(item?.scoreB) : null,
   }));
-
-  console.log(outputStructure);
 
   const handleSubmit = async () => {
     toast("Submitted, please refresh");
@@ -49,6 +43,12 @@ export default function Admin({ session, resultsData }) {
       )
     );
   };
+
+  const filteredResults = resultsStructure.sort(
+    (a, b) => a.matchId - b.matchId
+  );
+
+  console.log(outputStructure);
 
   return (
     <div className={styles.admin}>
@@ -72,10 +72,9 @@ export default function Admin({ session, resultsData }) {
         <div>
           <Table
             groupStage={groupStage}
-            matches={latestResultsStructure ? latestResultsStructure : output}
+            matches={filteredResults}
             count={count}
             onChange={(e) => setOutput(e)}
-            worldChampion={"HR"}
             pointsVisible={false}
             result={false}
           />
