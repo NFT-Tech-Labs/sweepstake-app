@@ -420,7 +420,6 @@ export default function Home({
     );
   }
 
-  console.log(finalOutput);
   return (
     <div className={styles.home}>
       <ToastContainer
@@ -776,7 +775,7 @@ export async function getServerSideProps(context) {
     `https://backend-x7q2esrofa-no.a.run.app/api/v1/users?orderBy=totalPoints&order=DESC&limit=${3}`
   );
 
-  console.log(results);
+  console.log(rankings);
 
   return {
     props: {
