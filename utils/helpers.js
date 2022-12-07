@@ -228,8 +228,11 @@ const groupWinners = (data, group) => {
 
 const getWinners = (data) => {
   const winners = data?.map((item) => {
-    if (item.extensionWinner && item.scoreA === item.scoreB) {
-      return item?.extensionWinner;
+    if (
+      (item.extensionA !== null || item.extensionB !== null) &&
+      item.scoreA === item.scoreB
+    ) {
+      return item.extensionA === true ? item.teamA : item.teamB;
     } else {
       return item.scoreA > item.scoreB ? item.teamA : item.teamB;
     }
@@ -240,8 +243,11 @@ const getWinners = (data) => {
 
 const getLosers = (data) => {
   const losers = data?.map((item) => {
-    if (item.extensionWinner && item.scoreA === item.scoreB) {
-      return item.extensionWinner === item.teamA ? item.teamB : item.teamA;
+    if (
+      (item.extensionA !== null || item.extensionB !== null) &&
+      item.scoreA === item.scoreB
+    ) {
+      return item.extensionA === true ? item.teamB : item.teamA;
     } else {
       return item.scoreA < item.scoreB ? item.teamA : item.teamB;
     }
